@@ -1,0 +1,16 @@
+{
+  "title": "All Aboard",
+  "name": "all-aboard",
+  "version": "0.0.1",
+  "description": "The Mozilla Firefox onboarding add-on",
+  "main": "index.js",
+  "author": "Mozilla Corporation",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MPL-2.0",
+  "keywords": [
+    "jetpack"
+  ]
+}
