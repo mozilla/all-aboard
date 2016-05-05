@@ -11,6 +11,15 @@
     var heading;
     var mainContainer;
 
+    function showFxAccountWidget() {
+
+        document.querySelector('.all-aboard-container').style.display = 'none';
+
+        // show the default heading and the Fx accounts widget
+        heading.style.display = 'block';
+        mainContainer.style.display = 'block';
+    }
+
     function submitHandler() {
         var button = document.querySelector('.all-aboard-container button');
         var choice;
@@ -18,6 +27,7 @@
         button.addEventListener('click', function() {
             choice = document.querySelector('input[type="radio"]:checked').value;
             self.port.emit('isNewUser', choice);
+            showFxAccountWidget();
         });
     }
 
@@ -33,6 +43,8 @@
 
         // append the question to the main content container
         contentContainer.insertAdjacentHTML('beforeend', newUserQuery);
+        contentContainer.focus();
+
         submitHandler();
     }
 })();
