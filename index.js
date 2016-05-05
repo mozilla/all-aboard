@@ -1,7 +1,9 @@
 var buttons = require('sdk/ui/button/action');
-var tabs = require('sdk/tabs');
+var pageMod = require('sdk/page-mod');
 var sidebar = require('sdk/ui/sidebar');
+var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
+
 var visible = false;
 
 var allAboard = buttons.ActionButton({
@@ -28,6 +30,15 @@ content.on('show', function() {
 
 content.on('hide', function() {
     visible = false;
+});
+
+// loads and executes a script when on /firstrun page
+// http://regexr.com/3dbrq
+pageMod.PageMod({
+    include: /.*firefox[\/\d*|\w*\.*]*\/firstrun\//,
+    contentScriptFile: './js/firstrun.js',
+    contentScriptWhen: 'ready',
+    contentStyleFile: './css/firstrun.css'
 });
 
 // fake a content notification
