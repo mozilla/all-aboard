@@ -10,6 +10,12 @@
     "fennec": ">=38.0a1"
   },
   "license": "MPL-2.0",
+  "preferences": [{
+    "name": "isNewUser",
+    "title": "New user",
+    "type": "string",
+    "value": "no"
+  }],
   "keywords": [
     "jetpack"
   ]

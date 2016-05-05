@@ -11,6 +11,16 @@
     var heading;
     var mainContainer;
 
+    function submitHandler() {
+        var button = document.querySelector('.all-aboard-container button');
+        var choice;
+
+        button.addEventListener('click', function() {
+            choice = document.querySelector('input[type="radio"]:checked').value;
+            self.port.emit('isNewUser', choice);
+        });
+    }
+
     // see whether a Firefox Accounts section exists
     if (fxAccountsContainer) {
         contentContainer = document.querySelector('#intro .container');
@@ -23,5 +33,6 @@
 
         // append the question to the main content container
         contentContainer.insertAdjacentHTML('beforeend', newUserQuery);
+        submitHandler();
     }
 })();

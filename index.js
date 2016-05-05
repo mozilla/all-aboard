@@ -1,5 +1,6 @@
 var buttons = require('sdk/ui/button/action');
 var pageMod = require('sdk/page-mod');
+var preferences = require("sdk/simple-prefs").prefs;
 var sidebar = require('sdk/ui/sidebar');
 var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
@@ -38,7 +39,12 @@ pageMod.PageMod({
     include: /.*firefox[\/\d*|\w*\.*]*\/firstrun\//,
     contentScriptFile: './js/firstrun.js',
     contentScriptWhen: 'ready',
-    contentStyleFile: './css/firstrun.css'
+    contentStyleFile: './css/firstrun.css',
+    onAttach: function(worker) {
+        worker.port.on('isNewUser', function(isNewUser) {
+            preferences.isNewUser = isNewUser;
+        });
+    }
 });
 
 // fake a content notification
