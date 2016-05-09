@@ -11,7 +11,8 @@
                   '<input type="radio" name="isNewUser" value="yes" id="question_one" />Yes</label>' +
                   '<label for="question_two">' +
                   '<input type="radio" name="isNewUser" value="no" id="question_two" checked />No</label>' +
-                  '<button type="button" class="button">Submit</button>';
+                  '<button type="button" class="button">Submit</button>' +
+                  '<p><a href="about:home" id="dismiss">No thanks</a></p>';
     var values = '<h2>What matters to you?</h2>' +
                   '<label for="question_one">' +
                   '<input type="radio" name="whatMatters" value="values" id="question_one" checked />Values</label>' +
@@ -51,6 +52,9 @@
         var checkedElem;
         var choice;
         var name;
+
+        // remove any previously attached click listeners
+        button.removeEventListener('click');
 
         button.addEventListener('click', function() {
             checkedElem = addonContent.querySelector('input[type="radio"]:checked');

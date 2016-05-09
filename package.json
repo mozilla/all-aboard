@@ -21,6 +21,12 @@
     "title": "What matters",
     "type": "string",
     "value": "values"
+  },
+  {
+    "name": "onboardingDismissed",
+    "title": "No thanks",
+    "type": "string",
+    "value": "false"
   }],
   "keywords": [
     "jetpack"

@@ -8,3 +8,9 @@ body {
 h1 {
     font-size: 2rem;
 }
+
+.container {
+    width: 450px;
+    min-width: 300px;
+    max-width: 35%;
+}

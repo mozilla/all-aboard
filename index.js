@@ -48,6 +48,12 @@ pageMod.PageMod({
         worker.port.on('whatMatters', function(whatMatters) {
             preferences.whatMatters = whatMatters;
         });
+
+        // listens for a message from pageMod when a user clicks on the "No thanks" link on
+        // the new user question on firstrun
+        worker.port.on('onboardingDismissed', function(dismissed) {
+            preferences.onboardingDismissed = dismissed;
+        });
     }
 });
 

@@ -25,3 +25,15 @@
     display: block;
     margin: 20px auto 0;
 }
+
+.all-aboard-container a:link,
+.all-aboard-container a:visited {
+    display: block;
+    margin-top: 20px;
+    color: #333;
+}
+
+.all-aboard-container a:hover,
+.all-aboard-container a:focus {
+    text-decoration: none;
+}
