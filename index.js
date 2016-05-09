@@ -44,6 +44,10 @@ pageMod.PageMod({
         worker.port.on('isNewUser', function(isNewUser) {
             preferences.isNewUser = isNewUser;
         });
+
+        worker.port.on('whatMatters', function(whatMatters) {
+            preferences.whatMatters = whatMatters;
+        });
     }
 });
 
