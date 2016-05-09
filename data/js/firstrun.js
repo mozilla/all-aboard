@@ -53,9 +53,6 @@
         var choice;
         var name;
 
-        // remove any previously attached click listeners
-        button.removeEventListener('click');
-
         button.addEventListener('click', function() {
             checkedElem = addonContent.querySelector('input[type="radio"]:checked');
             choice = checkedElem.value;
