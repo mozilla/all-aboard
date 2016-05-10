@@ -29,8 +29,6 @@ https://www.mozilla.org//firefox/46.0/firstrun/
 
 The above page will show a new widget asking you do indentify yourself as a new user of Firefox or, and existing user. There is also a link to opt out of this entitled "No thanks".
 
-Should you click the "No thanks" link, you will be sent to `about:home`
-
-Should you click "No", you will be presented with Firefox Accounts widget.
-
-Should you click "Yes", you will be presented with another question. On selecting either of the options, you will be presented with the Firefox Accounts widget.
+* Should you click the "No thanks" link, you will be sent to `about:home`
+* Should you click "No", you will be presented with Firefox Accounts widget.
+* Should you click "Yes", you will be presented with another question. On selecting either of the options, you will be presented with the Firefox Accounts widget.
