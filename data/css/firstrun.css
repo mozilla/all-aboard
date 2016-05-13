@@ -1,39 +1,79 @@
-.all-aboard-container {
+#all-aboard {
     background-color: #fff;
     color: #333;
     margin: 70px auto 0;
-    padding: 2rem;
     border-radius: 4px;
-    max-width: 450px;
+    max-width: 600px;
 }
 
-.all-aboard-container h2 {
+#all-aboard a:link,
+#all-aboard a:visited {
+    color: #0095dd;
+    margin-top: 20px;
+}
+
+#all-aboard a:hover,
+#all-aboard a:focus {
+    color: #0095dd;
+    text-decoration: none;
+}
+
+#all-aboard header {
+    padding: 20px 40px;
+    text-align: left;
+}
+
+#all-aboard h2 {
     color: #333;
     margin-bottom: 20px;
+    font-size: 1.3rem;
+    font-weight: bold;
 }
 
-.all-aboard-container label {
+#all-aboard header h2 {
+    display: inline;
+    margin-right: 50px;
+}
+
+#all-aboard header .form-elements {
+    display: inline;
+}
+
+#all-aboard label {
     display: inline-block;
-    width: 100px;
+    width: 70px;
 }
 
-.all-aboard-container input[type="radio"] {
-    margin-right: 20px;
+#all-aboard input[type="radio"] {
+    margin-right: 10px;
 }
 
-.all-aboard-container button {
+#all-aboard .what-matters {
+    background-color: #f4f4f4;
+    padding: 40px 35px;
+    text-align: left;
+}
+
+#all-aboard .what-matters label {
     display: block;
-    margin: 20px auto 0;
+    margin-bottom: 15px;
+    width: auto;
 }
 
-.all-aboard-container a:link,
-.all-aboard-container a:visited {
-    display: block;
-    margin-top: 20px;
-    color: #333;
+#all-aboard footer {
+    background-color: #f4f4f4;
+    padding: 20px 40px 40px;
+    border-radius: 0 0 4px 4px;
+    text-align: left;
 }
 
-.all-aboard-container a:hover,
-.all-aboard-container a:focus {
-    text-decoration: none;
+#all-aboard footer button {
+    float: right;
+    border-radius: 0 0 4px 4px;
+}
+
+#all-aboard footer a:link,
+#all-aboard footer a:visited,
+#all-aboard footer button {
+    display: inline-block;
 }
