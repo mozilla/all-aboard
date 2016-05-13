@@ -27,8 +27,7 @@ https://www.mozilla.org//firefox/46.0/firstrun/
 
 ### The Paths
 
-The above page will show a new widget asking you do indentify yourself as a new user of Firefox or, and existing user. There is also a link to opt out of this entitled "No thanks".
+The above page will show a new dialog asking whether you have used Firefox in the last 30 days, and what matters to you as user. There is also a link to opt out presented as a linked titled "No thanks".
 
 * Clicking on the "No thanks" link, will send the user to `about:home`
-* Clicking "No", will show the Firefox Accounts widget.
-* Clicking "Yes", will move the user onto a secondary question. Once one of the options have been selected, the user will be presented with the Firefox Accounts widget.
+* Clicking the "Done", will show the Firefox Accounts widget.
