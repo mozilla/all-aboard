@@ -17,11 +17,11 @@
                  '</div>' +
                  '</header>' +
                  '<main class="what-matters">' +
-                 '<h2>I’m happiest knowing that me browser:</h2>' +
+                 '<h2>Are you more:</h2>' +
                  '<label for="features">' +
-                 '<input type="radio" name="whatMatters" value="features" id="features" checked />Has unique capabilities and features</label>' +
+                 '<input type="radio" name="whatMatters" value="features" id="features" checked />Do it yourself</label>' +
                  '<label for="values">' +
-                 '<input type="radio" name="whatMatters" value="values" id="values" />Is backed by a non-profitwith a mission to...</label>' +
+                 '<input type="radio" name="whatMatters" value="values" id="values" />Do good</label>' +
                  '</main>' +
                  '<footer>' +
                  '<a href="about:home" id="dismiss">No thanks</a>' +

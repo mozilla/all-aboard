@@ -1,9 +1,11 @@
 var buttons = require('sdk/ui/button/action');
+var notifications = require("sdk/notifications");
 var pageMod = require('sdk/page-mod');
 var preferences = require("sdk/simple-prefs").prefs;
 var sidebar = require('sdk/ui/sidebar');
 var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
+var utils = require('sdk/window/utils');
 
 var visible = false;
 
@@ -20,8 +22,8 @@ var allAboard = buttons.ActionButton({
 
 var content = sidebar.Sidebar({
     id: 'allboard-content',
-    title: 'Welcome to Firefox',
-    url: './index.html',
+    title: 'Make Firefox your own',
+    url: './tmpl/import_data.html',
     onDetach: enableTrigger
 });
 
@@ -62,6 +64,14 @@ var highlighter = timers.setTimeout(showBadge, 2000);
 
 function showBadge() {
     timers.clearTimeout(highlighter);
+
+    notifications.notify({
+        title: 'All Aboard',
+        text: 'You have a new message',
+        iconURL: './media/icons/icon-32.png',
+        onClick: toggleSidebar
+    });
+
     allAboard.state('window', {
         badge: '1',
         badgeColor: '#5F9B0A'
@@ -75,6 +85,12 @@ function enableTrigger() {
 }
 
 function toggleSidebar(state) {
+
+    var activeWindow = utils.getMostRecentBrowserWindow();
+    var _sidebar = activeWindow.document.getElementById('sidebar');
+    _sidebar.style.width = '320px';
+    _sidebar.style.maxWidth = '320px';
+
     // clears the badge
     allAboard.state('window', {
         badge: null

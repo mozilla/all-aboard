@@ -1,3 +1,13 @@
+html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
 body {
     background-color: #edecec;
     color: #4a5160;
@@ -9,8 +19,7 @@ body {
 
 .sidebar-content {
     background-color: #f6f6f6;
-    padding: 60px;
-    width: 280px;
+    width: 320px;
     height: 100vh;
     text-align: center;
 }
@@ -24,8 +33,29 @@ body {
     line-height: 1.5;
 }
 
+.sidebar-content main,
 .sidebar-content footer {
-    margin-top: 60px;
+    padding: 20px;
+}
+
+/* form element styles */
+.multiple-choice {
+    text-align: left;
+}
+
+.multiple-choice label {
+    display: block;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.multiple-choice input[type="radio"] {
+    margin-right: 10px;
+}
+
+.multiple-choice button {
+    margin-top: 40px;
+    width: 100%;
 }
 
 /* import data sidebar */
@@ -45,26 +75,46 @@ body {
 .import-data li:before {
     display: inline-block;
     content: '';
-    padding: 3px 15px 0 5px;
-    width: 16px;
-    height: 16px;
+    padding: 3px 25px 0 5px;
+    width: 20px;
+    height: 20px;
     vertical-align: bottom;
 }
 
 .import-data .preferences:before {
-    background: transparent url(../media/icons/preferences.png) 0 0 no-repeat;
+    background: transparent url(../media/icons/preferences.png) 0 0 / 20px no-repeat;
 }
 
 .import-data .bookmarks:before {
-    background: transparent url(../media/icons/bookmarks.png) 0 0 no-repeat;
+    background: transparent url(../media/icons/bookmarks.png) 0 0 / 20px no-repeat;
 }
 
 .import-data .passwords:before {
-    background: transparent url(../media/icons/passwords.png) 0 0 no-repeat;
+    background: transparent url(../media/icons/passwords.png) 0 0 / 20px no-repeat;
 }
 
 .import-data .history:before {
-    background: transparent url(../media/icons/history.png) 0 0 no-repeat;
+    background: transparent url(../media/icons/history.png) 0 0 / 20px no-repeat;
+}
+
+.moving-truck {
+    margin-top: 20px;
+}
+
+/* badges */
+.badges {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.badges li {
+    display: inline-block;
+    margin-right: 10px;
+    border: 2px dotted #e0e0e0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
 }
 
 /* buttons */
@@ -91,4 +141,9 @@ body {
 .button:active {
     position: relative;
     top: 1px;
+}
+
+/* utility */
+.hidden {
+    display: none;
 }
