@@ -70,7 +70,7 @@
         var button = addonContent.querySelector('button');
 
         button.addEventListener('click', function() {
-            checkedElems = addonContent.querySelectorAll('input[type="radio"]:checked');
+            var checkedElems = addonContent.querySelectorAll('input[type="radio"]:checked');
 
             for (var i = 0,l = checkedElems.length; i < l; i++) {
                 self.port.emit(checkedElems[i].name, checkedElems[i].value);
