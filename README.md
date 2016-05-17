@@ -29,5 +29,23 @@ https://www.mozilla.org//firefox/46.0/firstrun/
 
 The above page will show a new dialog asking whether you have used Firefox in the last 30 days, and what matters to you as user. There is also a link to opt out presented as a linked titled "No thanks".
 
-* Clicking on the "No thanks" link, will send the user to `about:home`
-* Clicking the "Done", will show the Firefox Accounts widget.
+There are currently three paths a user can take from this point:
+
+#### Opt out
+
+The user clicks the "No thanks" link and is sent to `about:home`
+Internally the user is classified as `no-thanks` and will not be part of the rest of the on-boarding experience.
+
+#### Yup
+
+The user selects `yup` as the answer to the first question, and clicks Go!.
+The Fx accounts form is shown.
+Internally the user is classified as `existing-user` and will not be part of the rest of the on-boarding experience.
+
+#### Nope
+
+The user selects `nope` as the answer to the first question
+A second question is shown to the user.
+The user here either selects "Do it yourself" or "Do good", and clicks Go!.
+The Fx accounts form is shown.
+Once the user submits the form or, navigates away from the first run page, the side bar will be shown inviting the user to import their data.
