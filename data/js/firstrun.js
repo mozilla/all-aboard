@@ -13,13 +13,13 @@
                  '<label for="yup">' +
                  '<input type="radio" name="isNewUser" value="false" id="yup" />yup</label>' +
                  '<label for="nope">' +
-                 '<input type="radio" name="isNewUser" value="true" id="nope" checked />nope</label>' +
+                 '<input type="radio" name="isNewUser" value="true" id="nope" />nope</label>' +
                  '</div>' +
                  '</header>' +
                  '<main class="what-matters">' +
                  '<h2>Are you more:</h2>' +
                  '<label for="features">' +
-                 '<input type="radio" name="whatMatters" value="features" id="features" checked />Do it yourself</label>' +
+                 '<input type="radio" name="whatMatters" value="features" id="features" />Do it yourself</label>' +
                  '<label for="values">' +
                  '<input type="radio" name="whatMatters" value="values" id="values" />Do good</label>' +
                  '</main>' +

@@ -12,6 +12,7 @@ var utils = require('sdk/window/utils');
 var allAboard;
 var content;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
+var partnerDistributionId = null;
 var visible = false;
 
 function showBadge() {
@@ -49,7 +50,10 @@ function toggleSidebar(state) {
 }
 
 function init() {
-    if (self.loadReason === 'install') {
+    // if the add-on was loaded at startup and the installTime variable does not exist in
+    // simple storage, this is the first time Fx has been launched.
+    if ((self.loadReason === 'startup') && ('undefined' === simpleStorage.storage.installTime)) {
+        // store the install time
         simpleStorage.storage.installTime = Date.now();
     }
 
