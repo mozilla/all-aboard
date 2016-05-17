@@ -1,4 +1,7 @@
 (function() {
+
+    'use strict';
+
     var fxAccountsContainer = document.querySelector('.fxaccounts');
     var addonContent;
     var contentContainer;

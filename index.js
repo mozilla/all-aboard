@@ -1,3 +1,5 @@
+'use strict';
+
 var buttons = require('sdk/ui/button/action');
 var notifications = require("sdk/notifications");
 var pageMod = require('sdk/page-mod');
@@ -12,7 +14,6 @@ var utils = require('sdk/window/utils');
 var allAboard;
 var content;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
-var partnerDistributionId = null;
 var visible = false;
 
 function showBadge() {
