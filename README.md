@@ -31,3 +31,5 @@ The above page will show a new dialog asking whether you have used Firefox in th
 
 * Clicking on the "No thanks" link, will send the user to `about:home`
 * Clicking the "Done", will show the Firefox Accounts widget.
+
+Opening up the `/firstrun` page and then navigating away by, for exmaple clicking the "No thanks" link or entering a different URL, will show the import data(day1) side bar.
