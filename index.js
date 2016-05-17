@@ -14,11 +14,7 @@ var content;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
 var visible = false;
 
-// fake a content notification
-var highlighter = timers.setTimeout(showBadge, 2000);
-
 function showBadge() {
-    timers.clearTimeout(highlighter);
 
     notifications.notify({
         title: 'All Aboard',
@@ -106,8 +102,9 @@ function init() {
 
     // listen for ready(essentially DOMContentLoaded) events on tabs
     tabs.on('ready', function(tab) {
-        // if this is the active tab and, the url is not a firstrun page
-        if (!firstrunRegex.test(tabs.activeTab.url)) {
+        // Only show sidebars to new users.
+        // Also ensure the active tab has a url that is not a firstrun page
+        if (preferences.isNewUser === 'true' && !firstrunRegex.test(tabs.activeTab.url)) {
             // show the sidebar
             toggleSidebar();
         }

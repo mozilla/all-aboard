@@ -11,9 +11,9 @@
                  '<h2>I’ve used Firefox in the last 30 days?</h2>' +
                  '<div class="form-elements">' +
                  '<label for="yup">' +
-                 '<input type="radio" name="isNewUser" value="yes" id="yup" />yup</label>' +
+                 '<input type="radio" name="isNewUser" value="false" id="yup" />yup</label>' +
                  '<label for="nope">' +
-                 '<input type="radio" name="isNewUser" value="no" id="nope" checked />nope</label>' +
+                 '<input type="radio" name="isNewUser" value="true" id="nope" checked />nope</label>' +
                  '</div>' +
                  '</header>' +
                  '<main class="what-matters">' +

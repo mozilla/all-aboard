@@ -14,19 +14,19 @@
     "name": "isNewUser",
     "title": "New user",
     "type": "string",
-    "value": "no"
+    "hidden": true
   },
   {
     "name": "whatMatters",
     "title": "What matters",
     "type": "string",
-    "value": "values"
+    "hidden": true
   },
   {
     "name": "onboardingDismissed",
     "title": "No thanks",
     "type": "string",
-    "value": "false"
+    "hidden": true
   }],
   "keywords": [
     "jetpack"
