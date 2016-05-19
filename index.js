@@ -4,6 +4,7 @@ var buttons = require('sdk/ui/button/action');
 var notifications = require("sdk/notifications");
 var pageMod = require('sdk/page-mod');
 var preferences = require("sdk/simple-prefs").prefs;
+var prefService = require("sdk/preferences/service");
 var self = require('sdk/self');
 var sidebar = require('sdk/ui/sidebar');
 var simpleStorage = require('sdk/simple-storage');
@@ -61,12 +62,10 @@ function modifyFirstrun() {
         contentScriptWhen: 'ready',
         contentStyleFile: './css/firstrun.css',
         onAttach: function(worker) {
-            worker.port.on('isNewUser', function(isNewUser) {
-                preferences.isNewUser = isNewUser;
-            });
-
-            worker.port.on('whatMatters', function(whatMatters) {
-                preferences.whatMatters = whatMatters;
+            worker.port.on('dialogSubmit', function(choices) {
+                preferences.isNewUser = choices.isNewUser;
+                preferences.whatMatters = choices.whatMatters;
+                prefService.set('distribution.id', 'mozilla86-' + choices.whatMatters + '-' + choices.isNewUser);
             });
 
             // listens for a message from pageMod when a user clicks on the "No thanks" link on
@@ -82,7 +81,7 @@ function init() {
     // if the add-on was loaded at startup and the installTime variable does not exist in
     // simple storage, this is the first time Fx has been launched.
     if ((self.loadReason === 'startup') && ('undefined' === simpleStorage.storage.installTime)) {
-        // store the install time
+        // store the firstrun time
         simpleStorage.storage.installTime = Date.now();
     }
 
