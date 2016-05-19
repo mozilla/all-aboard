@@ -74,6 +74,7 @@
         yupNope.addEventListener('change', function() {
             var whatMatters = addonContent.querySelector('.what-matters');
             whatMatters.classList.remove('hidden');
+            whatMatters.setAttribute('aria-hidden', false);
         });
 
         button.addEventListener('click', function() {
