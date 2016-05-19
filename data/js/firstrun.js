@@ -14,9 +14,9 @@
                  '<h2>I’ve used Firefox in the last 30 days?</h2>' +
                  '<div id="yup_nope" class="form-elements">' +
                  '<label for="yup">' +
-                 '<input type="radio" name="isNewUser" value="false" id="yup" />yup</label>' +
+                 '<input type="radio" name="isNewUser" value="existing" id="yup" />yup</label>' +
                  '<label for="nope">' +
-                 '<input type="radio" name="isNewUser" value="true" id="nope" />nope</label>' +
+                 '<input type="radio" name="isNewUser" value="new" id="nope" />nope</label>' +
                  '</div>' +
                  '</header>' +
                  '<main class="what-matters hidden" aria-hidden="true">' +
@@ -79,10 +79,13 @@
 
         button.addEventListener('click', function() {
             var checkedElems = addonContent.querySelectorAll('input[type="radio"]:checked');
+            var choices = {};
 
             for (var i = 0,l = checkedElems.length; i < l; i++) {
-                self.port.emit(checkedElems[i].name, checkedElems[i].value);
+                choices[checkedElems[i].name] = checkedElems[i].value;
             }
+
+            self.port.emit('dialogSubmit', choices);
 
             showFxAccountWidget();
         });
