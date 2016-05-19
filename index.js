@@ -50,6 +50,34 @@ function toggleSidebar(state) {
     }
 }
 
+/**
+ * Modifies the /firstrun page
+ * http://regexr.com/3dbrq
+ */
+function modifyFirstrun() {
+    pageMod.PageMod({
+        include: firstrunRegex,
+        contentScriptFile: './js/firstrun.js',
+        contentScriptWhen: 'ready',
+        contentStyleFile: './css/firstrun.css',
+        onAttach: function(worker) {
+            worker.port.on('isNewUser', function(isNewUser) {
+                preferences.isNewUser = isNewUser;
+            });
+
+            worker.port.on('whatMatters', function(whatMatters) {
+                preferences.whatMatters = whatMatters;
+            });
+
+            // listens for a message from pageMod when a user clicks on the "No thanks" link on
+            // the new user question on firstrun
+            worker.port.on('onboardingDismissed', function(dismissed) {
+                preferences.onboardingDismissed = dismissed;
+            });
+        }
+    });
+}
+
 function init() {
     // if the add-on was loaded at startup and the installTime variable does not exist in
     // simple storage, this is the first time Fx has been launched.
@@ -81,30 +109,6 @@ function init() {
         }
     });
 
-    // loads and executes a script when on /firstrun page
-    // http://regexr.com/3dbrq
-    pageMod.PageMod({
-        include: firstrunRegex,
-        contentScriptFile: './js/firstrun.js',
-        contentScriptWhen: 'ready',
-        contentStyleFile: './css/firstrun.css',
-        onAttach: function(worker) {
-            worker.port.on('isNewUser', function(isNewUser) {
-                preferences.isNewUser = isNewUser;
-            });
-
-            worker.port.on('whatMatters', function(whatMatters) {
-                preferences.whatMatters = whatMatters;
-            });
-
-            // listens for a message from pageMod when a user clicks on the "No thanks" link on
-            // the new user question on firstrun
-            worker.port.on('onboardingDismissed', function(dismissed) {
-                preferences.onboardingDismissed = dismissed;
-            });
-        }
-    });
-
     // listen for ready(essentially DOMContentLoaded) events on tabs
     tabs.on('ready', function(tab) {
         // Only show sidebars to new users.
@@ -114,6 +118,8 @@ function init() {
             toggleSidebar();
         }
     });
+
+    modifyFirstrun();
 }
 
 init();
