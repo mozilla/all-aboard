@@ -1,6 +1,7 @@
 'use strict';
 
 var buttons = require('sdk/ui/button/action');
+let { Cu } = require('chrome');
 var notifications = require("sdk/notifications");
 var pageMod = require('sdk/page-mod');
 var preferences = require("sdk/simple-prefs").prefs;
@@ -105,6 +106,23 @@ function init() {
         },
         onHide: function() {
             visible = false;
+        },
+        onAttach: function(worker) {
+            worker.port.on('openMigrationTool', function() {
+                // Imports the MigrationUtils need to show the migration tool, and imports
+                // Services, needed for the observer.
+                // Note: Need to use the `chrome` module to do this which, according to the
+                // docs should not really be done:
+                // https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs/chrome
+                Cu.import("resource:///modules/MigrationUtils.jsm");
+                Cu.import("resource://gre/modules/Services.jsm");
+
+                MigrationUtils.showMigrationWizard();
+
+                Services.obs.addObserver((subject, topic, data) => {
+                    worker.port.emit('migrationCompleted');
+                }, "Migration:Ended", false);
+            });
         }
     });
 
