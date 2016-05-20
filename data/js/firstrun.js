@@ -14,9 +14,9 @@
                  '<h2>I’ve used Firefox in the last 30 days?</h2>' +
                  '<div id="yup_nope" class="form-elements">' +
                  '<label for="yup">' +
-                 '<input type="radio" name="isNewUser" value="existing" id="yup" />yup</label>' +
+                 '<input type="radio" name="isOnBoarding" value="existing" id="yup" />yup</label>' +
                  '<label for="nope">' +
-                 '<input type="radio" name="isNewUser" value="new" id="nope" />nope</label>' +
+                 '<input type="radio" name="isOnBoarding" value="new" id="nope" />nope</label>' +
                  '</div>' +
                  '</header>' +
                  '<main class="what-matters hidden" aria-hidden="true">' +

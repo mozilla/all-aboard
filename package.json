@@ -11,8 +11,8 @@
   },
   "license": "MPL-2.0",
   "preferences": [{
-    "name": "isNewUser",
-    "title": "New user",
+    "name": "isOnBoarding",
+    "title": "User type",
     "type": "string",
     "hidden": true
   },
