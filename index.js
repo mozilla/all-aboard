@@ -63,9 +63,9 @@ function modifyFirstrun() {
         contentStyleFile: './css/firstrun.css',
         onAttach: function(worker) {
             worker.port.on('dialogSubmit', function(choices) {
-                preferences.isNewUser = choices.isNewUser;
+                preferences.isOnBoarding = choices.isOnBoarding;
                 preferences.whatMatters = choices.whatMatters;
-                prefService.set('distribution.id', 'mozilla86-' + choices.whatMatters + '-' + choices.isNewUser);
+                prefService.set('distribution.id', 'mozilla86-' + choices.whatMatters + '-' + choices.isOnBoarding);
             });
 
             // listens for a message from pageMod when a user clicks on the "No thanks" link on
@@ -110,9 +110,9 @@ function init() {
 
     // listen for ready(essentially DOMContentLoaded) events on tabs
     tabs.on('ready', function(tab) {
-        // Only show sidebars to new users.
-        // Also ensure the active tab has a url that is not a firstrun page
-        if (preferences.isNewUser === 'true' && !firstrunRegex.test(tabs.activeTab.url)) {
+        // Check whether the yup/nope question was answered,
+        // and ensure the active tab has a url that is not a firstrun page
+        if (preferences.isOnBoarding && !firstrunRegex.test(tabs.activeTab.url)) {
             // show the sidebar
             toggleSidebar();
         }
