@@ -84,3 +84,9 @@
 #all-aboard .hidden {
     display: none;
 }
+
+/* no thanks fx accounts link */
+.no-thanks {
+    margin-top: 20px;
+    font-size: 1rem;
+}
