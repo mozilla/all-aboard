@@ -31,6 +31,7 @@
                  '<button type="button" class="button hidden">Go!</button>' +
                  '</footer>' +
                  '</section>';
+    var noThanks = '<p class="no-thanks"><a href="about:home">No thanks</a></p>';
 
     // shows the default heading and the Fx accounts widget
     function showFxAccountWidget() {
@@ -38,6 +39,8 @@
         // show the default heading and the Fx accounts widget
         heading.style.display = 'block';
         mainContainer.style.display = 'block';
+        // inject no thanks link
+        contentContainer.insertAdjacentHTML('afterend', noThanks);
     }
 
     // hide the default heading and the Fx accounts widget
