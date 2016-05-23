@@ -28,7 +28,7 @@
                  '</main>' +
                  '<footer>' +
                  '<a href="about:home" id="dismiss">No thanks</a>' +
-                 '<button type="button" class="button">Go!</button>' +
+                 '<button type="button" class="button hidden">Go!</button>' +
                  '</footer>' +
                  '</section>';
 
@@ -64,6 +64,7 @@
         var button = addonContent.querySelector('button');
         var dismiss = addonContent.querySelector('#dismiss');
         var yupNope = addonContent.querySelector('#yup_nope');
+        var whatMatters = addonContent.querySelector('.what-matters');
 
         // listen for a click event on the 'No Thanks' link and send preference
         dismiss.addEventListener('click', function() {
@@ -72,9 +73,13 @@
 
         // when the user selects either yup or nope, show the second question
         yupNope.addEventListener('change', function() {
-            var whatMatters = addonContent.querySelector('.what-matters');
+            addonContent.classList.add('step2');
             whatMatters.classList.remove('hidden');
             whatMatters.setAttribute('aria-hidden', false);
+        });
+
+        whatMatters.addEventListener('change', function() {
+            button.classList.remove('hidden');
         });
 
         button.addEventListener('click', function() {

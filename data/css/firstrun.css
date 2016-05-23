@@ -19,8 +19,13 @@
 }
 
 #all-aboard header {
+    margin-bottom: 50px;
     padding: 20px 40px;
     text-align: left;
+}
+
+#all-aboard.step2 header {
+    margin-bottom: 0;
 }
 
 #all-aboard h2 {
@@ -62,18 +67,20 @@
 
 #all-aboard footer {
     background-color: #f4f4f4;
-    padding: 20px 40px 40px;
+    padding: 20px 40px;
     border-radius: 0 0 4px 4px;
-    text-align: left;
+    text-align: right;
 }
 
 #all-aboard footer button {
-    float: right;
-    border-radius: 0 0 4px 4px;
+    margin-left: 40px;
 }
 
 #all-aboard footer a:link,
-#all-aboard footer a:visited,
-#all-aboard footer button {
+#all-aboard footer a:visited {
     display: inline-block;
+}
+
+#all-aboard .hidden {
+    display: none;
 }
