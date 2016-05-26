@@ -6,45 +6,45 @@ const CONTENT_STORE = {
     utility: [
         {
             id: 'allaboard-utility-content1',
-            title: ' '
+            title: 'Search Like A Pro'
         },
         {
             id: 'allaboard-utility-content2',
-            title: ' '
+            title: 'Private Browsing'
         },
         {
             id: 'allaboard-utility-content3',
-            title: ' '
+            title: 'Customization'
         },
         {
             id: 'allaboard-utility-content4',
-            title: ' '
+            title: 'Find your stuff'
         },
         {
             id: 'allaboard-utility-content5',
-            title: ' '
+            title: 'TODO: Change me'
         }
     ],
     values: [
         {
             id: 'allaboard-values-content1',
-            title: ' '
+            title: 'Who is the organization behind Firefox?'
         },
         {
             id: 'allaboard-values-content2',
-            title: ' '
+            title: 'What makes Mozilla different?'
         },
         {
             id: 'allaboard-values-content3',
-            title: ' '
+            title: 'Privacy position'
         },
         {
             id: 'allaboard-values-content4',
-            title: ' '
+            title: 'Encryption and online security'
         },
         {
             id: 'allaboard-values-content5',
-            title: ' '
+            title: 'Mozilla community'
         }
     ]
 };
@@ -60,6 +60,7 @@ var simpleStorage = require('sdk/simple-storage').storage;
 var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('sdk/window/utils');
+var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 
 var allAboard;
 var content;
@@ -313,6 +314,28 @@ function showImportDataSidebar() {
 
     content.show();
     setSidebarSize();
+}
+
+/*
+ * Purpose: Open the search bar and enter a specified search term
+ * Parameters: searchTerm - a string of the term you would like to place in the searchbox
+ *
+ */
+function openSearch(searchTerm) {
+    let activeWindow = utils.getMostRecentBrowserWindow();
+    let barPromise = UITour.getTarget(activeWindow, 'search');
+    let iconPromise = UITour.getTarget(activeWindow, 'searchIcon');
+    
+    iconPromise.then(function(iconObj) {
+        let searchIcon = iconObj.node;
+        searchIcon.click();
+
+       barPromise.then(function(barObj) {
+            let searchbar = barObj.node;
+            searchbar.value = searchTerm;
+            searchbar.updateGoButtonVisibility();
+        });
+    }); 
 }
 
 /**
