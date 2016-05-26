@@ -62,11 +62,19 @@ var timers = require('sdk/timers');
 var utils = require('sdk/window/utils');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 
+// import our xmlhttprequest library
+const {XMLHttpRequest} = require("sdk/net/xhr");
+// import our UITour
+let UITour = Cu.import("resource:///modules/UITour.jsm").UITour;
+// import the lightweightthememanager
+let LightweightThemeManager = Cu.import("resource://gre/modules/LightweightThemeManager.jsm", {}).LightweightThemeManager;
+
 var allAboard;
 var content;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
 // initialize timer to -1 to indicate that there is no timer currently running.
 var timer = -1;
+var currentTheme = getTheme();
 
 /**
  * Stores a name and value pair using the add-on simple storage API
@@ -221,7 +229,8 @@ function showSidebar(sidebarProps, contentURL) {
  * Shows the next sidebar for the current track i.e. values or utility
  */
 function toggleSidebar() {
-
+    var activeWindow = utils.getMostRecentBrowserWindow();
+    var _sidebar = activeWindow.document.getElementById('sidebar');
     var contentStep;
     var sidebarProps;
     var track = simpleStorage.whatMatters;
@@ -270,6 +279,141 @@ function toggleSidebar() {
         // disposed of the sidebar instance. Safest is to get a new instance.
         showSidebar(sidebarProps, contentURL);
     }
+
+    // if the user's mouse enters the screen, check and see if it is outside of the sidebar in order to reset
+    activeWindow.addEventListener('mouseenter', function(event) {
+        // get the current bounds of the sidebar based upon window position onscreen
+        var sidebarXRight = parseInt(_sidebar.getBoundingClientRect().right) + activeWindow.screenX;
+        var sidebarXLeft = parseInt(_sidebar.getBoundingClientRect().left) + activeWindow.screenX;
+        var sidebarYTop = parseInt(_sidebar.getBoundingClientRect().top) + activeWindow.screenY;
+        var sidebarYBottom = parseInt(_sidebar.getBoundingClientRect().bottom) + activeWindow.screenY;
+
+        // if the mouse is outside of that window position
+        if((event.screenX >= sidebarXRight) || (event.screenX <= sidebarXLeft) || (event.screenY <= sidebarYTop) || (event.screenY >= sidebarYBottom))
+        {
+            // and if our browsers theme isn't the one we want (aka, we were hovering over a theme but no longer are)
+            if(currentTheme != LightweightThemeManager.currentTheme)
+            {
+                // if we have a current theme, set it to the theme we have
+                if(currentTheme)
+                    LightweightThemeManager.themeChanged(currentTheme);
+                // if not, set it to the default theme
+                else
+                    LightweightThemeManager.themeChanged(null);
+            }
+        }
+    });
+
+    // insurance so that, in the case of a theme sticking because of fast cursor movement, we are reseting the theme to what it is supposed to be
+    _sidebar.addEventListener('mouseenter', function() {
+        // if our browsers theme isn't the one we want (aka, we were hovering over a theme but no longer are)
+        if(currentTheme != LightweightThemeManager.currentTheme)
+        {
+            // if we have a current theme, set it to the theme we have
+            if(currentTheme)
+                LightweightThemeManager.themeChanged(currentTheme);
+            // if not, set it to the default theme
+            else
+                LightweightThemeManager.themeChanged(null);
+        }
+    });
+
+    // additional insurance that our theme is correct
+    _sidebar.addEventListener('mouseleave', function() {
+        // if our browsers theme isn't the one we want (aka, we were hovering over a theme but no longer are)
+        if(currentTheme != LightweightThemeManager.currentTheme)
+        {
+            // if we have a current theme, set it to the theme we have
+            if(currentTheme)
+                LightweightThemeManager.themeChanged(currentTheme);
+            // if not, set it to the default theme
+            else
+                LightweightThemeManager.themeChanged(null);
+        }
+    });
+}
+
+/**
+ * Purpose: Changes the theme based upon the value passed
+ * @param {int}     themeNum - a number passed based upon what theme button the user selected
+ * @param {boolean} isHover  - a boolean value which indicates whether the change is perminant (false) or
+ *                             if it is simply a user hovering for a theme preview (true)
+ */
+function changeTheme(themeNum, isHover) {     
+    // set the theme slug based upon the number theme passed              
+    if(themeNum == 1) 
+        var personaSlug = "fox-in-snow";
+    else if(themeNum == 2)
+        var personaSlug = "cozy-fox";
+    else if(themeNum == 3)
+        var personaSlug = "shiretoko-fox";
+    // if there is no number passed, set the theme to default and return
+    else
+    {
+        currentTheme = null;
+        LightweightThemeManager.themeChanged(null);
+        return;
+    }
+
+    // start a new XMLHTTP request with AMO to request the page where we can get the addon ID
+    var request = new XMLHttpRequest();
+    request.open("GET", "https://services.addons.mozilla.org/firefox/api/addon/" + personaSlug);
+    request.onload = function() {
+        try {
+            // get the addon ID from the page returned
+            var id = request.responseXML.documentElement.getAttribute("id");
+
+            // start a new XMLHTTP request to get the theme JSON from AMO
+            var personaRequest = new XMLHttpRequest();
+            personaRequest.open("GET", "https://versioncheck.addons.mozilla.org/en-US/themes/update-check/" + id);
+            personaRequest.onload = function() {
+                try {
+                    // get the theme JSON from the response
+                    var theme = JSON.parse(personaRequest.response);
+                    // set the theme
+                    LightweightThemeManager.themeChanged(theme);
+                    // if we want to permenantly change the theme (this isn't a theme preview when a user hovers), then set the theme
+                    if(isHover == false)
+                        currentTheme = theme;
+                }   
+                catch (e) {
+                    showErrorMessage("Invalid Persona");
+                }
+            }
+            personaRequest.send();
+        } 
+        catch (e) {
+            showErrorMessage("Invalid Persona");
+        }
+    }
+    request.send();
+}
+
+/**
+ * Purpose: Changes the theme back to the theme we have stored locally as our "current" theme
+ */
+function endHover()
+{
+     LightweightThemeManager.themeChanged(currentTheme);
+}
+
+/**
+ * Purpose: Gets the current theme set in the browser chrome
+ */
+function getTheme() {
+    var theme;
+
+        // try to get our current theme
+    try {
+        theme = LightweightThemeManager.currentTheme;
+    }
+        // if there isn't one, return the default of null
+    catch(e) {
+        return null;
+    }
+
+        // return our theme
+    return theme;
 }
 
 /**
