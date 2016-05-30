@@ -1,14 +1,62 @@
 'use strict';
 
+// 24 hours in milliseconds
+const ONE_DAY = 86400000;
+const CONTENT_STORE = {
+    utility: [
+        {
+            id: 'allaboard-utility-content1',
+            title: 'Search Like A Pro'
+        },
+        {
+            id: 'allaboard-utility-content2',
+            title: 'Private Browsing'
+        },
+        {
+            id: 'allaboard-utility-content3',
+            title: 'Customization'
+        },
+        {
+            id: 'allaboard-utility-content4',
+            title: 'Find your stuff'
+        },
+        {
+            id: 'allaboard-utility-content5',
+            title: 'TODO: Change me'
+        }
+    ],
+    values: [
+        {
+            id: 'allaboard-values-content1',
+            title: 'Who is the organization behind Firefox?'
+        },
+        {
+            id: 'allaboard-values-content2',
+            title: 'What makes Mozilla different?'
+        },
+        {
+            id: 'allaboard-values-content3',
+            title: 'Privacy position'
+        },
+        {
+            id: 'allaboard-values-content4',
+            title: 'Encryption and online security'
+        },
+        {
+            id: 'allaboard-values-content5',
+            title: 'Mozilla community'
+        }
+    ]
+};
+
 var buttons = require('sdk/ui/button/action');
-let { Cu } = require('chrome');
-var notifications = require("sdk/notifications");
+var { Cu } = require('chrome');
+var notifications = require('sdk/notifications');
 var pageMod = require('sdk/page-mod');
-var preferences = require("sdk/simple-prefs").prefs;
-var prefService = require("sdk/preferences/service");
+var prefService = require('sdk/preferences/service');
 var self = require('sdk/self');
 var sidebar = require('sdk/ui/sidebar');
-var simpleStorage = require('sdk/simple-storage');
+var simpleStorage = require('sdk/simple-storage').storage;
 var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('sdk/window/utils');
@@ -16,76 +64,288 @@ var utils = require('sdk/window/utils');
 var allAboard;
 var content;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
-var visible = false;
 
-function showBadge() {
+/**
+ * Stores a name and value pair using the add-on simple storage API
+ * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK/High-Level_APIs/simple-storage
+ * @param {string} name - The name of the storage item
+ * @param {string} value - The value to set
+ */
+function store(name, value) {
+    simpleStorage[name] = value;
+}
 
+/**
+ * Updates the distribution.id preference
+ * @param {string} value - The new value to append.
+ */
+function updatePref(value) {
+    let distributionId = prefService.get('distribution.id');
+    let newValue;
+
+    // if the distribution.id does not exist, prepend mozilla86
+    if (typeof distributionId === 'undefined') {
+        newValue = 'mozilla86' + value;
+    } else {
+        let leadingNumberRegex = /-\d/g;
+
+        // if the current distribution.id ends with a number
+        if (leadingNumberRegex.test(distributionId)) {
+            // strip of the current step before appending the new one.
+            newValue = distributionId.replace(leadingNumberRegex, value);
+        } else {
+            newValue = distributionId + value;
+        }
+    }
+
+    prefService.set('distribution.id', newValue);
+}
+
+/**
+ * Determines the number of hours that has elapsed since the last sidebar was shown.
+ * @param {string} sidebarLaunchTime - Time in milliseconds read from storage
+ * @returns The number of hours.
+ */
+function getTimeElapsed(sidebarLaunchTime) {
+    var lastSidebarLaunch = new Date(sidebarLaunchTime);
+    return Math.round((lastSidebarLaunch.getTime() - Date.now()) / (1000*60*60));
+}
+
+/**
+ * Starts a timer that will call the showBadge function after 24 hours, should the
+ * user not close the browser earlier.
+ */
+function startTimer() {
+    var timer = timers.setInterval(function() {
+        showBadge();
+        timers.clearInterval(timer);
+    }, ONE_DAY);
+}
+
+/**
+ * Utility function to set the desired size for the sidebar.
+ */
+function setSidebarSize() {
+    var activeWindow = utils.getMostRecentBrowserWindow();
+    var _sidebar = activeWindow.document.getElementById('sidebar');
+    _sidebar.style.width = '320px';
+    _sidebar.style.maxWidth = '320px';
+}
+
+/**
+ * Shows a transient desktop notification to the user when new sidebar
+ * content is available. If the notification is clicked, the new sidebar is shown
+ * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK/High-Level_APIs/notifications
+ */
+function showDesktopNotification() {
     notifications.notify({
         title: 'All Aboard',
         text: 'You have a new message',
         iconURL: './media/icons/icon-32.png',
         onClick: toggleSidebar
     });
+}
 
+/**
+ * Updates the add-on icon by adding a badge, inicating that there is new content.
+ * This will also cause the desktop notification to be shown.
+ */
+function showBadge() {
     allAboard.state('window', {
         badge: '1',
         badgeColor: '#5F9B0A'
     });
+    showDesktopNotification();
 }
 
-function toggleSidebar(state) {
+/**
+ * Shows the next sidebar for the current track i.e. values or utility
+ */
+function toggleSidebar() {
 
-    var activeWindow = utils.getMostRecentBrowserWindow();
-    var _sidebar = activeWindow.document.getElementById('sidebar');
-    _sidebar.style.width = '320px';
-    _sidebar.style.maxWidth = '320px';
+    var contentStep;
+    var sidebarProps;
+    var track = simpleStorage.whatMatters;
 
     // clears the badge
     allAboard.state('window', {
         badge: null
     });
 
-    if (visible) {
-        content.hide();
-    } else {
+    // Ensure that we have not already shown all content items before
+    // continuing to increment the step counter and show the next sidebar.
+    if (simpleStorage.step !== 5) {
+        // we get the properties before we increment the contentStep as arrays are 0 indexed.
+        sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
+        contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+
+        content = sidebar.Sidebar({
+            id: sidebarProps.id,
+            title: sidebarProps.title,
+            url: './tmpl/' + track + '/content' + contentStep + '.html',
+            onAttach: function(worker) {
+                // listenes to an intent message and calls relevant function
+                // based on intent.
+                worker.port.on('intent', function(intent) {
+                    switch(intent) {
+                        default:
+                            break;
+                    }
+                });
+            },
+            onDetach: function() {
+                content.dispose();
+            }
+        });
+
+        setSidebarSize();
         content.show();
+
+        // store the current step we are on
+        store('step', contentStep);
+        // update the distribution id
+        updatePref('-' + contentStep);
+
+        // do not call the timer once we have reached
+        // the final content item.
+        if (contentStep < 5) {
+            // update the lastSidebarLaunchTime to now
+            store('lastSidebarLaunchTime', Date.now());
+            startTimer();
+        }
     }
+}
+
+/**
+ * Shows the import data sidebar which provides the user with a button to
+ * start the migration wizard.
+ */
+function showImportDataSidebar() {
+
+    store('lastSidebarLaunchTime', Date.now());
+
+    content = sidebar.Sidebar({
+        id: 'allboard-importdata',
+        title: 'Make Firefox your own',
+        url: './tmpl/import_data.html',
+        onAttach: function(worker) {
+            worker.port.on('openMigrationTool', function() {
+                // Imports the MigrationUtils needed to show the migration tool, and imports
+                // Services, needed for the observer.
+                // Note: Need to use the `chrome` module to do this which, according to the
+                // docs should not really be done:
+                // https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs/chrome
+                Cu.import('resource:///modules/MigrationUtils.jsm');
+                Cu.import('resource://gre/modules/Services.jsm');
+
+                MigrationUtils.showMigrationWizard();
+
+                Services.obs.addObserver(function() {
+                    worker.port.emit('migrationCompleted');
+                }, 'Migration:Ended', false);
+            });
+        },
+        onDetach: function() {
+            content.dispose();
+        }
+    });
+
+    content.show();
+    setSidebarSize();
+    // starts the timer that will call showBadge
+    // and queue up the next sidebar to be shown
+    startTimer();
 }
 
 /**
  * Modifies the /firstrun page
  * http://regexr.com/3dbrq
+ * This will only have an effect if there is a DOM element with a class of .fxaccounts
  */
 function modifyFirstrun() {
-    pageMod.PageMod({
+
+    var firstRun = pageMod.PageMod({
         include: firstrunRegex,
         contentScriptFile: './js/firstrun.js',
         contentScriptWhen: 'ready',
         contentStyleFile: './css/firstrun.css',
         onAttach: function(worker) {
+            // because calling destroy does not unregister the injected script
+            // we do not want the script to be self executing. We therefore intentionally
+            // emit an event that tells the firstrun code to execute.
+            worker.port.emit('modify');
+
             worker.port.on('dialogSubmit', function(choices) {
-                preferences.isOnBoarding = choices.isOnBoarding;
-                preferences.whatMatters = choices.whatMatters;
-                prefService.set('distribution.id', 'mozilla86-' + choices.whatMatters + '-' + choices.isOnBoarding);
+                store('isOnBoarding', choices.isOnBoarding);
+                store('whatMatters', choices.whatMatters);
+                updatePref('-' + choices.whatMatters + '-' + choices.isOnBoarding);
             });
 
-            // listens for a message from pageMod when a user clicks on the "No thanks" link on
-            // the new user question on firstrun
+            // listens for a message from pageMod when a user clicks on "No thanks"
             worker.port.on('onboardingDismissed', function(dismissed) {
-                preferences.onboardingDismissed = dismissed;
+                // user has opted out of onboarding, destroy pageMod
+                firstRun.destroy();
+                store('onboardingDismissed', dismissed);
+            });
+
+            // The code below will be executed once(1 time) when the user navigates away from the
+            // firstrun page. This is when we need to show the import data sidebar, as well
+            // as register a listener that will call modifyFirstrun if the user has not answered
+            // the questions or dismissed onboarding
+            tabs.once('ready', function() {
+                // only register the tabs listener if both onboardingDismissed and
+                // isOnBoarding are undefined.
+                if (typeof simpleStorage.onboardingDismissed === 'undefined'
+                    && typeof simpleStorage.isOnBoarding === 'undefined') {
+                    tabs.on('ready', function() {
+                        // besides ensuring that we are on the firstrun page,
+                        // also ensure the above still holds true before calling modifyFirstrun
+                        if (firstrunRegex.test(tabs.activeTab.url)
+                            && simpleStorage.onboardingDismissed === 'undefined'
+                            && typeof simpleStorage.isOnBoarding === 'undefined') {
+                            modifyFirstrun();
+                        }
+                    });
+                }
+
+                // If the yup/nope question has been answered,
+                // and the user is on a page other than /firstrun, we can safely destroy the
+                // firstrun pageMod and show the import data sidebar.
+                if (typeof simpleStorage.isOnBoarding !== 'undefined'
+                    && !firstrunRegex.test(tabs.activeTab.url)) {
+                    // destroy the pageMod as it is no longer needed
+                    firstRun.destroy();
+                    // show the sidebar
+                    showImportDataSidebar();
+                }
             });
         }
     });
 }
 
+/**
+ * Initializes the add-on, adds the icon to the chrome and checks the time elapsed
+ * since a sidebar was last shown.
+ */
 function init() {
-    // if the add-on was loaded at startup and the installTime variable does not exist in
-    // simple storage, this is the first time Fx has been launched.
-    if ((self.loadReason === 'startup') && ('undefined' === simpleStorage.storage.installTime)) {
-        // store the firstrun time
-        simpleStorage.storage.installTime = Date.now();
+    // if init was called as part of a browser startup, we first need to check
+    // whether lastSidebarLaunchTime exists and if it does, check whether
+    // more than 24 hours have elsapsed since the last time a sidebar was shown.
+    if (self.loadReason === 'startup'
+        && simpleStorage.lastSidebarLaunchTime !== 'undefined'
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > 24) {
+        // if all of the above is true
+        toggleSidebar();
     }
 
+    if (self.loadReason === 'startup') {
+        // if the sidebar was open during Firefox shutdown, it will be shown be
+        // default when Firefox is started up again. The sidebar will not be
+        // sized appropriately though so, we call setSidebarSize
+        setSidebarSize();
+    }
+
+    // Create the sidebar button, this will add the add-on to the chrome
     allAboard = buttons.ActionButton({
         id: 'all-aboard',
         label: 'Mozilla Firefox Onboarding',
@@ -97,46 +357,13 @@ function init() {
         onClick: toggleSidebar
     });
 
-    content = sidebar.Sidebar({
-        id: 'allboard-content',
-        title: 'Make Firefox your own',
-        url: './tmpl/import_data.html',
-        onShow: function() {
-            visible = true;
-        },
-        onHide: function() {
-            visible = false;
-        },
-        onAttach: function(worker) {
-            worker.port.on('openMigrationTool', function() {
-                // Imports the MigrationUtils need to show the migration tool, and imports
-                // Services, needed for the observer.
-                // Note: Need to use the `chrome` module to do this which, according to the
-                // docs should not really be done:
-                // https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs/chrome
-                Cu.import("resource:///modules/MigrationUtils.jsm");
-                Cu.import("resource://gre/modules/Services.jsm");
-
-                MigrationUtils.showMigrationWizard();
-
-                Services.obs.addObserver((subject, topic, data) => {
-                    worker.port.emit('migrationCompleted');
-                }, "Migration:Ended", false);
-            });
-        }
-    });
-
-    // listen for ready(essentially DOMContentLoaded) events on tabs
-    tabs.on('ready', function(tab) {
-        // Check whether the yup/nope question was answered,
-        // and ensure the active tab has a url that is not a firstrun page
-        if (preferences.isOnBoarding && !firstrunRegex.test(tabs.activeTab.url)) {
-            // show the sidebar
-            toggleSidebar();
-        }
-    });
-
-    modifyFirstrun();
+    // do not call modifyFirstrun again if the user has either opted out or,
+    // already answered a questions(as both questions need to be answered, checking
+    // for the first one is enough).
+    if (typeof simpleStorage.onboardingDismissed === 'undefined'
+        && typeof simpleStorage.isOnBoarding === 'undefined') {
+        modifyFirstrun();
+    }
 }
 
 init();
