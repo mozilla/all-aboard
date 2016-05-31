@@ -26,7 +26,8 @@ body {
 
 .sidebar-content h1 {
     margin-top: 0;
-    font-size: 2rem;
+    padding-bottom: 40px;
+    font-size: 1.5rem;
 }
 
 .sidebar-content p {
@@ -38,24 +39,56 @@ body {
     padding: 20px;
 }
 
-/* form element styles */
-.multiple-choice {
+/* specific sidebar styling for the values track */
+.sidebar-content.values {
+    padding: 20px;
     text-align: left;
 }
 
-.multiple-choice label {
+.sidebar-content.values header {
+    margin-bottom: 40px;
+}
+
+.sidebar-content.values main,
+.sidebar-content.values footer {
+    padding: 0;
+}
+
+.sidebar-content.values header img {
     display: block;
-    margin-bottom: 15px;
-    line-height: 1.5;
+    margin: 0 auto;
 }
 
-.multiple-choice input[type="radio"] {
-    margin-right: 10px;
+/* options list styles */
+.options {
+    margin: 0 0 40px;
+    padding: 0;
+    list-style: none;
 }
 
-.multiple-choice button {
-    margin-top: 40px;
-    width: 100%;
+.options dt {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 4px 0 0 5px;
+    border: 1px solid #979797;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: .75rem;
+    vertical-align: top;
+}
+
+.options dt.answer {
+    background-color: #7ED321;
+    color: #333;
+    border-color: #7ED321;
+    font-weight: bold;
+}
+
+.options dd {
+    display: inline-block;
+    margin: 0 0 25px;
+    max-width: 250px;
 }
 
 /* import data sidebar */
@@ -101,20 +134,24 @@ body {
     margin-top: 20px;
 }
 
-/* badges */
-.badges {
+/* tokens */
+.tokens {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.badges li {
+.tokens li {
     display: inline-block;
     margin-right: 10px;
-    border: 2px dotted #e0e0e0;
+    border: 2px dotted #55565A;
     border-radius: 50%;
     width: 40px;
     height: 40px;
+}
+
+.tokens li.active {
+    border: 0;
 }
 
 /* buttons */
@@ -123,11 +160,13 @@ body {
 	display: inline-block;
     background-color: #0095dd;
 	color: #fff;
+    margin-bottom: 50px;
 	padding: 10px 36px;
     border: 2px solid #0092cc;
 	border-radius: 4px;
 	font-size: 1.25rem;
 	text-align: center;
+    width: 100%;
 	cursor: pointer;
 	transition: background-color .1s ease-in-out;
 }
