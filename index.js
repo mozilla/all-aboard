@@ -184,7 +184,7 @@ function toggleSidebar() {
             title: sidebarProps.title,
             url: './tmpl/' + track + '/content' + contentStep + '.html',
             onAttach: function(worker) {
-                // listenes to an intent message and calls relevant function
+                // listens to an intent message and calls the relevant function
                 // based on intent.
                 worker.port.on('intent', function(intent) {
                     switch(intent) {
