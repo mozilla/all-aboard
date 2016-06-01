@@ -150,8 +150,16 @@ body {
     height: 40px;
 }
 
+.tokens li img {
+    display: none;
+}
+
 .tokens li.active {
     border: 0;
+}
+
+.tokens li.active img {
+    display: inline-block;
 }
 
 /* buttons */
