@@ -6,45 +6,45 @@ const CONTENT_STORE = {
     utility: [
         {
             id: 'allaboard-utility-content1',
-            title: 'Search Like A Pro'
+            title: ' '
         },
         {
             id: 'allaboard-utility-content2',
-            title: 'Private Browsing'
+            title: ' '
         },
         {
             id: 'allaboard-utility-content3',
-            title: 'Customization'
+            title: ' '
         },
         {
             id: 'allaboard-utility-content4',
-            title: 'Find your stuff'
+            title: ' '
         },
         {
             id: 'allaboard-utility-content5',
-            title: 'TODO: Change me'
+            title: ' '
         }
     ],
     values: [
         {
             id: 'allaboard-values-content1',
-            title: 'Who is the organization behind Firefox?'
+            title: ' '
         },
         {
             id: 'allaboard-values-content2',
-            title: 'What makes Mozilla different?'
+            title: ' '
         },
         {
             id: 'allaboard-values-content3',
-            title: 'Privacy position'
+            title: ' '
         },
         {
             id: 'allaboard-values-content4',
-            title: 'Encryption and online security'
+            title: ' '
         },
         {
             id: 'allaboard-values-content5',
-            title: 'Mozilla community'
+            title: ' '
         }
     ]
 };
