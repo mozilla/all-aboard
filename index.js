@@ -64,6 +64,8 @@ var utils = require('sdk/window/utils');
 var allAboard;
 var content;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
+// initialize timer to -1 to indicate that there is no timer currently running.
+var timer = -1;
 
 /**
  * Stores a name and value pair using the add-on simple storage API
@@ -116,10 +118,11 @@ function getTimeElapsed(sidebarLaunchTime) {
  * user not close the browser earlier.
  */
 function startTimer() {
-    var timer = timers.setInterval(function() {
+    timer = timers.setInterval(function() {
         showBadge();
         timers.clearInterval(timer);
-    }, ONE_DAY);
+        timer = -1;
+    }, 4000);
 }
 
 /**
@@ -159,6 +162,61 @@ function showBadge() {
 }
 
 /**
+ * Manages tokens and emits a message to the sidebar with an array
+ * of tokens the user has received
+ * @param {int} step - the step to assign a token for
+ * @param {object} worker - used to emit the tokens array to the sidebar
+ */
+function assignTokens(step, worker) {
+    let tokens = simpleStorage.tokens || [];
+    let token = 'token' + step;
+
+    // if the token is not currently in the array, add it
+    if (tokens.indexOf(token) === -1) {
+        tokens.push(token);
+        // store the new token
+        store('tokens', tokens);
+    }
+    // emit the array of tokens to the sidebar
+    worker.port.emit('tokens', tokens);
+}
+
+/**
+ * Shows a sidebar for the current content step.
+ * @param {object} sidebarProps - properties for this sidebar instance
+ * @param {string} contentURL - url pointing to local content
+ */
+function showSidebar(sidebarProps, contentURL) {
+    content = sidebar.Sidebar({
+        id: sidebarProps.id,
+        title: sidebarProps.title,
+        url: contentURL,
+        onAttach: function(worker) {
+            // listens to an intent message and calls the relevant function
+            // based on intent.
+            worker.port.on('intent', function(intent) {
+                switch(intent) {
+                    default:
+                        break;
+                }
+            });
+            // store the current step we are on
+            store('step', sidebarProps.step);
+            // update the distribution id with the current step
+            updatePref('-' + sidebarProps.step);
+            // assign new token and notify sidebar
+            assignTokens(sidebarProps.step, worker);
+        },
+        onDetach: function() {
+            content.dispose();
+        }
+    });
+
+    content.show();
+    setSidebarSize();
+}
+
+/**
  * Shows the next sidebar for the current track i.e. values or utility
  */
 function toggleSidebar() {
@@ -166,53 +224,50 @@ function toggleSidebar() {
     var contentStep;
     var sidebarProps;
     var track = simpleStorage.whatMatters;
+    var contentURL;
 
     // clears the badge
     allAboard.state('window', {
         badge: null
     });
 
-    // Ensure that we have not already shown all content items before
-    // continuing to increment the step counter and show the next sidebar.
-    if (simpleStorage.step !== 5) {
+    // After the import data sidebar has been shown, 24 hours needs to elapse before
+    // we start showing the content sidebars. If the add-on icon is clicked before this,
+    // we need to simply show the import data sidebar again.
+    if (typeof simpleStorage.step === 'undefined'
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < 24) {
+        showImportDataSidebar();
+        return;
+    }
+
+    // Ensure that we have not already shown all content items, and that at least 24
+    // hours have elapsed since we've shown the last sidebar before continuing to
+    // increment the step counter and show the next sidebar.
+    if (simpleStorage.step !== 5 && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= 24) {
         // we get the properties before we increment the contentStep as arrays are 0 indexed.
         sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
         contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+        contentURL = './tmpl/' + track + '/content' + contentStep + '.html';
 
-        content = sidebar.Sidebar({
-            id: sidebarProps.id,
-            title: sidebarProps.title,
-            url: './tmpl/' + track + '/content' + contentStep + '.html',
-            onAttach: function(worker) {
-                // listens to an intent message and calls the relevant function
-                // based on intent.
-                worker.port.on('intent', function(intent) {
-                    switch(intent) {
-                        default:
-                            break;
-                    }
-                });
-            },
-            onDetach: function() {
-                content.dispose();
-            }
-        });
-
-        setSidebarSize();
-        content.show();
-
-        // store the current step we are on
-        store('step', contentStep);
-        // update the distribution id
-        updatePref('-' + contentStep);
+        // add contentStep to sidebarProps so we do not have to pass another parameter
+        sidebarProps.step = contentStep;
+        showSidebar(sidebarProps, contentURL);
 
         // do not call the timer once we have reached
         // the final content item.
         if (contentStep < 5) {
             // update the lastSidebarLaunchTime to now
             store('lastSidebarLaunchTime', Date.now());
+            // this code will not be called again prior to at least 24 hours
+            // having elapsed, so it safe to simply call startTimer here.
             startTimer();
         }
+    } else {
+        // 24 hours has not elapsed since the last content sidebar has been shown so,
+        // simply show the current sidebar again. We cannot just simply call .show(),
+        // because either the sidebar or browser might have been closed which would have
+        // disposed of the sidebar instance. Safest is to get a new instance.
+        showSidebar(sidebarProps, contentURL);
     }
 }
 
@@ -247,14 +302,17 @@ function showImportDataSidebar() {
         },
         onDetach: function() {
             content.dispose();
+            // starts the timer that will call showBadge and queue up the next
+            // sidebar to be shown. Only start the timer if there is not one
+            // already scheduled.
+            if (timer === -1) {
+                startTimer();
+            }
         }
     });
 
     content.show();
     setSidebarSize();
-    // starts the timer that will call showBadge
-    // and queue up the next sidebar to be shown
-    startTimer();
 }
 
 /**
