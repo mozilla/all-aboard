@@ -1,12 +1,17 @@
 (function() {
     // retrieve our default text from the sidebar
     var defaultText = document.querySelector('#default');
-    // retrieve token list item from the sidebar
-    var token3 = document.querySelector('#token3');
     var timeout;
     // set template and hoveremit names
     var templateNames = ['template1','template2','template3'];
     var hoverEmit = ['hoverTemplate1','hoverTemplate2','hoverTemplate3'];
+
+    addon.port.on('tokens', function(tokens) {
+        for (var i = 0, l = tokens.length; i < l; i++) {
+            // set the token container to active and shows the token
+            document.querySelector('#' + tokens[i]).classList.add('active');
+        }
+    });
 
     // add listeners to all of our buttons for hovering and clicking
     for(var x=0; x<templateNames.length; x++)
@@ -17,7 +22,6 @@
         // rescope our port emit text locally to access in the eventlistener
         (function(name) {
             node.addEventListener('click', function() {
-                token3.style.backgroundImage = "url('/data/media/utility/content3-token.svg')";
 
                 // notify addon that we've clicked the button
                 addon.port.emit('intent', name);
@@ -51,9 +55,7 @@
     }
 
     // add click listener on default theme text option
-    defaultText.addEventListener('click', function() {
-        token3.style.backgroundImage = "url('/data/media/utility/content3-token.svg')";
-        
+    defaultText.addEventListener('click', function() {        
         // notify addon that we've clicked the button
         addon.port.emit('intent', 'defaultTemplate');
     });
