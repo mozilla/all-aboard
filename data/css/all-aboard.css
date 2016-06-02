@@ -17,6 +17,35 @@ body {
     font-size: 16px;
 }
 
+header {
+    padding-top: 20px;
+}
+
+.title, .intro {
+    text-align: center;
+}
+
+.button-container {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.search-Providers {
+    font-size: 24px;
+    color: #C2C2C2;
+    width: 300px;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    cursor: default;
+}
+
+.search-Providers img {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+}
+
 .sidebar-content {
     background-color: #f6f6f6;
     width: 320px;
@@ -89,6 +118,12 @@ body {
     display: inline-block;
     margin: 0 0 25px;
     max-width: 250px;
+}
+
+.multiple-choice button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
 }
 
 /* import data sidebar */
@@ -172,7 +207,7 @@ body {
 	padding: 10px 36px;
     border: 2px solid #0092cc;
 	border-radius: 4px;
-	font-size: 1.25rem;
+	font-size: 1rem;
 	text-align: center;
     width: 100%;
 	cursor: pointer;

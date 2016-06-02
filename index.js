@@ -60,6 +60,7 @@ var simpleStorage = require('sdk/simple-storage').storage;
 var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('sdk/window/utils');
+var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 
 var allAboard;
 var content;
@@ -313,6 +314,28 @@ function showImportDataSidebar() {
 
     content.show();
     setSidebarSize();
+}
+
+/*
+ * Purpose: Open the search bar and enter a specified search term
+ * Parameters: searchTerm - a string of the term you would like to place in the searchbox
+ *
+ */
+function openSearch(searchTerm) {
+    let activeWindow = utils.getMostRecentBrowserWindow();
+    let barPromise = UITour.getTarget(activeWindow, 'search');
+    let iconPromise = UITour.getTarget(activeWindow, 'searchIcon');
+    
+    iconPromise.then(function(iconObj) {
+        let searchIcon = iconObj.node;
+        searchIcon.click();
+
+       barPromise.then(function(barObj) {
+            let searchbar = barObj.node;
+            searchbar.value = searchTerm;
+            searchbar.updateGoButtonVisibility();
+        });
+    }); 
 }
 
 /**
