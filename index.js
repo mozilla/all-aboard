@@ -480,6 +480,20 @@ function openSearch(searchTerm) {
             searchbar.updateGoButtonVisibility();
         });
     }); 
+    // starts the timer that will call showBadge
+    // and queue up the next sidebar to be shown
+    startTimer();
+
+/*
+ * Purpose: Open highlight a given item in the browser chrome
+ * 
+ */
+function highLight(item) {
+    var activeWindow = utils.getMostRecentBrowserWindow();
+        
+    UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
+        UITour.showHighlight(activeWindow, chosenItem, "wobble");
+    });
 }
 
 /**
