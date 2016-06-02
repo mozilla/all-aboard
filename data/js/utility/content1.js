@@ -1,14 +1,17 @@
 (function() {
     // retrieve button from the page
     var searchButton = document.querySelector('#search_button');
-    var token1 = document.querySelector('#token1');
     
+    // add our tokens to the sidebar
+    addon.port.on('tokens', function(tokens) {
+        for (var i = 0, l = tokens.length; i < l; i++) {
+            // set the token container to active and shows the token
+            document.querySelector('#' + tokens[i]).classList.add('active');
+        }
+    });
+
     // listen for a click on the search button
-    searchButton.addEventListener('click', function() {
-        // Leaving the below line as a comment for previewing purposes until
-        // the functionality is completed without it needed
-        token1.style.backgroundImage = "url('/data/media/tokens/utility/token1.svg')";
-        
+    searchButton.addEventListener('click', function() {        
         // notify addon that we've clicked the button
         addon.port.emit('intent', 'search');
     });

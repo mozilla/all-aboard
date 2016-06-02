@@ -6,45 +6,45 @@ const CONTENT_STORE = {
     utility: [
         {
             id: 'allaboard-utility-content1',
-            title: ' '
+            title: 'Search Like A Pro'
         },
         {
             id: 'allaboard-utility-content2',
-            title: ' '
+            title: 'Private Browsing'
         },
         {
             id: 'allaboard-utility-content3',
-            title: ' '
+            title: 'Customization'
         },
         {
             id: 'allaboard-utility-content4',
-            title: ' '
+            title: 'Find your stuff'
         },
         {
             id: 'allaboard-utility-content5',
-            title: ' '
+            title: 'TODO: Change me'
         }
     ],
     values: [
         {
             id: 'allaboard-values-content1',
-            title: ' '
+            title: 'Who is the organization behind Firefox?'
         },
         {
             id: 'allaboard-values-content2',
-            title: ' '
+            title: 'What makes Mozilla different?'
         },
         {
             id: 'allaboard-values-content3',
-            title: ' '
+            title: 'Privacy position'
         },
         {
             id: 'allaboard-values-content4',
-            title: ' '
+            title: 'Encryption and online security'
         },
         {
             id: 'allaboard-values-content5',
-            title: ' '
+            title: 'Mozilla community'
         }
     ]
 };
@@ -63,11 +63,9 @@ var utils = require('sdk/window/utils');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 
 // import our xmlhttprequest library
-const {XMLHttpRequest} = require("sdk/net/xhr");
-// import our UITour
-let UITour = Cu.import("resource:///modules/UITour.jsm").UITour;
+const {XMLHttpRequest} = require('sdk/net/xhr');
 // import the lightweightthememanager
-let LightweightThemeManager = Cu.import("resource://gre/modules/LightweightThemeManager.jsm", {}).LightweightThemeManager;
+var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightThemeManager.jsm', {}).LightweightThemeManager;
 
 var allAboard;
 var content;
@@ -205,6 +203,9 @@ function showSidebar(sidebarProps, contentURL) {
             // based on intent.
             worker.port.on('intent', function(intent) {
                 switch(intent) {
+                    case 'search':
+                        openSearch();
+                        break;
                     default:
                         break;
                 }
@@ -224,6 +225,26 @@ function showSidebar(sidebarProps, contentURL) {
     content.show();
     setSidebarSize();
 }
+
+/**
+ * For testing purposes only. Functions as a sidestep to toggleSidebar() when you would like
+ * to test a specific sidebar
+ */
+ function testSidebar(contentStep, track) {
+    var activeWindow = utils.getMostRecentBrowserWindow();
+    var _sidebar = activeWindow.document.getElementById('sidebar');
+    var sidebarProps;
+    var contentURL;
+
+    // we get the properties before we increment the contentStep as arrays are 0 indexed.
+    sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
+    contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+    contentURL = './tmpl/' + track + '/content' + contentStep + '.html';
+
+    // add contentStep to sidebarProps so we do not have to pass another parameter
+    sidebarProps.step = contentStep;
+    showSidebar(sidebarProps, contentURL);
+ }
 
 /**
  * Shows the next sidebar for the current track i.e. values or utility
@@ -461,11 +482,10 @@ function showImportDataSidebar() {
 }
 
 /*
- * Purpose: Open the search bar and enter a specified search term
- * Parameters: searchTerm - a string of the term you would like to place in the searchbox
+ * Purpose: Open the search bar
  *
  */
-function openSearch(searchTerm) {
+function openSearch() {
     let activeWindow = utils.getMostRecentBrowserWindow();
     let barPromise = UITour.getTarget(activeWindow, 'search');
     let iconPromise = UITour.getTarget(activeWindow, 'searchIcon');
@@ -476,13 +496,13 @@ function openSearch(searchTerm) {
 
        barPromise.then(function(barObj) {
             let searchbar = barObj.node;
-            searchbar.value = searchTerm;
             searchbar.updateGoButtonVisibility();
         });
     }); 
     // starts the timer that will call showBadge
     // and queue up the next sidebar to be shown
     startTimer();
+}
 
 /*
  * Purpose: Open highlight a given item in the browser chrome
