@@ -214,6 +214,10 @@ header {
 	transition: background-color .1s ease-in-out;
 }
 
+.template-button {
+    padding: 10px 20px;
+}
+
 .button:hover,
 .button:focus {
     background-color: #33aae4;
@@ -223,6 +227,12 @@ header {
 .button:active {
     position: relative;
     top: 1px;
+}
+
+.defaultLink {
+   color: #0095dd; 
+   text-decoration: underline; 
+   cursor: pointer; 
 }
 
 /* utility */
