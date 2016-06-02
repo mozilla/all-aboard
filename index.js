@@ -339,6 +339,23 @@ function openSearch(searchTerm) {
 }
 
 /**
+ * Purpose: Highlight a given item in the browser chrome
+ * @param {string} item - String of item you are attempting to highlight
+ */
+function highLight(item) {
+    var activeWindow = utils.getMostRecentBrowserWindow();
+        
+    UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
+        try {
+            UITour.showHighlight(activeWindow, chosenItem, "wobble");
+        }
+        catch(e) {
+            console.log("Could not highlight element. Check if UITour.jsm supports highlighting of element passed.");
+        }
+    });
+}
+
+/**
  * Modifies the /firstrun page
  * http://regexr.com/3dbrq
  * This will only have an effect if there is a DOM element with a class of .fxaccounts
