@@ -1,15 +1,17 @@
 (function() {
     var answer = document.querySelector('#answer');
     var button = document.querySelector('button');
-    var token = document.querySelector('#token3');
+
+    addon.port.on('tokens', function(tokens) {
+        for (var i = 0, l = tokens.length; i < l; i++) {
+            // set the token container to active and shows the token
+            document.querySelector('#' + tokens[i]).classList.add('active');
+        }
+    });
 
     button.addEventListener('click', function() {
         // highlight the answer
         answer.classList.add('answer');
-        // show the token
-        token.style.backgroundImage = "url('/data/media/tokens/values/token3.svg')";
-        // change dimensions for now until we can resize the svg correctly
-        token.style.backgroundSize = "35px 38px";
     });
 
 })();
