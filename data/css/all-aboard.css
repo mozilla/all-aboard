@@ -21,31 +21,6 @@ header {
     padding-top: 20px;
 }
 
-.title, .intro {
-    text-align: center;
-}
-
-.button-container {
-    width: 70%;
-    margin: 0 auto;
-}
-
-.search-Providers {
-    font-size: 24px;
-    color: #C2C2C2;
-    width: 300px;
-    display: inline-block;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    cursor: default;
-}
-
-.search-Providers img {
-    margin-right: 8px;
-    width: 18px;
-    height: 18px;
-}
-
 .sidebar-content {
     background-color: #f6f6f6;
     width: 320px;
@@ -59,13 +34,23 @@ header {
     font-size: 1.5rem;
 }
 
+.sidebar-content.utility h1 {
+    padding-bottom: 0;
+}
+
 .sidebar-content p {
     line-height: 1.5;
 }
 
 .sidebar-content main,
 .sidebar-content footer {
-    padding: 20px;
+    padding: 40px;
+}
+
+/* styleing for search providers image */
+.search-providers {
+    display: block;
+    margin: 20px 0;
 }
 
 /* specific sidebar styling for the values track */
@@ -80,7 +65,15 @@ header {
 
 .sidebar-content.values main,
 .sidebar-content.values footer {
-    padding: 0;
+    padding: 20px;
+}
+
+.sidebar-content.values main {
+    padding-bottom: 40px;
+}
+
+.sidebar-content.values footer {
+    padding-top: 40px;
 }
 
 .sidebar-content.values header img {
@@ -117,13 +110,7 @@ header {
 .options dd {
     display: inline-block;
     margin: 0 0 25px;
-    max-width: 250px;
-}
-
-.multiple-choice button {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
+    max-width: 210px;
 }
 
 /* import data sidebar */
@@ -173,16 +160,21 @@ header {
 .tokens {
     margin: 0;
     padding: 0;
+    width: 240px;
     list-style: none;
 }
 
 .tokens li {
     display: inline-block;
-    margin-right: 10px;
+    margin-left: 3px;
     border: 2px dotted #55565A;
     border-radius: 50%;
     width: 40px;
     height: 40px;
+}
+
+.tokens li:first-child {
+    margin: 0;
 }
 
 .tokens li img {
@@ -203,7 +195,6 @@ header {
 	display: inline-block;
     background-color: #0095dd;
 	color: #fff;
-    margin-bottom: 50px;
 	padding: 10px 36px;
     border: 2px solid #0092cc;
 	border-radius: 4px;
@@ -214,8 +205,18 @@ header {
 	transition: background-color .1s ease-in-out;
 }
 
-.template-button {
-    padding: 10px 20px;
+.reset {
+    background: none;
+    color: #333;
+    border: 0;
+}
+
+.button-container button {
+    margin-bottom: 20px;
+}
+
+.button-container button:last-child {
+    margin: 0;
 }
 
 .button:hover,
@@ -224,15 +225,15 @@ header {
     border-color: #0092cc;
 }
 
+.reset:hover,
+.reset:focus {
+    background: none;
+    border: 0;
+}
+
 .button:active {
     position: relative;
     top: 1px;
-}
-
-.defaultLink {
-   color: #0095dd; 
-   text-decoration: underline; 
-   cursor: pointer; 
 }
 
 /* utility */

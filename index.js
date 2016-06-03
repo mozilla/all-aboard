@@ -6,45 +6,45 @@ const CONTENT_STORE = {
     utility: [
         {
             id: 'allaboard-utility-content1',
-            title: ' '
+            title: 'Searching'
         },
         {
             id: 'allaboard-utility-content2',
-            title: ' '
+            title: 'Private Browsing'
         },
         {
             id: 'allaboard-utility-content3',
-            title: ' '
+            title: 'Customizing'
         },
         {
             id: 'allaboard-utility-content4',
-            title: ' '
+            title: 'History and Bookmarks'
         },
         {
             id: 'allaboard-utility-content5',
-            title: ' '
+            title: 'Mobile'
         }
     ],
     values: [
         {
             id: 'allaboard-values-content1',
-            title: ' '
+            title: 'Organization'
         },
         {
             id: 'allaboard-values-content2',
-            title: ' '
+            title: 'Different'
         },
         {
             id: 'allaboard-values-content3',
-            title: ' '
+            title: 'Privacy'
         },
         {
             id: 'allaboard-values-content4',
-            title: ' '
+            title: 'Security'
         },
         {
             id: 'allaboard-values-content5',
-            title: ' '
+            title: 'Community'
         }
     ]
 };
@@ -339,9 +339,9 @@ function toggleSidebar() {
  * @param {boolean} isHover  - a boolean value which indicates whether the change is perminant (false) or
  *                             if it is simply a user hovering for a theme preview (true)
  */
-function changeTheme(themeNum, isHover) {     
-    // set the theme slug based upon the number theme passed              
-    if(themeNum == 1) 
+function changeTheme(themeNum, isHover) {
+    // set the theme slug based upon the number theme passed
+    if(themeNum == 1)
         var personaSlug = "fox-in-snow";
     else if(themeNum == 2)
         var personaSlug = "cozy-fox";
@@ -375,13 +375,13 @@ function changeTheme(themeNum, isHover) {
                     // if we want to permenantly change the theme (this isn't a theme preview when a user hovers), then set the theme
                     if(isHover == false)
                         currentTheme = theme;
-                }   
+                }
                 catch (e) {
                     showErrorMessage("Invalid Persona");
                 }
             }
             personaRequest.send();
-        } 
+        }
         catch (e) {
             showErrorMessage("Invalid Persona");
         }
@@ -458,59 +458,6 @@ function showImportDataSidebar() {
 
     content.show();
     setSidebarSize();
-}
-
-/*
- * Purpose: Open the search bar and enter a specified search term
- * Parameters: searchTerm - a string of the term you would like to place in the searchbox
- *
- */
-function openSearch(searchTerm) {
-    let activeWindow = utils.getMostRecentBrowserWindow();
-    let barPromise = UITour.getTarget(activeWindow, 'search');
-    let iconPromise = UITour.getTarget(activeWindow, 'searchIcon');
-    
-    iconPromise.then(function(iconObj) {
-        let searchIcon = iconObj.node;
-        searchIcon.click();
-
-       barPromise.then(function(barObj) {
-            let searchbar = barObj.node;
-            searchbar.value = searchTerm;
-            searchbar.updateGoButtonVisibility();
-        });
-    }); 
-    // starts the timer that will call showBadge
-    // and queue up the next sidebar to be shown
-    startTimer();
-
-/*
- * Purpose: Open highlight a given item in the browser chrome
- * 
- */
-function highLight(item) {
-    var activeWindow = utils.getMostRecentBrowserWindow();
-        
-    UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
-        UITour.showHighlight(activeWindow, chosenItem, "wobble");
-    });
-}
-
-/**
- * Purpose: Highlight a given item in the browser chrome
- * @param {string} item - String of item you are attempting to highlight
- */
-function highLight(item) {
-    var activeWindow = utils.getMostRecentBrowserWindow();
-        
-    UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
-        try {
-            UITour.showHighlight(activeWindow, chosenItem, "wobble");
-        }
-        catch(e) {
-            console.log("Could not highlight element. Check if UITour.jsm supports highlighting of element passed.");
-        }
-    });
 }
 
 /**
