@@ -50,7 +50,6 @@ const CONTENT_STORE = {
 };
 
 var buttons = require('sdk/ui/button/action');
-var { Cu } = require('chrome');
 var notifications = require('sdk/notifications');
 var pageMod = require('sdk/page-mod');
 var prefService = require('sdk/preferences/service');
@@ -60,36 +59,32 @@ var simpleStorage = require('sdk/simple-storage').storage;
 var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('sdk/window/utils');
-var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 
-// import our xmlhttprequest library
-const {XMLHttpRequest} = require("sdk/net/xhr");
-// import our UITour
-let UITour = Cu.import("resource:///modules/UITour.jsm").UITour;
-// import the lightweightthememanager
-let LightweightThemeManager = Cu.import("resource://gre/modules/LightweightThemeManager.jsm", {}).LightweightThemeManager;
+var { Cu } = require('chrome');
+var { XMLHttpRequest } = require('sdk/net/xhr');
+var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
+var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightThemeManager.jsm').LightweightThemeManager;
 
 var allAboard;
 var content;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
 // initialize timer to -1 to indicate that there is no timer currently running.
 var timer = -1;
-var currentTheme = getTheme();
 
 /**
- * Stores a name and value pair using the add-on simple storage API
- * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK/High-Level_APIs/simple-storage
- * @param {string} name - The name of the storage item
- * @param {string} value - The value to set
- */
+* Stores a name and value pair using the add-on simple storage API
+* https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK/High-Level_APIs/simple-storage
+* @param {string} name - The name of the storage item
+* @param {string} value - The value to set
+*/
 function store(name, value) {
     simpleStorage[name] = value;
 }
 
 /**
- * Updates the distribution.id preference
- * @param {string} value - The new value to append.
- */
+* Updates the distribution.id preference
+* @param {string} value - The new value to append.
+*/
 function updatePref(value) {
     let distributionId = prefService.get('distribution.id');
     let newValue;
@@ -113,30 +108,30 @@ function updatePref(value) {
 }
 
 /**
- * Determines the number of hours that has elapsed since the last sidebar was shown.
- * @param {string} sidebarLaunchTime - Time in milliseconds read from storage
- * @returns The number of hours.
- */
+* Determines the number of hours that has elapsed since the last sidebar was shown.
+* @param {string} sidebarLaunchTime - Time in milliseconds read from storage
+* @returns The number of hours.
+*/
 function getTimeElapsed(sidebarLaunchTime) {
     var lastSidebarLaunch = new Date(sidebarLaunchTime);
     return Math.round((lastSidebarLaunch.getTime() - Date.now()) / (1000*60*60));
 }
 
 /**
- * Starts a timer that will call the showBadge function after 24 hours, should the
- * user not close the browser earlier.
- */
+* Starts a timer that will call the showBadge function after 24 hours, should the
+* user not close the browser earlier.
+*/
 function startTimer() {
     timer = timers.setInterval(function() {
         showBadge();
         timers.clearInterval(timer);
         timer = -1;
-    }, 4000);
+    }, ONE_DAY);
 }
 
 /**
- * Utility function to set the desired size for the sidebar.
- */
+* Utility function to set the desired size for the sidebar.
+*/
 function setSidebarSize() {
     var activeWindow = utils.getMostRecentBrowserWindow();
     var _sidebar = activeWindow.document.getElementById('sidebar');
@@ -145,10 +140,10 @@ function setSidebarSize() {
 }
 
 /**
- * Shows a transient desktop notification to the user when new sidebar
- * content is available. If the notification is clicked, the new sidebar is shown
- * @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK/High-Level_APIs/notifications
- */
+* Shows a transient desktop notification to the user when new sidebar
+* content is available. If the notification is clicked, the new sidebar is shown
+* @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK/High-Level_APIs/notifications
+*/
 function showDesktopNotification() {
     notifications.notify({
         title: 'All Aboard',
@@ -159,9 +154,9 @@ function showDesktopNotification() {
 }
 
 /**
- * Updates the add-on icon by adding a badge, inicating that there is new content.
- * This will also cause the desktop notification to be shown.
- */
+* Updates the add-on icon by adding a badge, inicating that there is new content.
+* This will also cause the desktop notification to be shown.
+*/
 function showBadge() {
     allAboard.state('window', {
         badge: '1',
@@ -171,11 +166,11 @@ function showBadge() {
 }
 
 /**
- * Manages tokens and emits a message to the sidebar with an array
- * of tokens the user has received
- * @param {int} step - the step to assign a token for
- * @param {object} worker - used to emit the tokens array to the sidebar
- */
+* Manages tokens and emits a message to the sidebar with an array
+* of tokens the user has received
+* @param {int} step - the step to assign a token for
+* @param {object} worker - used to emit the tokens array to the sidebar
+*/
 function assignTokens(step, worker) {
     let tokens = simpleStorage.tokens || [];
     let token = 'token' + step;
@@ -191,10 +186,10 @@ function assignTokens(step, worker) {
 }
 
 /**
- * Shows a sidebar for the current content step.
- * @param {object} sidebarProps - properties for this sidebar instance
- * @param {string} contentURL - url pointing to local content
- */
+* Shows a sidebar for the current content step.
+* @param {object} sidebarProps - properties for this sidebar instance
+* @param {string} contentURL - url pointing to local content
+*/
 function showSidebar(sidebarProps, contentURL) {
     content = sidebar.Sidebar({
         id: sidebarProps.id,
@@ -226,15 +221,13 @@ function showSidebar(sidebarProps, contentURL) {
 }
 
 /**
- * Shows the next sidebar for the current track i.e. values or utility
- */
+* Shows the next sidebar for the current track i.e. values or utility
+*/
 function toggleSidebar() {
-    var activeWindow = utils.getMostRecentBrowserWindow();
-    var _sidebar = activeWindow.document.getElementById('sidebar');
     var contentStep;
+    var contentURL;
     var sidebarProps;
     var track = simpleStorage.whatMatters;
-    var contentURL;
 
     // clears the badge
     allAboard.state('window', {
@@ -279,147 +272,12 @@ function toggleSidebar() {
         // disposed of the sidebar instance. Safest is to get a new instance.
         showSidebar(sidebarProps, contentURL);
     }
-
-    // if the user's mouse enters the screen, check and see if it is outside of the sidebar in order to reset
-    activeWindow.addEventListener('mouseenter', function(event) {
-        // get the current bounds of the sidebar based upon window position onscreen
-        var sidebarXRight = parseInt(_sidebar.getBoundingClientRect().right) + activeWindow.screenX;
-        var sidebarXLeft = parseInt(_sidebar.getBoundingClientRect().left) + activeWindow.screenX;
-        var sidebarYTop = parseInt(_sidebar.getBoundingClientRect().top) + activeWindow.screenY;
-        var sidebarYBottom = parseInt(_sidebar.getBoundingClientRect().bottom) + activeWindow.screenY;
-
-        // if the mouse is outside of that window position
-        if((event.screenX >= sidebarXRight) || (event.screenX <= sidebarXLeft) || (event.screenY <= sidebarYTop) || (event.screenY >= sidebarYBottom))
-        {
-            // and if our browsers theme isn't the one we want (aka, we were hovering over a theme but no longer are)
-            if(currentTheme != LightweightThemeManager.currentTheme)
-            {
-                // if we have a current theme, set it to the theme we have
-                if(currentTheme)
-                    LightweightThemeManager.themeChanged(currentTheme);
-                // if not, set it to the default theme
-                else
-                    LightweightThemeManager.themeChanged(null);
-            }
-        }
-    });
-
-    // insurance so that, in the case of a theme sticking because of fast cursor movement, we are reseting the theme to what it is supposed to be
-    _sidebar.addEventListener('mouseenter', function() {
-        // if our browsers theme isn't the one we want (aka, we were hovering over a theme but no longer are)
-        if(currentTheme != LightweightThemeManager.currentTheme)
-        {
-            // if we have a current theme, set it to the theme we have
-            if(currentTheme)
-                LightweightThemeManager.themeChanged(currentTheme);
-            // if not, set it to the default theme
-            else
-                LightweightThemeManager.themeChanged(null);
-        }
-    });
-
-    // additional insurance that our theme is correct
-    _sidebar.addEventListener('mouseleave', function() {
-        // if our browsers theme isn't the one we want (aka, we were hovering over a theme but no longer are)
-        if(currentTheme != LightweightThemeManager.currentTheme)
-        {
-            // if we have a current theme, set it to the theme we have
-            if(currentTheme)
-                LightweightThemeManager.themeChanged(currentTheme);
-            // if not, set it to the default theme
-            else
-                LightweightThemeManager.themeChanged(null);
-        }
-    });
 }
 
 /**
- * Purpose: Changes the theme based upon the value passed
- * @param {int}     themeNum - a number passed based upon what theme button the user selected
- * @param {boolean} isHover  - a boolean value which indicates whether the change is perminant (false) or
- *                             if it is simply a user hovering for a theme preview (true)
- */
-function changeTheme(themeNum, isHover) {
-    // set the theme slug based upon the number theme passed
-    if(themeNum == 1)
-        var personaSlug = "fox-in-snow";
-    else if(themeNum == 2)
-        var personaSlug = "cozy-fox";
-    else if(themeNum == 3)
-        var personaSlug = "shiretoko-fox";
-    // if there is no number passed, set the theme to default and return
-    else
-    {
-        currentTheme = null;
-        LightweightThemeManager.themeChanged(null);
-        return;
-    }
-
-    // start a new XMLHTTP request with AMO to request the page where we can get the addon ID
-    var request = new XMLHttpRequest();
-    request.open("GET", "https://services.addons.mozilla.org/firefox/api/addon/" + personaSlug);
-    request.onload = function() {
-        try {
-            // get the addon ID from the page returned
-            var id = request.responseXML.documentElement.getAttribute("id");
-
-            // start a new XMLHTTP request to get the theme JSON from AMO
-            var personaRequest = new XMLHttpRequest();
-            personaRequest.open("GET", "https://versioncheck.addons.mozilla.org/en-US/themes/update-check/" + id);
-            personaRequest.onload = function() {
-                try {
-                    // get the theme JSON from the response
-                    var theme = JSON.parse(personaRequest.response);
-                    // set the theme
-                    LightweightThemeManager.themeChanged(theme);
-                    // if we want to permenantly change the theme (this isn't a theme preview when a user hovers), then set the theme
-                    if(isHover == false)
-                        currentTheme = theme;
-                }
-                catch (e) {
-                    showErrorMessage("Invalid Persona");
-                }
-            }
-            personaRequest.send();
-        }
-        catch (e) {
-            showErrorMessage("Invalid Persona");
-        }
-    }
-    request.send();
-}
-
-/**
- * Purpose: Changes the theme back to the theme we have stored locally as our "current" theme
- */
-function endHover()
-{
-     LightweightThemeManager.themeChanged(currentTheme);
-}
-
-/**
- * Purpose: Gets the current theme set in the browser chrome
- */
-function getTheme() {
-    var theme;
-
-        // try to get our current theme
-    try {
-        theme = LightweightThemeManager.currentTheme;
-    }
-        // if there isn't one, return the default of null
-    catch(e) {
-        return null;
-    }
-
-        // return our theme
-    return theme;
-}
-
-/**
- * Shows the import data sidebar which provides the user with a button to
- * start the migration wizard.
- */
+* Shows the import data sidebar which provides the user with a button to
+* start the migration wizard.
+*/
 function showImportDataSidebar() {
 
     store('lastSidebarLaunchTime', Date.now());
@@ -461,10 +319,10 @@ function showImportDataSidebar() {
 }
 
 /**
- * Modifies the /firstrun page
- * http://regexr.com/3dbrq
- * This will only have an effect if there is a DOM element with a class of .fxaccounts
- */
+* Modifies the /firstrun page
+* http://regexr.com/3dbrq
+* This will only have an effect if there is a DOM element with a class of .fxaccounts
+*/
 function modifyFirstrun() {
 
     var firstRun = pageMod.PageMod({
@@ -526,10 +384,11 @@ function modifyFirstrun() {
     });
 }
 
+
 /**
- * Initializes the add-on, adds the icon to the chrome and checks the time elapsed
- * since a sidebar was last shown.
- */
+* Initializes the add-on, adds the icon to the chrome and checks the time elapsed
+* since a sidebar was last shown.
+*/
 function init() {
     // if init was called as part of a browser startup, we first need to check
     // whether lastSidebarLaunchTime exists and if it does, check whether
