@@ -185,6 +185,23 @@ function showSearch() {
 }
 
 /**
+ * Highlight a given item in the browser chrome
+ * @param {string} item - Item you wish to highlight's name as a string
+ */
+function highLight(item) {
+    let activeWindow = utils.getMostRecentBrowserWindow();
+        
+    UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
+        try {
+            UITour.showHighlight(activeWindow, chosenItem, 'wobble');
+        }
+        catch(e) {
+            console.log('Could not highlight element. Check if UITour.jsm supports highlighting of element passed.', e);
+        }
+    });
+}
+
+/**
 * Manages tokens and emits a message to the sidebar with an array
 * of tokens the user has received
 * @param {int} step - the step to assign a token for
@@ -221,6 +238,8 @@ function showSidebar(sidebarProps, contentURL) {
                 switch(intent) {
                     case 'search':
                         showSearch();
+                    case 'privateBrowsing':
+                        highLight('privateWindow');
                         break;
                     default:
                         break;
