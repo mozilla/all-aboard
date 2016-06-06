@@ -241,6 +241,9 @@ function showSidebar(sidebarProps, contentURL) {
                     case 'privateBrowsing':
                         highLight('privateWindow');
                         break;
+                    case 'highlightURL':
+                        highLight('urlbar');
+                        break;
                     default:
                         break;
                 }

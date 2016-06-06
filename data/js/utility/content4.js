@@ -12,6 +12,6 @@
     // add event listener for a button click on search button
     button.addEventListener('click', function() {
         // alert the back-end that we've clicked the button
-        addon.port.emit('intent', 'highLightURL');
+        addon.port.emit('intent', 'highlightURL');
     });
 })();
