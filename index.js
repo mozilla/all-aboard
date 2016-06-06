@@ -165,6 +165,25 @@ function showBadge() {
     showDesktopNotification();
 }
 
+/*
+ * Opens the search bar
+ */
+function showSearch() {
+    let activeWindow = utils.getMostRecentBrowserWindow();
+    let barPromise = UITour.getTarget(activeWindow, 'search');
+    let iconPromise = UITour.getTarget(activeWindow, 'searchIcon');
+
+    iconPromise.then(function(iconObj) {
+        let searchIcon = iconObj.node;
+        searchIcon.click();
+
+       barPromise.then(function(barObj) {
+            let searchbar = barObj.node;
+            searchbar.updateGoButtonVisibility();
+        });
+    });
+}
+
 /**
 * Manages tokens and emits a message to the sidebar with an array
 * of tokens the user has received
@@ -200,6 +219,9 @@ function showSidebar(sidebarProps, contentURL) {
             // based on intent.
             worker.port.on('intent', function(intent) {
                 switch(intent) {
+                    case 'search':
+                        showSearch();
+                        break;
                     default:
                         break;
                 }
