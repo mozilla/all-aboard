@@ -202,6 +202,38 @@ function highLight(item) {
 }
 
 /**
+ * Changes the theme based upon the value passed
+ * @param {int} themeNum - a number passed based on the button clicked by the user
+ */
+function changeTheme(themeNum) {
+    var personaSlug;
+    var personaIDs = [111387, 539838, 157076];
+
+    // if there is no number passed, set the theme to default and return
+    if(typeof themeNum === 'undefined') {
+        LightweightThemeManager.themeChanged(null);
+        return;
+    }
+
+    // start a new XMLHTTP request to get the theme JSON from AMO
+    var personaRequest = new XMLHttpRequest();
+    personaRequest.open('GET', 'https://versioncheck.addons.mozilla.org/en-US/themes/update-check/' + personaIDs[themeNum-1]);
+    
+    personaRequest.onload = function() {
+        try {
+            // get the theme JSON from the response
+            var theme = JSON.parse(personaRequest.response);
+            // set the theme
+            LightweightThemeManager.themeChanged(theme);
+        }
+        catch (e) {
+             console.log('Invalid Persona', e);
+        }
+    }
+    personaRequest.send();
+}
+
+/**
 * Manages tokens and emits a message to the sidebar with an array
 * of tokens the user has received
 * @param {int} step - the step to assign a token for
@@ -240,6 +272,17 @@ function showSidebar(sidebarProps, contentURL) {
                         showSearch();
                     case 'privateBrowsing':
                         highLight('privateWindow');
+                    case 'template1':
+                        changeTheme(1);
+                        break;
+                    case 'template2':
+                        changeTheme(2);
+                        break;
+                    case 'template3':
+                        changeTheme(3);
+                        break;
+                    case 'defaultTemplate':
+                        changeTheme();
                         break;
                     default:
                         break;
