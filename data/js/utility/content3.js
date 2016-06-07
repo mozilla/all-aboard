@@ -13,8 +13,7 @@
     });
 
     // add listeners to all of our buttons for clicking
-    for(var x=0; x<templateNames.length; x++)
-    {
+    for(var x=0, l=templateNames.length; x<l; x++) {
         // get the current template
         var node = document.querySelector('#' + templateNames[x]);
 
