@@ -12,16 +12,26 @@
       </header>
       <main>
         <h1>Why does Mozilla care about Internet privacy?</h1>
-        <dl class="options">
-          <dt>A</dt>
-          <dd class="option-one">Painful shyness.</dd>
-          <br>
-          <dt>B</dt>
-          <dd class="option-two">Can’t shake that pesky shoe advertisement off its trail.</dd>
-          <br>
-          <dt id="answer">C</dt>
-          <dd class="option-three">Believes we all should have a right to privacy, including the right to not be tracked online</dd>
-        </dl>
+        <ul class="options">
+          <li>
+            <label for="option-a">
+              <input type="radio" name="options" value="a" id="option-a" />
+              <span>Painful shyness.</span>
+            </label>
+          </li>
+          <li>
+            <label for="option-b">
+              <input type="radio" name="options" value="b" id="option-b" />
+              <span>Can’t shake that pesky shoe advertisement off its trail.</span>
+            </label>
+          </li>
+          <li>
+            <label for="option-c" id="answer">
+              <input type="radio" name="options" value="c" id="option-c" />
+              <span>Believes we all should have a right to privacy, including the right to not be tracked online.</span>
+            </label>
+          </li>
+        </ul>
         <button class="button">Tell Me</button>
       </main>
       <footer>
@@ -34,6 +44,6 @@
         </ul>
       </footer>
     </section>
-    <script src="/data/js/values/content3.js"></script>
+    <script src="/data/js/values/multiple-choice.js"></script>
   </body>
 </html>

@@ -81,36 +81,32 @@ header {
     margin: 0 auto;
 }
 
-/* options list styles */
+/* styles for multiple choice sidebars */
 .options {
     margin: 0 0 40px;
     padding: 0;
     list-style: none;
 }
 
-.options dt {
-    display: inline-block;
-    margin-right: 5px;
-    padding: 4px 0 0 5px;
-    border: 1px solid #979797;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: .75rem;
-    vertical-align: top;
+.options label {
+    display: block;
+    margin-bottom: 20px;
 }
 
-.options dt.answer {
+.options label span {
+    display: inline-block;
+    margin-left: 10px;
+    max-width: 200px;
+    vertical-align: middle;
+    line-height: 1.2;
+}
+
+.options .answer {
     background-color: #7ED321;
     color: #333;
+    padding: 10px 0;
     border-color: #7ED321;
-    font-weight: bold;
-}
-
-.options dd {
-    display: inline-block;
-    margin: 0 0 25px;
-    max-width: 210px;
+    border-radius: 4px;
 }
 
 /* import data sidebar */

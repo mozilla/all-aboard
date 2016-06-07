@@ -12,16 +12,26 @@
       </header>
       <main>
         <h1>What gets Mozilla out of bed in the morning?</h1>
-        <dl class="options">
-          <dt>A</dt>
-          <dd class="option-one">Gigantic alarm clock.</dd>
-          <br>
-          <dt>B</dt>
-          <dd class="option-two">Baby foxes licking its face.</dd>
-          <br>
-          <dt id="answer">C</dt>
-          <dd class="option-three">Standing up to corporate domination of the Web.</dd>
-        </dl>
+        <ul class="options">
+          <li>
+            <label for="option-a">
+              <input type="radio" name="options" value="a" id="option-a" />
+              <span>Gigantic alarm clock.</span>
+            </label>
+          </li>
+          <li>
+            <label for="option-b">
+              <input type="radio" name="options" value="b" id="option-b" />
+              <span>Baby foxes licking its face.</span>
+            </label>
+          </li>
+          <li>
+            <label for="option-c" id="answer">
+              <input type="radio" name="options" value="c" id="option-c" />
+              <span>Standing up to corporate domination of the Web.</span>
+            </label>
+          </li>
+        </ul>
         <button class="button">Tell Me</button>
       </main>
       <footer>
@@ -34,6 +44,6 @@
         </ul>
       </footer>
     </section>
-    <script src="/data/js/values/content2.js"></script>
+    <script src="/data/js/values/multiple-choice.js"></script>
   </body>
 </html>
