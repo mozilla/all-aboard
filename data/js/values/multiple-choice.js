@@ -1,5 +1,6 @@
 (function() {
     var answer = document.querySelector('#answer');
+    var answerRadio = answer.querySelector('input');
     var button = document.querySelector('button');
 
     addon.port.on('tokens', function(tokens) {
@@ -12,6 +13,8 @@
     button.addEventListener('click', function() {
         // highlight the answer
         answer.classList.add('answer');
+        // check the radio button
+        answerRadio.click();
     });
 
 })();

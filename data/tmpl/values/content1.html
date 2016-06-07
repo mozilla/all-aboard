@@ -12,14 +12,26 @@
       </header>
       <main>
         <h1>Who stands behind Firefox?</h1>
-        <dl class="options">
-          <dt>A</dt>
-          <dd class="option-one">Backup singers Earthfox and Windfox.</dd>
-          <dt>B</dt>
-          <dd class="option-two">A kid with a marshmallow on a stick.</dd>
-          <dt id="answer">C</dt>
-          <dd class="option-three">Mozilla, the non-profit fighting for a free and open Internet.</dd>
-        </dl>
+        <ul class="options">
+          <li>
+            <label for="option-a">
+              <input type="radio" name="options" value="a" id="option-a" />
+              <span>Backup singers Earthfox and Windfox.</span>
+            </label>
+          </li>
+          <li>
+            <label for="option-b">
+              <input type="radio" name="options" value="b" id="option-b" />
+              <span>A kid with a marshmallow on a stick.</span>
+            </label>
+          </li>
+          <li>
+            <label for="option-c" id="answer">
+              <input type="radio" name="options" value="c" id="option-c" />
+              <span>Mozilla, the non-profit fighting for a free and open Internet.</span>
+            </label>
+          </li>
+        </ul>
         <button class="button">Tell Me</button>
       </main>
       <footer>
@@ -32,6 +44,6 @@
         </ul>
       </footer>
     </section>
-    <script src="/data/js/values/content1.js"></script>
+    <script src="/data/js/values/multiple-choice.js"></script>
   </body>
 </html>
