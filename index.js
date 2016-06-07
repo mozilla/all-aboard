@@ -284,6 +284,9 @@ function showSidebar(sidebarProps, contentURL) {
                     case 'defaultTemplate':
                         changeTheme();
                         break;
+                    case 'highlightURL':
+                        highLight('urlbar');
+                        break;
                     default:
                         break;
                 }
