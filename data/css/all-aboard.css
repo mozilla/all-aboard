@@ -97,6 +97,28 @@ a:focus {
                 opacity 1s;
 }
 
+.user-data {
+    text-align: left;
+}
+
+.user-data li {
+    overflow: hidden;
+    line-height: 1;
+    padding: 10px;
+    margin: 0;
+}
+
+.user-data li:hover {
+    background-color: #e8e8e8;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.hostname {
+    font-size: .9rem;
+}
+
 /* styles for multiple choice sidebars */
 .options {
     margin: 0 0 40px;
