@@ -201,6 +201,10 @@ header {
 	transition: background-color .1s ease-in-out;
 }
 
+.mobile img {
+    margin: 10px 0;
+}
+
 .reset {
     background: none;
     color: #333;
