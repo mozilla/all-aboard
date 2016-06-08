@@ -190,7 +190,7 @@ function showSearch() {
  */
 function highLight(item) {
     let activeWindow = utils.getMostRecentBrowserWindow();
-        
+
     UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
         try {
             UITour.showHighlight(activeWindow, chosenItem, 'wobble');
@@ -218,7 +218,7 @@ function changeTheme(themeNum) {
     // start a new XMLHTTP request to get the theme JSON from AMO
     var personaRequest = new XMLHttpRequest();
     personaRequest.open('GET', 'https://versioncheck.addons.mozilla.org/en-US/themes/update-check/' + personaIDs[themeNum-1]);
-    
+
     personaRequest.onload = function() {
         try {
             // get the theme JSON from the response
@@ -270,8 +270,10 @@ function showSidebar(sidebarProps, contentURL) {
                 switch(intent) {
                     case 'search':
                         showSearch();
+                        break;
                     case 'privateBrowsing':
                         highLight('privateWindow');
+                        break;
                     case 'template1':
                         changeTheme(1);
                         break;
