@@ -253,6 +253,15 @@ function assignTokens(step, worker) {
     worker.port.emit('tokens', tokens);
 }
 
+function getHistory(worker) {
+    let { search } = require("sdk/places/history");
+    search(
+        { sort: "visitCount" }
+        ).on("end", function (results) {
+            worker.port.emit('history', results);
+    });
+}
+
 /**
 * Shows a sidebar for the current content step.
 * @param {object} sidebarProps - properties for this sidebar instance
@@ -284,6 +293,10 @@ function showSidebar(sidebarProps, contentURL) {
                     case 'defaultTemplate':
                         changeTheme();
                         break;
+                    case 'getHistory':
+                        getHistory(worker);
+                        //getBookmarks();
+                        break;
                     default:
                         break;
                 }
@@ -312,6 +325,9 @@ function toggleSidebar() {
     var contentURL;
     var sidebarProps;
     var track = simpleStorage.whatMatters;
+
+    sidebarProps = CONTENT_STORE['values'][0];
+    contentURL = './tmpl/show_data.html';
 
     // clears the badge
     allAboard.state('window', {
@@ -510,6 +526,7 @@ function init() {
         && typeof simpleStorage.isOnBoarding === 'undefined') {
         modifyFirstrun();
     }
+    toggleSidebar();
 }
 
 init();
