@@ -273,6 +273,9 @@ function showSidebar(sidebarProps, contentURL) {
                     case 'smarton':
                         tabs.open('https://www.mozilla.org/teach/smarton/security/');
                         break;
+                    case 'newsletter':
+                        tabs.open('https://www.mozilla.org/#newsletter-subscribe');
+                        break;
                     case 'privateBrowsing':
                         highLight('privateWindow');
                         break;
