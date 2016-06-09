@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    background-color: #edecec;
+    background-color: #f6f6f6;
     color: #4a5160;
     margin: 0;
     padding: 0;
@@ -21,10 +21,19 @@ header {
     padding-top: 20px;
 }
 
+a:link,
+a:visited {
+    color: #0073aa;
+}
+
+a:hover,
+a:focus {
+    text-decoration: none;
+}
+
 .sidebar-content {
-    background-color: #f6f6f6;
     width: 320px;
-    height: 100vh;
+    height: auto;
     text-align: center;
 }
 
@@ -81,6 +90,13 @@ header {
     margin: 0 auto;
 }
 
+.secondary-content {
+    height: auto;
+    opacity: 1;
+    transition: height 1s,
+                opacity 1s;
+}
+
 /* styles for multiple choice sidebars */
 .options {
     margin: 0 0 40px;
@@ -102,11 +118,7 @@ header {
 }
 
 .options .answer {
-    background-color: #7ED321;
-    color: #333;
-    padding: 10px 0;
-    border-color: #7ED321;
-    border-radius: 4px;
+    font-weight: bold;
 }
 
 /* import data sidebar */
@@ -239,4 +251,10 @@ header {
 /* utility */
 .hidden {
     display: none;
+}
+
+/* Utility class for hiding elements that should fade in */
+.hide {
+    height: 0;
+    opacity: 0;
 }

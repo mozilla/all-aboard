@@ -177,7 +177,7 @@ function showSearch() {
         let searchIcon = iconObj.node;
         searchIcon.click();
 
-       barPromise.then(function(barObj) {
+        barPromise.then(function(barObj) {
             let searchbar = barObj.node;
             searchbar.updateGoButtonVisibility();
         });
@@ -194,8 +194,7 @@ function highLight(item) {
     UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
         try {
             UITour.showHighlight(activeWindow, chosenItem, 'wobble');
-        }
-        catch(e) {
+        } catch(e) {
             console.log('Could not highlight element. Check if UITour.jsm supports highlighting of element passed.', e);
         }
     });
@@ -206,7 +205,6 @@ function highLight(item) {
  * @param {int} themeNum - a number passed based on the button clicked by the user
  */
 function changeTheme(themeNum) {
-    var personaSlug;
     var personaIDs = [111387, 539838, 157076];
 
     // if there is no number passed, set the theme to default and return
@@ -226,10 +224,11 @@ function changeTheme(themeNum) {
             // set the theme
             LightweightThemeManager.themeChanged(theme);
         }
-        catch (e) {
-             console.log('Invalid Persona', e);
+        catch(e) {
+            console.log('Invalid Persona', e);
         }
-    }
+    };
+
     personaRequest.send();
 }
 
@@ -270,6 +269,9 @@ function showSidebar(sidebarProps, contentURL) {
                 switch(intent) {
                     case 'search':
                         showSearch();
+                        break;
+                    case 'smarton':
+                        tabs.open('https://www.mozilla.org/teach/smarton/security/');
                         break;
                     case 'privateBrowsing':
                         highLight('privateWindow');
