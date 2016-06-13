@@ -63,6 +63,7 @@ var { XMLHttpRequest } = require('sdk/net/xhr');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightThemeManager.jsm').LightweightThemeManager;
 
+var aboutHome;
 var allAboard;
 var content;
 // the default interval between sidebars. Here set as hours.
@@ -319,6 +320,40 @@ function showSidebar(sidebarProps, contentURL) {
 }
 
 /**
+ * Modifies the about:home page to show a snippet that matches the current sidebar.
+ * @param {string} track - The current sidebar's track
+ * @param {int} step - The current sidebar's content step
+ */
+function modifyAboutHome(track, step) {
+    aboutHome = pageMod.PageMod({
+        include: /about:home/,
+        contentScriptFile: './js/about-home.js',
+        contentScriptWhen: 'ready',
+        contentStyleFile: './css/about-home.css',
+        onAttach: function(worker) {
+            // constructs uri to snippet content
+            var contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
+            // load snippet HTML
+            var snippetContent = self.data.load(contentURL);
+            // emit modify event and passes snippet HTML as a string
+            worker.port.emit('modify', snippetContent);
+
+            // listens to an intent message and calls the relevant function
+            // based on intent.
+            worker.port.on('intent', function(intent) {
+                switch(intent) {
+                    case 'search':
+                        showSearch();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    });
+}
+
+/**
 * Shows the next sidebar for the current track i.e. values or utility
 */
 function toggleSidebar() {
@@ -354,6 +389,8 @@ function toggleSidebar() {
         // add contentStep to sidebarProps so we do not have to pass another parameter
         sidebarProps.step = contentStep;
         showSidebar(sidebarProps, contentURL);
+        // initialize the about:home pageMod
+        modifyAboutHome(track, contentStep);
 
         // do not call the timer once we have reached
         // the final content item.
@@ -503,6 +540,18 @@ function overrideDefaults() {
         console.error('Either no config.json file was created, or it was placed at the wrong location. Error:', e);
     }
 }
+
+/** This is called when the add-on is unloaded. If the reason is either disable,
+ * or shutdown, we can do some cleanup.
+ */
+exports.onUnload = function(reason) {
+    if (reason === 'disable' || reason === 'shutdown') {
+
+        if (typeof aboutHome !== 'undefined') {
+            aboutHome.destroy();
+        }
+    }
+};
 
 /**
 * Initializes the add-on, adds the icon to the chrome and checks the time elapsed
