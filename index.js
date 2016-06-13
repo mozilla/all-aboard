@@ -521,6 +521,19 @@ function modifyFirstrun() {
 }
 
 /**
+ * This is called when the add-on is unloaded. If the reason is either disable,
+ * or shutdown, we can do some cleanup.
+ */
+exports.onUnload = function(reason) {
+    if (reason === 'disable' || reason === 'shutdown') {
+
+        if (typeof aboutHome !== 'undefined') {
+            aboutHome.destroy();
+        }
+    }
+};
+
+/**
  * Overrides time interval defauls from config file.
  */
 function overrideDefaults() {
