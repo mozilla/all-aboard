@@ -342,6 +342,9 @@ function modifyAboutHome(track, step) {
             // based on intent.
             worker.port.on('intent', function(intent) {
                 switch(intent) {
+                    case 'privateBrowsing':
+                        highLight('privateWindow');
+                        break;
                     case 'search':
                         showSearch();
                         break;
