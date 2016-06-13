@@ -11,10 +11,12 @@ function showSnippet(snippetContent) {
     var button;
     searchIconAndTextContainer.insertAdjacentHTML('afterend', snippetContent);
 
-    button = document.querySelector('#allaboard_button');
+    button = document.querySelector('#allaboard_anippet_intent');
     button.addEventListener('click', function() {
-        // pass the button intent to the add-on
-        self.port.emit('intent', button.dataset['intent']);
+        if (typeof button.dataset !== 'undefined') {
+            // pass the button intent to the add-on
+            self.port.emit('intent', button.dataset['intent']);
+        }
     });
 }
 
