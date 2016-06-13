@@ -9,6 +9,13 @@ var searchIconAndTextContainer = document.querySelector('#searchIconAndTextConta
  */
 function showSnippet(snippetContent) {
     var button;
+    var addonSnippet = document.querySelector('#allaboard_snippet');
+
+    // if a previous snippet added by the addon exists, remove it.
+    if (addonSnippet) {
+        addonSnippet.remove();
+    }
+
     searchIconAndTextContainer.insertAdjacentHTML('afterend', snippetContent);
 
     button = document.querySelector('#allaboard_anippet_intent');
