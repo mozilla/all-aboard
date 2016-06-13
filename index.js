@@ -1,7 +1,5 @@
 'use strict';
 
-// 24 hours in milliseconds
-const ONE_DAY = 86400000;
 const CONTENT_STORE = {
     utility: [
         {
@@ -67,9 +65,15 @@ var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightTheme
 
 var allAboard;
 var content;
+// the default interval between sidebars. Here set as hours.
+var defaultSidebarInterval = 24;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
+var timeElapsedFormula = 1000*60*60;
 // initialize timer to -1 to indicate that there is no timer currently running.
 var timer = -1;
+// 24 hours in milliseconds
+var waitInterval = 86400000;
+
 
 /**
 * Stores a name and value pair using the add-on simple storage API
@@ -114,7 +118,7 @@ function updatePref(value) {
 */
 function getTimeElapsed(sidebarLaunchTime) {
     var lastSidebarLaunch = new Date(sidebarLaunchTime);
-    return Math.round((lastSidebarLaunch.getTime() - Date.now()) / (1000*60*60));
+    return Math.round((Date.now() - lastSidebarLaunch.getTime()) / (timeElapsedFormula));
 }
 
 /**
@@ -126,7 +130,7 @@ function startTimer() {
         showBadge();
         timers.clearInterval(timer);
         timer = -1;
-    }, ONE_DAY);
+    }, waitInterval);
 }
 
 /**
@@ -195,7 +199,7 @@ function highLight(item) {
         try {
             UITour.showHighlight(activeWindow, chosenItem, 'wobble');
         } catch(e) {
-            console.log('Could not highlight element. Check if UITour.jsm supports highlighting of element passed.', e);
+            console.error('Could not highlight element. Check if UITour.jsm supports highlighting of element passed.', e);
         }
     });
 }
@@ -225,7 +229,7 @@ function changeTheme(themeNum) {
             LightweightThemeManager.themeChanged(theme);
         }
         catch(e) {
-            console.log('Invalid Persona', e);
+            console.error('Invalid Persona', e);
         }
     };
 
@@ -332,7 +336,7 @@ function toggleSidebar() {
     // we start showing the content sidebars. If the add-on icon is clicked before this,
     // we need to simply show the import data sidebar again.
     if (typeof simpleStorage.step === 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < 24) {
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < defaultSidebarInterval) {
         showImportDataSidebar();
         return;
     }
@@ -340,7 +344,8 @@ function toggleSidebar() {
     // Ensure that we have not already shown all content items, and that at least 24
     // hours have elapsed since we've shown the last sidebar before continuing to
     // increment the step counter and show the next sidebar.
-    if (simpleStorage.step !== 5 && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= 24) {
+    if (simpleStorage.step !== 5
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
         // we get the properties before we increment the contentStep as arrays are 0 indexed.
         sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
         contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
@@ -478,23 +483,46 @@ function modifyFirstrun() {
     });
 }
 
+/**
+ * Overrides time interval defauls from config file.
+ */
+function overrideDefaults() {
+    try {
+        // load the config file
+        let config = self.data.load('./../config.json');
+
+        // if the file existed, parse the contents to a JSON object
+        if (config) {
+            config = JSON.parse(config);
+            // override time intervals with values from config
+            defaultSidebarInterval = config.defaultSidebarInterval;
+            timeElapsedFormula = config.timeElapsedFormula;
+            waitInterval = config.waitInterval;
+        }
+    } catch(e) {
+        console.error('Either no config.json file was created, or it was placed at the wrong location. Error:', e);
+    }
+}
 
 /**
 * Initializes the add-on, adds the icon to the chrome and checks the time elapsed
 * since a sidebar was last shown.
 */
-function init() {
+exports.main = function(options) {
+    // set's up the addon for dev mode.
+    overrideDefaults();
+
     // if init was called as part of a browser startup, we first need to check
     // whether lastSidebarLaunchTime exists and if it does, check whether
     // more than 24 hours have elsapsed since the last time a sidebar was shown.
-    if (self.loadReason === 'startup'
+    if (options.loadReason === 'startup'
         && simpleStorage.lastSidebarLaunchTime !== 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > 24) {
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
         // if all of the above is true
         toggleSidebar();
     }
 
-    if (self.loadReason === 'startup') {
+    if (options.loadReason === 'startup') {
         // if the sidebar was open during Firefox shutdown, it will be shown be
         // default when Firefox is started up again. The sidebar will not be
         // sized appropriately though so, we call setSidebarSize
@@ -520,6 +548,4 @@ function init() {
         && typeof simpleStorage.isOnBoarding === 'undefined') {
         modifyFirstrun();
     }
-}
-
-init();
+};

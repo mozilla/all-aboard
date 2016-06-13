@@ -53,3 +53,34 @@ There are currently three paths a user can take from this point:
 * The Fx accounts form is shown.
 * Internally the user is classified as a `new` user
 * Once the user submits the form or, navigates away from the first run page, the side bar will be shown inviting the user to import their data.
+
+## Contributing
+
+To run the add-on during development and testing, you will need to first follow the `jpm` installation instructions found on MDN here:
+https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#Installation
+
+Once installed you can launch the add-on as follows:
+
+```
+jpm run --binary-args www.mozilla.org/en-US/firefox/46.0/firstrun/
+```
+
+To ease development and testing of the add-on, it is possible to configure the time intervals and elapsed time formula using a JSON config file.
+
+In the root of the project folder, add a file called `config.json` as follows:
+
+```
+{
+    "defaultSidebarInterval": 5,
+    "timeElapsedFormula": 1000,
+    "waitInterval": 5000
+}
+```
+
+The values are defined as follows:
+
+* `defaultSidebarInterval` - Time between sidebars defined in seconds
+* `timeElapsedFormula` - This is the formula used to convert milliseconds to either minutes, hours etc. If you for example set this to `1000`, it will devide the milliseconds to seconds.
+* `waitInterval` - This is the interval, set in milliseconds, that the timer will wait until triggering the next badge update and notification.
+
+If the above file is not present, the add-on will use it’s defaults of 24 hours.
