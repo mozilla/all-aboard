@@ -19,12 +19,16 @@ function showSnippet(snippetContent) {
     searchIconAndTextContainer.insertAdjacentHTML('afterend', snippetContent);
 
     button = document.querySelector('#allaboard_anippet_intent');
-    button.addEventListener('click', function() {
-        if (typeof button.dataset !== 'undefined') {
-            // pass the button intent to the add-on
-            self.port.emit('intent', button.dataset['intent']);
-        }
-    });
+
+    // not all snippets have buttons, so test before adding the event listener
+    if (button) {
+        button.addEventListener('click', function() {
+            if (typeof button.dataset !== 'undefined') {
+                // pass the button intent to the add-on
+                self.port.emit('intent', button.dataset['intent']);
+            }
+        });
+    }
 }
 
 // listen for the modify event emitted from the add-on, and only then,
