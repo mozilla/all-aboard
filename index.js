@@ -342,6 +342,9 @@ function modifyAboutHome(track, step) {
             // based on intent.
             worker.port.on('intent', function(intent) {
                 switch(intent) {
+                    case 'bookmarks':
+                        highLight('bookmarks');
+                        break;
                     case 'customize':
                         highLight('customize');
                         break;
