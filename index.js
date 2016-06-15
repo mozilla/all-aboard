@@ -590,7 +590,7 @@ exports.main = function(options) {
         && simpleStorage.lastSidebarLaunchTime !== 'undefined'
         && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
         // if all of the above is true
-        toggleSidebar();
+        showBadge();
     }
 
     if (options.loadReason === 'startup') {
