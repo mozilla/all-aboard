@@ -72,6 +72,7 @@ var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
 var timeElapsedFormula = 1000*60*60;
 // initialize timer to -1 to indicate that there is no timer currently running.
 var timer = -1;
+var sidebarProps;
 // 24 hours in milliseconds
 var waitInterval = 86400000;
 
@@ -260,13 +261,12 @@ function assignTokens(step, worker) {
 /**
 * Shows a sidebar for the current content step.
 * @param {object} sidebarProps - properties for this sidebar instance
-* @param {string} contentURL - url pointing to local content
 */
-function showSidebar(sidebarProps, contentURL) {
+function showSidebar(sidebarProps) {
     content = sidebar.Sidebar({
         id: sidebarProps.id,
         title: sidebarProps.title,
-        url: contentURL,
+        url: sidebarProps.url,
         onAttach: function(worker) {
             // listens to an intent message and calls the relevant function
             // based on intent.
@@ -363,14 +363,31 @@ function modifyAboutHome(track, step) {
 }
 
 /**
+ * Sets additional sidebar properties, step, track, url, and returns the result
+ * @returns updated sidebarProps
+ */
+function getSidebarProps() {
+    var track = simpleStorage.whatMatters;
+    // we get the properties before we increment the contentStep as arrays are 0 indexed.
+    var sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
+    // determine the current content step we are on
+    var contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+
+    // store the current step
+    store('step', contentStep);
+
+    // set the additional sidebar properties
+    sidebarProps.step = contentStep;
+    sidebarProps.track = track;
+    sidebarProps.url = './tmpl/' + track + '/content' + contentStep + '.html';
+
+    return sidebarProps;
+}
+
+/**
 * Shows the next sidebar for the current track i.e. values or utility
 */
 function toggleSidebar() {
-    var contentStep;
-    var contentURL;
-    var sidebarProps;
-    var track = simpleStorage.whatMatters;
-
     // clears the badge
     allAboard.state('window', {
         badge: null
@@ -390,20 +407,16 @@ function toggleSidebar() {
     // increment the step counter and show the next sidebar.
     if (simpleStorage.step !== 5
         && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
-        // we get the properties before we increment the contentStep as arrays are 0 indexed.
-        sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
-        contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
-        contentURL = './tmpl/' + track + '/content' + contentStep + '.html';
-
-        // add contentStep to sidebarProps so we do not have to pass another parameter
-        sidebarProps.step = contentStep;
-        showSidebar(sidebarProps, contentURL);
+        // get the current sidebar's properties
+        sidebarProps = getSidebarProps();
+        // shows the relevant sidebar
+        showSidebar(sidebarProps);
         // initialize the about:home pageMod
-        modifyAboutHome(track, contentStep);
+        modifyAboutHome(sidebarProps.track, sidebarProps.step);
 
         // do not call the timer once we have reached
         // the final content item.
-        if (contentStep < 5) {
+        if (sidebarProps.step < 5) {
             // update the lastSidebarLaunchTime to now
             store('lastSidebarLaunchTime', Date.now());
             // this code will not be called again prior to at least 24 hours
@@ -415,7 +428,7 @@ function toggleSidebar() {
         // simply show the current sidebar again. We cannot just simply call .show(),
         // because either the sidebar or browser might have been closed which would have
         // disposed of the sidebar instance. Safest is to get a new instance.
-        showSidebar(sidebarProps, contentURL);
+        showSidebar(sidebarProps);
     }
 }
 
@@ -581,7 +594,7 @@ exports.main = function(options) {
     }
 
     if (options.loadReason === 'startup') {
-        // if the sidebar was open during Firefox shutdown, it will be shown be
+        // if the sidebar was open during Firefox shutdown, it will be shown by
         // default when Firefox is started up again. The sidebar will not be
         // sized appropriately though so, we call setSidebarSize
         setSidebarSize();
