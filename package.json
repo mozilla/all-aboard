@@ -3,6 +3,7 @@
   "name": "all-aboard",
   "version": "0.0.3",
   "description": "The Mozilla Firefox onboarding add-on",
+  "homepage": "https://github.com/mozilla/all-aboard",
   "main": "index.js",
   "author": "Mozilla Corporation",
   "engines": {
