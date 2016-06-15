@@ -75,6 +75,8 @@ var timer = -1;
 var sidebarProps;
 // 24 hours in milliseconds
 var waitInterval = 86400000;
+// is the sidebar currently visible
+var isVisible = false;
 
 
 /**
@@ -263,6 +265,17 @@ function assignTokens(step, worker) {
 * @param {object} sidebarProps - properties for this sidebar instance
 */
 function showSidebar(sidebarProps) {
+
+    // if the sidebar is open, close it before calling show again
+    // @see https://github.com/mozilla/all-aboard/issues/78 for details
+    if (isVisible) {
+        content.hide();
+        // we need to also completely dispose of the previous sidebar or,
+        // we will get errors thrown by validateTitleAndURLCombo in
+        // resource://gre/modules/commonjs/sdk/ui/sidebar.js:288:13
+        content.dispose();
+    }
+
     content = sidebar.Sidebar({
         id: sidebarProps.id,
         title: sidebarProps.title,
@@ -312,6 +325,12 @@ function showSidebar(sidebarProps) {
         },
         onDetach: function() {
             content.dispose();
+        },
+        onHide: function() {
+            isVisible = false;
+        },
+        onShow: function() {
+            isVisible = true;
         }
     });
 
