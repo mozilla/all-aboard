@@ -39,6 +39,11 @@ module.exports = {
             2,
             "smart"
         ],
+        "no-console": [
+            "error", {
+                allow: ["error"]
+            }
+        ],
         "one-var-declaration-per-line": [
             2,
             "always"
@@ -46,6 +51,7 @@ module.exports = {
     },
     "globals": {
         "addon": true,
+        "exports": true,
         "require": true,
         "MigrationUtils": true,
         "Services": true

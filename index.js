@@ -1,7 +1,5 @@
 'use strict';
 
-// 24 hours in milliseconds
-const ONE_DAY = 86400000;
 const CONTENT_STORE = {
     utility: [
         {
@@ -65,11 +63,18 @@ var { XMLHttpRequest } = require('sdk/net/xhr');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightThemeManager.jsm').LightweightThemeManager;
 
+var aboutHome;
 var allAboard;
 var content;
+// the default interval between sidebars. Here set as hours.
+var defaultSidebarInterval = 24;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
+var timeElapsedFormula = 1000*60*60;
 // initialize timer to -1 to indicate that there is no timer currently running.
 var timer = -1;
+// 24 hours in milliseconds
+var waitInterval = 86400000;
+
 
 /**
 * Stores a name and value pair using the add-on simple storage API
@@ -114,7 +119,7 @@ function updatePref(value) {
 */
 function getTimeElapsed(sidebarLaunchTime) {
     var lastSidebarLaunch = new Date(sidebarLaunchTime);
-    return Math.round((lastSidebarLaunch.getTime() - Date.now()) / (1000*60*60));
+    return Math.round((Date.now() - lastSidebarLaunch.getTime()) / (timeElapsedFormula));
 }
 
 /**
@@ -126,7 +131,7 @@ function startTimer() {
         showBadge();
         timers.clearInterval(timer);
         timer = -1;
-    }, ONE_DAY);
+    }, waitInterval);
 }
 
 /**
@@ -177,7 +182,7 @@ function showSearch() {
         let searchIcon = iconObj.node;
         searchIcon.click();
 
-       barPromise.then(function(barObj) {
+        barPromise.then(function(barObj) {
             let searchbar = barObj.node;
             searchbar.updateGoButtonVisibility();
         });
@@ -190,13 +195,12 @@ function showSearch() {
  */
 function highLight(item) {
     let activeWindow = utils.getMostRecentBrowserWindow();
-        
+
     UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
         try {
             UITour.showHighlight(activeWindow, chosenItem, 'wobble');
-        }
-        catch(e) {
-            console.log('Could not highlight element. Check if UITour.jsm supports highlighting of element passed.', e);
+        } catch(e) {
+            console.error('Could not highlight element. Check if UITour.jsm supports highlighting of element passed.', e);
         }
     });
 }
@@ -206,7 +210,6 @@ function highLight(item) {
  * @param {int} themeNum - a number passed based on the button clicked by the user
  */
 function changeTheme(themeNum) {
-    var personaSlug;
     var personaIDs = [111387, 539838, 157076];
 
     // if there is no number passed, set the theme to default and return
@@ -218,7 +221,7 @@ function changeTheme(themeNum) {
     // start a new XMLHTTP request to get the theme JSON from AMO
     var personaRequest = new XMLHttpRequest();
     personaRequest.open('GET', 'https://versioncheck.addons.mozilla.org/en-US/themes/update-check/' + personaIDs[themeNum-1]);
-    
+
     personaRequest.onload = function() {
         try {
             // get the theme JSON from the response
@@ -226,10 +229,11 @@ function changeTheme(themeNum) {
             // set the theme
             LightweightThemeManager.themeChanged(theme);
         }
-        catch (e) {
-             console.log('Invalid Persona', e);
+        catch(e) {
+            console.error('Invalid Persona', e);
         }
-    }
+    };
+
     personaRequest.send();
 }
 
@@ -253,15 +257,6 @@ function assignTokens(step, worker) {
     worker.port.emit('tokens', tokens);
 }
 
-function getHistory(worker) {
-    let { search } = require("sdk/places/history");
-    search(
-        { sort: "visitCount" }
-        ).on("end", function (results) {
-            worker.port.emit('history', results);
-    });
-}
-
 /**
 * Shows a sidebar for the current content step.
 * @param {object} sidebarProps - properties for this sidebar instance
@@ -279,8 +274,16 @@ function showSidebar(sidebarProps, contentURL) {
                 switch(intent) {
                     case 'search':
                         showSearch();
+                        break;
+                    case 'smarton':
+                        tabs.open('https://www.mozilla.org/teach/smarton/security/');
+                        break;
+                    case 'newsletter':
+                        tabs.open('https://www.mozilla.org/#newsletter-subscribe');
+                        break;
                     case 'privateBrowsing':
                         highLight('privateWindow');
+                        break;
                     case 'template1':
                         changeTheme(1);
                         break;
@@ -293,9 +296,8 @@ function showSidebar(sidebarProps, contentURL) {
                     case 'defaultTemplate':
                         changeTheme();
                         break;
-                    case 'getHistory':
-                        getHistory(worker);
-                        //getBookmarks();
+                    case 'highlightURL':
+                        highLight('urlbar');
                         break;
                     default:
                         break;
@@ -318,6 +320,49 @@ function showSidebar(sidebarProps, contentURL) {
 }
 
 /**
+ * Modifies the about:home page to show a snippet that matches the current sidebar.
+ * @param {string} track - The current sidebar's track
+ * @param {int} step - The current sidebar's content step
+ */
+function modifyAboutHome(track, step) {
+    aboutHome = pageMod.PageMod({
+        include: /about:home/,
+        contentScriptFile: './js/about-home.js',
+        contentScriptWhen: 'ready',
+        contentStyleFile: './css/about-home.css',
+        onAttach: function(worker) {
+            // constructs uri to snippet content
+            var contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
+            // load snippet HTML
+            var snippetContent = self.data.load(contentURL);
+            // emit modify event and passes snippet HTML as a string
+            worker.port.emit('modify', snippetContent);
+
+            // listens to an intent message and calls the relevant function
+            // based on intent.
+            worker.port.on('intent', function(intent) {
+                switch(intent) {
+                    case 'bookmarks':
+                        highLight('bookmarks');
+                        break;
+                    case 'customize':
+                        highLight('customize');
+                        break;
+                    case 'privateBrowsing':
+                        highLight('privateWindow');
+                        break;
+                    case 'search':
+                        showSearch();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    });
+}
+
+/**
 * Shows the next sidebar for the current track i.e. values or utility
 */
 function toggleSidebar() {
@@ -325,9 +370,6 @@ function toggleSidebar() {
     var contentURL;
     var sidebarProps;
     var track = simpleStorage.whatMatters;
-
-    sidebarProps = CONTENT_STORE['values'][0];
-    contentURL = './tmpl/show_data.html';
 
     // clears the badge
     allAboard.state('window', {
@@ -338,7 +380,7 @@ function toggleSidebar() {
     // we start showing the content sidebars. If the add-on icon is clicked before this,
     // we need to simply show the import data sidebar again.
     if (typeof simpleStorage.step === 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < 24) {
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < defaultSidebarInterval) {
         showImportDataSidebar();
         return;
     }
@@ -346,7 +388,8 @@ function toggleSidebar() {
     // Ensure that we have not already shown all content items, and that at least 24
     // hours have elapsed since we've shown the last sidebar before continuing to
     // increment the step counter and show the next sidebar.
-    if (simpleStorage.step !== 5 && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= 24) {
+    if (simpleStorage.step !== 5
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
         // we get the properties before we increment the contentStep as arrays are 0 indexed.
         sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
         contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
@@ -355,6 +398,8 @@ function toggleSidebar() {
         // add contentStep to sidebarProps so we do not have to pass another parameter
         sidebarProps.step = contentStep;
         showSidebar(sidebarProps, contentURL);
+        // initialize the about:home pageMod
+        modifyAboutHome(track, contentStep);
 
         // do not call the timer once we have reached
         // the final content item.
@@ -484,23 +529,58 @@ function modifyFirstrun() {
     });
 }
 
+/**
+ * Overrides time interval defauls from config file.
+ */
+function overrideDefaults() {
+    try {
+        // load the config file
+        let config = self.data.load('./../config.json');
+
+        // if the file existed, parse the contents to a JSON object
+        if (config) {
+            config = JSON.parse(config);
+            // override time intervals with values from config
+            defaultSidebarInterval = config.defaultSidebarInterval;
+            timeElapsedFormula = config.timeElapsedFormula;
+            waitInterval = config.waitInterval;
+        }
+    } catch(e) {
+        console.error('Either no config.json file was created, or it was placed at the wrong location. Error:', e);
+    }
+}
+
+/** This is called when the add-on is unloaded. If the reason is either disable,
+ * or shutdown, we can do some cleanup.
+ */
+exports.onUnload = function(reason) {
+    if (reason === 'disable' || reason === 'shutdown') {
+
+        if (typeof aboutHome !== 'undefined') {
+            aboutHome.destroy();
+        }
+    }
+};
 
 /**
 * Initializes the add-on, adds the icon to the chrome and checks the time elapsed
 * since a sidebar was last shown.
 */
-function init() {
+exports.main = function(options) {
+    // set's up the addon for dev mode.
+    overrideDefaults();
+
     // if init was called as part of a browser startup, we first need to check
     // whether lastSidebarLaunchTime exists and if it does, check whether
     // more than 24 hours have elsapsed since the last time a sidebar was shown.
-    if (self.loadReason === 'startup'
+    if (options.loadReason === 'startup'
         && simpleStorage.lastSidebarLaunchTime !== 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > 24) {
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
         // if all of the above is true
         toggleSidebar();
     }
 
-    if (self.loadReason === 'startup') {
+    if (options.loadReason === 'startup') {
         // if the sidebar was open during Firefox shutdown, it will be shown be
         // default when Firefox is started up again. The sidebar will not be
         // sized appropriately though so, we call setSidebarSize
@@ -526,7 +606,4 @@ function init() {
         && typeof simpleStorage.isOnBoarding === 'undefined') {
         modifyFirstrun();
     }
-    toggleSidebar();
-}
-
-init();
+};
