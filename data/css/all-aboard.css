@@ -56,11 +56,6 @@ a:focus {
     padding: 40px;
 }
 
-.sidebar-content.utility footer,
-.sidebar-content.values footer {
-    padding-top: 0;
-}
-
 /* styleing for search providers image */
 .search-providers {
     display: block;
@@ -84,6 +79,10 @@ a:focus {
 
 .sidebar-content.values main {
     padding-bottom: 40px;
+}
+
+.sidebar-content footer {
+    padding-top: 0;
 }
 
 .sidebar-content.values header img {
