@@ -552,9 +552,11 @@ function toggleSidebar() {
     // Ensure that we have not already shown all content items, and that at least 24
     // hours have elapsed since we've shown the last sidebar before continuing to
     // increment the step counter and show the next sidebar.
-
     if (simpleStorage.step !== 5
         && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
+        // To make sure that we aren't progressing the sidebar when we shouldn't with getSidebarProps(),
+        // we check to see if the first step has been set, or if our current set step is the same as the number of
+        // tokens that have been awarded (tokens are our indicator for the furthest "step" that the user can load at any given point)
         if(simpleStorage.step === undefined || (simpleStorage.tokens !== undefined && simpleStorage.tokens.length === simpleStorage.step))
         {
             // get the current sidebar's properties
