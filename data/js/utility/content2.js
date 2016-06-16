@@ -13,5 +13,7 @@
     button.addEventListener('click', function() {
         // notify addon that we've clicked the button
         addon.port.emit('intent', 'privateBrowsing');
+        // main cta action complete, notify add-on
+        addon.port.emit('cta_complete');
     });
 })();

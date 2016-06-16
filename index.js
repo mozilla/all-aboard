@@ -242,26 +242,6 @@ function changeTheme(themeNum) {
 }
 
 /**
-* Manages tokens and emits a message to the sidebar with an array
-* of tokens the user has received
-* @param {int} step - the step to assign a token for
-* @param {object} worker - used to emit the tokens array to the sidebar
-*/
-function assignTokens(step, worker) {
-    let tokens = simpleStorage.tokens || [];
-    let token = 'token' + step;
-
-    // if the token is not currently in the array, add it
-    if (tokens.indexOf(token) === -1) {
-        tokens.push(token);
-        // store the new token
-        store('tokens', tokens);
-    }
-    // emit the array of tokens to the sidebar
-    worker.port.emit('tokens', tokens);
-}
-
-/**
 * Grabs user history after auto-import happens
 * and selects top 3 non-identical hostname history items, sorted by visit count
 * @param {object} worker - used to emit browser history to the sidebar
@@ -369,6 +349,26 @@ function getBookmarks(worker) {
 }
 
 /**
+* Manages tokens and emits a message to the sidebar with an array
+* of tokens the user has received
+* @param {int} step - the step to assign a token for
+* @param {object} worker - used to emit the tokens array to the sidebar
+*/
+function assignTokens(step, worker) {
+    let tokens = simpleStorage.tokens || [];
+    let token = 'token' + step;
+
+    // if the token is not currently in the array, add it
+    if (tokens.indexOf(token) === -1) {
+        tokens.push(token);
+        // store the new token
+        store('tokens', tokens);
+    }
+    // emit the array of tokens to the sidebar
+    worker.port.emit('tokens', tokens);
+}
+
+/**
 * Shows a sidebar for the current content step.
 * @param {object} sidebarProps - properties for this sidebar instance
 */
@@ -377,10 +377,6 @@ function showSidebar(sidebarProps) {
     // if the sidebar is open, close it before calling show again
     // @see https://github.com/mozilla/all-aboard/issues/78 for details
     if (isVisible) {
-        content.hide();
-        // we need to also completely dispose of the previous sidebar or,
-        // we will get errors thrown by validateTitleAndURLCombo in
-        // resource://gre/modules/commonjs/sdk/ui/sidebar.js:288:13
         content.dispose();
     }
 
@@ -424,18 +420,32 @@ function showSidebar(sidebarProps) {
                         break;
                 }
             });
+
+            // listen for events when a user completes a sidebar cta
+            worker.port.on('cta_complete', function() {
+                // assign new token and notify sidebar
+                assignTokens(sidebarProps.step, worker);
+            });
+
             // store the current step we are on
             store('step', sidebarProps.step);
             // update the distribution id with the current step
             updatePref('-' + sidebarProps.step);
-            // assign new token and notify sidebar
-            assignTokens(sidebarProps.step, worker);
         },
         onDetach: function() {
-            content.dispose();
+            if (content) {
+                content.dispose();
+            }
         },
         onHide: function() {
             isVisible = false;
+        },
+        onReady: function(worker) {
+            // when the sidebar opens, and there are tokens in the list,
+            // send it the current list of assigned tokens
+            if (typeof simpleStorage.tokens !== 'undefined') {
+                worker.port.emit('tokens', simpleStorage.tokens);
+            }
         },
         onShow: function() {
             isVisible = true;

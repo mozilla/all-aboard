@@ -13,5 +13,7 @@
     button.addEventListener('click', function() {
         // alert the back-end that we've clicked the button
         addon.port.emit('intent', 'highlightURL');
+        // main cta action complete, notify add-on
+        addon.port.emit('cta_complete');
     });
 })();
