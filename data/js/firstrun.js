@@ -1,6 +1,7 @@
 'use strict';
 
 var fxAccountsContainer = document.querySelector('.fxaccounts');
+var choices = {};
 var contentContainer;
 var heading;
 var mainContainer;
@@ -30,6 +31,22 @@ var dialog = '<section id="all-aboard" class="dialog">' +
              '</section>';
 var noThanks = '<p class="no-thanks"><a href="about:home">No thanks</a></p>';
 
+/**
+ * Ammends the utm_campaign param passed when submitting the FxA form, to indicate
+ * whether it was submitted by a self identified utility or values user.
+ */
+function ammendUtmCampaign() {
+    var baseUtmString = 'utm_campaign=fxa-embedded-form';
+    var track = choices.whatMatters === 'utility' ? '-fx' : '-moz';
+    var fxaIframe = fxAccountsContainer.querySelector('#fxa');
+    var originFormSrc = fxaIframe.dataset['src'];
+    // http://regexr.com/3dkso
+    var utmRegex = /utm_campaign=[\w+-{1}]+/g;
+
+    // update the utm_campaign parameter
+    fxaIframe.dataset['src'] = originFormSrc.replace(utmRegex, baseUtmString + track);
+}
+
 // shows the default heading and the Fx accounts widget
 function showFxAccountWidget() {
     var intro = document.querySelector('#intro');
@@ -39,6 +56,8 @@ function showFxAccountWidget() {
     mainContainer.style.display = 'block';
     // inject no thanks link
     contentContainer.insertAdjacentHTML('afterend', noThanks);
+    // ammend utm param
+    ammendUtmCampaign();
 }
 
 // hide the default heading and the Fx accounts widget
@@ -85,7 +104,6 @@ function interactionHandler() {
 
     button.addEventListener('click', function() {
         var checkedElems = addonContent.querySelectorAll('input[type="radio"]:checked');
-        var choices = {};
 
         for (var i = 0,l = checkedElems.length; i < l; i++) {
             choices[checkedElems[i].name] = checkedElems[i].value;
