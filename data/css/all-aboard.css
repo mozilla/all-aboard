@@ -81,8 +81,8 @@ a:focus {
     padding-bottom: 40px;
 }
 
-.sidebar-content.values footer {
-    padding-top: 40px;
+.sidebar-content footer {
+    padding-top: 0;
 }
 
 .sidebar-content.values header img {
