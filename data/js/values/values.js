@@ -17,6 +17,8 @@
         answer.classList.add('answer');
         // check the radio button
         answerRadio.click();
+        // main cta action complete, notify add-on
+        addon.port.emit('cta_complete');
         // show secondary content if it exists
         if (secondaryContent) {
             secondaryContent.classList.remove('hide');

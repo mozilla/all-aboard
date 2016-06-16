@@ -22,6 +22,10 @@
             node.addEventListener('click', function() {
                 // notify addon that we've clicked the button
                 addon.port.emit('intent', name);
+                // main cta action complete, notify add-on
+                // the add-on handles duplicates so, calling this multiple
+                // times is fine.
+                addon.port.emit('cta_complete');
             });
         })(templateNames[x]);
     }
