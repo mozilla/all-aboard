@@ -69,6 +69,7 @@ var content;
 // the default interval between sidebars. Here set as hours.
 var defaultSidebarInterval = 24;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
+var hostnameMatch = /^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)(\/[^?#]*)(\?[^#]*|)(#.*|)$/;
 var timeElapsedFormula = 1000*60*60;
 // initialize timer to -1 to indicate that there is no timer currently running.
 var timer = -1;
@@ -216,7 +217,7 @@ function changeTheme(themeNum) {
     var personaIDs = [111387, 539838, 157076];
 
     // if there is no number passed, set the theme to default and return
-    if(typeof themeNum === 'undefined') {
+    if (typeof themeNum === 'undefined') {
         LightweightThemeManager.themeChanged(null);
         return;
     }
@@ -258,6 +259,113 @@ function assignTokens(step, worker) {
     }
     // emit the array of tokens to the sidebar
     worker.port.emit('tokens', tokens);
+}
+
+/**
+* Grabs user history after auto-import happens
+* and selects top 3 non-identical hostname history items, sorted by visit count
+* @param {object} worker - used to emit browser history to the sidebar
+*/
+function getHistory(worker) {
+    let { search } = require('sdk/places/history');
+
+    let topHistory = [];
+    let lastWeek = Date.now - (1000*60*60*24*7);
+
+    try {
+        search(
+            { to: lastWeek},
+            { count: 1000, sort: 'visitCount', descending: true}
+            ).on('end', function (results) {
+                // if we imported any browser history
+                if (results) {
+                    // search through to find history which fits our critera
+                    for(var x = 0, y = results.length; x < y; x++) {
+                        // if history has a title stored
+                        if (results[x].title) {
+                            // parse url
+                            var parsedURL = results[x].url.match(hostnameMatch);
+                            var duplicateHost = false;
+
+                            // check if the current hostname is already in our top history
+                            for(var z = 0, a = topHistory.length; z < a; z++) {
+                                if (topHistory[z].indexOf(parsedURL[3]) !== -1) {
+                                    duplicateHost = true;
+                                }
+                            }
+
+                            // if the hostname isn't already in our top history, add this history element
+                            if (!duplicateHost) {
+                                // add element to the top history
+                                topHistory.push('<a href=' + results[x].url + '>' + results[x].title + ' ' + results[x].visitCount +'</a><br><a class=\"hostname\">' + parsedURL[3] + '</a>');
+
+                                // if we have the top 3 history elements which fit our parameters, break from the loop
+                                if (topHistory.length >= 2) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                }
+                // send the top 3 history elements to the sidebar
+                worker.port.emit('history', topHistory);
+        });
+    }
+    catch (e) {
+        console.error('Couldn\'t grab history: ', e);
+    }
+}
+
+/**
+* Grabs user bookmarks after auto-import happens
+* and selects top 3 non-identical hostname bookmark items, sorted by date added
+* @param {object} worker - used to emit browser bookmarks to the sidebar
+*/
+function getBookmarks(worker) {
+    let { search } = require('sdk/places/bookmarks');
+    let topBookmarks = [];
+
+    try {
+        search(
+            { count: 20, sort: 'dateAdded', descending: true}
+            ).on('end', function (results) {
+                // if we have any bookmark data
+                if (results) {
+                    // search through each item
+                    for(var x = 0, y = results.length; x < y; x++) {
+                        if (results[x].title) {
+                            // parse url
+                            var parsedURL = results[x].url.match(hostnameMatch);
+                            var duplicateHost = false;
+
+                            // check if the current hostname is already in our top bookmark
+                            for(var z = 0, a = topBookmarks.length; z < a; z++) {
+                                if (topBookmarks[z].indexOf(parsedURL[3]) !== -1) {
+                                    duplicateHost = true;
+                                }
+                            }
+
+                            // if the hostname isn't already in our top bookmark, add this bookmark element
+                            if (!duplicateHost) {
+                                // add element to the top bookmark
+                                topBookmarks.push('<a href=' + results[x].url + '>' + results[x].title + '</a><br><a class=\"hostname\">' + parsedURL[3] + '</a>');
+
+                                // if we have the top 3 bookmark elements which fit our parameters, break from the loop
+                                if (topBookmarks.length >= 2) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                // send the top 3 bookmark elements to the sidebar
+                worker.port.emit('bookmarks', topBookmarks);
+        });
+    }
+    catch (e) {
+        console.error('Couldn\'t grab bookmarks: ', e);
+    }
 }
 
 /**
@@ -449,6 +557,33 @@ function toggleSidebar() {
         // disposed of the sidebar instance. Safest is to get a new instance.
         showSidebar(sidebarProps);
     }
+}
+
+/**
+* Shows the user data sidebar which provides the user with a button to
+* open the newtab page, reset the auto-import, and view a preview of the data that was imported
+*/
+function showUserDataSidebar() {
+    store('lastSidebarLaunchTime', Date.now());
+
+    content = sidebar.Sidebar({
+        id: 'allboard-importdata',
+        title: 'We\'ve got your back.',
+        url: './tmpl/show_data.html',
+        onAttach: function(worker) {
+            getHistory(worker);
+            getBookmarks(worker);
+        },
+        onDetach: function() {
+            content.dispose();
+            if (timer === -1) {
+                startTimer();
+            }
+        }
+    });
+
+    content.show();
+    setSidebarSize();
 }
 
 /**
