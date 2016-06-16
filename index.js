@@ -198,6 +198,9 @@ function showSearch() {
     });
 }
 
+/**
+ * Remove highlight and event listener on the awesomebar
+ */
 function removeHighlight() {
     UITour.hideHighlight(activeWindow);
     awesomeBar.removeEventListener('focus', removeHighlight);
