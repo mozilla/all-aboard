@@ -552,14 +552,18 @@ function toggleSidebar() {
     // Ensure that we have not already shown all content items, and that at least 24
     // hours have elapsed since we've shown the last sidebar before continuing to
     // increment the step counter and show the next sidebar.
+
     if (simpleStorage.step !== 5
         && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
-        // get the current sidebar's properties
-        sidebarProps = getSidebarProps();
-        // shows the relevant sidebar
-        showSidebar(sidebarProps);
-        // initialize the about:home pageMod
-        modifyAboutHome(sidebarProps.track, sidebarProps.step);
+        if(simpleStorage.step === undefined || (simpleStorage.tokens !== undefined && simpleStorage.tokens.length === simpleStorage.step))
+        {
+            // get the current sidebar's properties
+            sidebarProps = getSidebarProps();
+            // shows the relevant sidebar
+            showSidebar(sidebarProps);
+            // initialize the about:home pageMod
+            modifyAboutHome(sidebarProps.track, sidebarProps.step);
+        }
     } else {
         // 24 hours has not elapsed since the last content sidebar has been shown so,
         // simply show the current sidebar again. We cannot just simply call .show(),
