@@ -22,6 +22,7 @@
         // show secondary content if it exists
         if (secondaryContent) {
             secondaryContent.classList.remove('hide');
+            button.classList.add('hidden');
         }
     });
 
