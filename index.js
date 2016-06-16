@@ -78,6 +78,8 @@ var sidebarProps;
 var waitInterval = 86400000;
 // is the sidebar currently visible
 var isVisible = false;
+// whether we have assigned a token for our current content step
+var assignedToken = false;
 
 
 /**
@@ -357,6 +359,8 @@ function getBookmarks(worker) {
 function assignTokens(step, worker) {
     let tokens = simpleStorage.tokens || [];
     let token = 'token' + step;
+    // flag that we have assigned our token for this sidebar so we can check later
+    assignedToken = true;
 
     // if the token is not currently in the array, add it
     if (tokens.indexOf(token) === -1) {
@@ -433,8 +437,9 @@ function showSidebar(sidebarProps) {
 
             // listen for events when a user completes a sidebar cta
             worker.port.on('cta_complete', function() {
-                // assign new token and notify sidebar
-                assignTokens(sidebarProps.step, worker);
+                // assign new token and notify sidebar as long as we haven't done so already
+                if(!assignedToken)
+                    assignTokens(sidebarProps.step, worker);
             });
 
             // store the current step we are on
@@ -519,6 +524,8 @@ function getSidebarProps() {
     var sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
     // determine the current content step we are on
     var contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+    // reset our assigned token flag for the new sidebar
+    assignedToken = false;
 
     // store the current step
     store('step', contentStep);
