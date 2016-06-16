@@ -366,6 +366,16 @@ function assignTokens(step, worker) {
     }
     // emit the array of tokens to the sidebar
     worker.port.emit('tokens', tokens);
+
+    // do not call the timer once we have reached
+    // the final content item.
+    if (step < 5) {
+        // update the lastSidebarLaunchTime to now
+        store('lastSidebarLaunchTime', Date.now());
+        // this code will not be called again prior to at least 24 hours
+        // having elapsed, so it safe to simply call startTimer here.
+        startTimer();
+    }
 }
 
 /**
@@ -550,16 +560,6 @@ function toggleSidebar() {
         showSidebar(sidebarProps);
         // initialize the about:home pageMod
         modifyAboutHome(sidebarProps.track, sidebarProps.step);
-
-        // do not call the timer once we have reached
-        // the final content item.
-        if (sidebarProps.step < 5) {
-            // update the lastSidebarLaunchTime to now
-            store('lastSidebarLaunchTime', Date.now());
-            // this code will not be called again prior to at least 24 hours
-            // having elapsed, so it safe to simply call startTimer here.
-            startTimer();
-        }
     } else {
         // 24 hours has not elapsed since the last content sidebar has been shown so,
         // simply show the current sidebar again. We cannot just simply call .show(),
