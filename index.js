@@ -63,6 +63,11 @@ var { XMLHttpRequest } = require('sdk/net/xhr');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightThemeManager.jsm').LightweightThemeManager;
 
+// the browser window object where we can grab individual node (like the awesome bar)
+var activeWindow = utils.getMostRecentBrowserWindow();
+// the awesomebar node from the browser window
+var awesomeBar = activeWindow.document.getElementById('urlbar');
+
 var aboutHome;
 var allAboard;
 var content;
@@ -193,12 +198,19 @@ function showSearch() {
     });
 }
 
+function removeHighlight() {
+    UITour.hideHighlight(activeWindow);
+    awesomeBar.removeEventListener('focus', removeHighlight);
+}
+
 /**
  * Highlight a given item in the browser chrome
  * @param {string} item - Item you wish to highlight's name as a string
  */
 function highLight(item) {
-    let activeWindow = utils.getMostRecentBrowserWindow();
+    if (item === 'urlbar') {
+        awesomeBar.addEventListener('focus', removeHighlight);
+    }
 
     UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
         try {
