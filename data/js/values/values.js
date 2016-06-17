@@ -4,6 +4,8 @@
     var button = document.querySelector('button');
     var secondaryContent = document.querySelector('#secondary_content');
     var secondaryCTA = document.querySelector('#secondary_cta');
+    var optionA = document.querySelector('#option-a');
+    var optionB = document.querySelector('#option-b');
 
     addon.port.on('tokens', function(tokens) {
         for (var i = 0, l = tokens.length; i < l; i++) {
@@ -17,6 +19,9 @@
         answer.classList.add('answer');
         // check the radio button
         answerRadio.click();
+        // disable wrong answers
+        optionA.disabled = true;
+        optionB.disabled = true;
         // main cta action complete, notify add-on
         addon.port.emit('cta_complete');
         // show secondary content if it exists
