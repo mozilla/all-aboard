@@ -9,11 +9,11 @@ var mainContainer;
 // template strings
 var dialog = '<section id="all-aboard" class="dialog">' +
              '<header>' +
-             '<h2>I’ve used Firefox in the last 30 days?</h2>' +
-             '<div id="yup_nope" class="form-elements">' +
-             '<label for="yup">' +
+             '<h2>Have you used Firefox in the last 30 days?</h2>' +
+             '<br><div id="yup_nope" class="form-elements">' +
+             '<br><label for="yup">' +
              '<input type="radio" name="isOnBoarding" value="existing" id="yup" />yup</label>' +
-             '<label for="nope">' +
+             '<br><br><label for="nope">' +
              '<input type="radio" name="isOnBoarding" value="new" id="nope" />nope</label>' +
              '</div>' +
              '</header>' +
