@@ -438,8 +438,9 @@ function showSidebar(sidebarProps) {
             // listen for events when a user completes a sidebar cta
             worker.port.on('cta_complete', function() {
                 // assign new token and notify sidebar as long as we haven't done so already
-                if(!assignedToken)
+                if(!assignedToken) {
                     assignTokens(sidebarProps.step, worker);
+                }
             });
 
             // store the current step we are on
