@@ -24,12 +24,11 @@ var dialog = '<section id="all-aboard" class="dialog">' +
              '<label for="values">' +
              '<input type="radio" name="whatMatters" value="values" id="values" />Do good</label>' +
              '</main>' +
-             '<footer>' +
-             '<a href="about:home" id="dismiss">No thanks</a>' +
-             '<button type="button" class="button hidden">Go!</button>' +
+             '<footer class="hidden" aria-hidden="true">' +
+             '<button type="button" class="button">Go!</button>' +
              '</footer>' +
-             '</section>';
-var noThanks = '<p class="no-thanks"><a href="about:home">No thanks</a></p>';
+             '</section>' +
+             '<a href="about:home" id="dismiss" class="no-thanks">No thanks</a>';
 
 /**
  * Ammends the utm_campaign param passed when submitting the FxA form, to indicate
@@ -54,8 +53,6 @@ function showFxAccountWidget() {
     // show the default heading and the Fx accounts widget
     heading.style.display = 'block';
     mainContainer.style.display = 'block';
-    // inject no thanks link
-    contentContainer.insertAdjacentHTML('afterend', noThanks);
     // ammend utm param
     ammendUtmCampaign();
 }
@@ -82,7 +79,8 @@ function showDialog() {
 function interactionHandler() {
     var addonContent = document.querySelector('#all-aboard');
     var button = addonContent.querySelector('button');
-    var dismiss = addonContent.querySelector('#dismiss');
+    var dismiss = document.querySelector('#dismiss');
+    var footer = addonContent.querySelector('footer');
     var yupNope = addonContent.querySelector('#yup_nope');
     var whatMatters = addonContent.querySelector('.what-matters');
 
@@ -99,7 +97,8 @@ function interactionHandler() {
     });
 
     whatMatters.addEventListener('change', function() {
-        button.classList.remove('hidden');
+        footer.classList.remove('hidden');
+        footer.setAttribute('aria-hidden', false);
     });
 
     button.addEventListener('click', function() {
