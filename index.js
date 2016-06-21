@@ -50,13 +50,13 @@ const CONTENT_STORE = {
 var buttons = require('sdk/ui/button/action');
 var notifications = require('sdk/notifications');
 var pageMod = require('sdk/page-mod');
-var prefService = require('sdk/preferences/service');
 var self = require('sdk/self');
 var sidebar = require('sdk/ui/sidebar');
 var simpleStorage = require('sdk/simple-storage').storage;
 var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
-var utils = require('sdk/window/utils');
+var utils = require('lib/utils.js');
+var windowUtils = require('sdk/window/utils');
 
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
@@ -64,7 +64,7 @@ var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightThemeManager.jsm').LightweightThemeManager;
 
 // the browser window object where we can grab individual node (like the awesome bar)
-var activeWindow = utils.getMostRecentBrowserWindow();
+var activeWindow = windowUtils.getMostRecentBrowserWindow();
 // the awesomebar node from the browser window
 var awesomeBar = activeWindow.document.getElementById('urlbar');
 
@@ -85,43 +85,6 @@ var waitInterval = 86400000;
 var isVisible = false;
 // whether we have assigned a token for our current content step
 var assignedToken = false;
-
-
-/**
-* Stores a name and value pair using the add-on simple storage API
-* https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/SDK/High-Level_APIs/simple-storage
-* @param {string} name - The name of the storage item
-* @param {string} value - The value to set
-*/
-function store(name, value) {
-    simpleStorage[name] = value;
-}
-
-/**
-* Updates the distribution.id preference
-* @param {string} value - The new value to append.
-*/
-function updatePref(value) {
-    let distributionId = prefService.get('distribution.id');
-    let newValue;
-
-    // if the distribution.id does not exist, prepend mozilla86
-    if (typeof distributionId === 'undefined') {
-        newValue = 'mozilla86' + value;
-    } else {
-        let leadingNumberRegex = /-\d/g;
-
-        // if the current distribution.id ends with a number
-        if (leadingNumberRegex.test(distributionId)) {
-            // strip of the current step before appending the new one.
-            newValue = distributionId.replace(leadingNumberRegex, value);
-        } else {
-            newValue = distributionId + value;
-        }
-    }
-
-    prefService.set('distribution.id', newValue);
-}
 
 /**
 * Determines the number of hours that has elapsed since the last sidebar was shown.
@@ -149,7 +112,7 @@ function startTimer() {
 * Utility function to set the desired size for the sidebar.
 */
 function setSidebarSize() {
-    var activeWindow = utils.getMostRecentBrowserWindow();
+    var activeWindow = windowUtils.getMostRecentBrowserWindow();
     var _sidebar = activeWindow.document.getElementById('sidebar');
     _sidebar.style.width = '320px';
     _sidebar.style.maxWidth = '320px';
@@ -185,7 +148,7 @@ function showBadge() {
  * Opens the search bar
  */
 function showSearch() {
-    let activeWindow = utils.getMostRecentBrowserWindow();
+    let activeWindow = windowUtils.getMostRecentBrowserWindow();
     let barPromise = UITour.getTarget(activeWindow, 'search');
     let iconPromise = UITour.getTarget(activeWindow, 'searchIcon');
 
@@ -381,7 +344,7 @@ function assignTokens(step, worker) {
     if (tokens.indexOf(token) === -1) {
         tokens.push(token);
         // store the new token
-        store('tokens', tokens);
+        utils.store('tokens', tokens);
     }
     // emit the array of tokens to the sidebar
     worker.port.emit('tokens', tokens);
@@ -390,7 +353,7 @@ function assignTokens(step, worker) {
     // the final content item.
     if (step < 5) {
         // update the lastSidebarLaunchTime to now
-        store('lastSidebarLaunchTime', Date.now());
+        utils.store('lastSidebarLaunchTime', Date.now());
         // this code will not be called again prior to at least 24 hours
         // having elapsed, so it safe to simply call startTimer here.
         startTimer();
@@ -459,9 +422,9 @@ function showSidebar(sidebarProps) {
             });
 
             // store the current step we are on
-            store('step', sidebarProps.step);
+            utils.store('step', sidebarProps.step);
             // update the distribution id with the current step
-            updatePref('-' + sidebarProps.step);
+            utils.updatePref('-' + sidebarProps.step);
         },
         onDetach: function() {
             if (content) {
@@ -544,7 +507,7 @@ function getSidebarProps() {
     assignedToken = false;
 
     // store the current step
-    store('step', contentStep);
+    utils.store('step', contentStep);
 
     // set the additional sidebar properties
     sidebarProps.step = contentStep;
@@ -603,7 +566,7 @@ function toggleSidebar() {
 * open the newtab page, reset the auto-import, and view a preview of the data that was imported
 */
 function showUserDataSidebar() {
-    store('lastSidebarLaunchTime', Date.now());
+    utils.store('lastSidebarLaunchTime', Date.now());
 
     content = sidebar.Sidebar({
         id: 'allboard-importdata',
@@ -631,7 +594,7 @@ function showUserDataSidebar() {
 */
 function showImportDataSidebar() {
 
-    store('lastSidebarLaunchTime', Date.now());
+    utils.store('lastSidebarLaunchTime', Date.now());
 
     content = sidebar.Sidebar({
         id: 'allboard-importdata',
@@ -688,16 +651,16 @@ function modifyFirstrun() {
             worker.port.emit('modify');
 
             worker.port.on('dialogSubmit', function(choices) {
-                store('isOnBoarding', choices.isOnBoarding);
-                store('whatMatters', choices.whatMatters);
-                updatePref('-' + choices.whatMatters + '-' + choices.isOnBoarding);
+                utils.store('isOnBoarding', choices.isOnBoarding);
+                utils.store('whatMatters', choices.whatMatters);
+                utils.updatePref('-' + choices.whatMatters + '-' + choices.isOnBoarding);
             });
 
             // listens for a message from pageMod when a user clicks on "No thanks"
             worker.port.on('onboardingDismissed', function(dismissed) {
                 // user has opted out of onboarding, destroy pageMod
                 firstRun.destroy();
-                store('onboardingDismissed', dismissed);
+                utils.store('onboardingDismissed', dismissed);
             });
 
             // The code below will be executed once(1 time) when the user navigates away from the
