@@ -421,6 +421,12 @@ function showSidebar(sidebarProps) {
                 }
             });
 
+            // for the mobile sidebar, utility - content5, we assign a token
+            // simply for opening the sidebar, no interaction required.
+            if (sidebarProps.track === 'utility' && sidebarProps.step === 5) {
+                assignTokens(sidebarProps.step, worker);
+            }
+
             // store the current step we are on
             utils.store('step', sidebarProps.step);
             // update the distribution id with the current step
@@ -448,49 +454,6 @@ function showSidebar(sidebarProps) {
 
     content.show();
     setSidebarSize();
-}
-
-/**
- * Modifies the about:home page to show a snippet that matches the current sidebar.
- * @param {string} track - The current sidebar's track
- * @param {int} step - The current sidebar's content step
- */
-function modifyAboutHome(track, step) {
-    aboutHome = pageMod.PageMod({
-        include: /about:home/,
-        contentScriptFile: './js/about-home.js',
-        contentScriptWhen: 'ready',
-        contentStyleFile: './css/about-home.css',
-        onAttach: function(worker) {
-            // constructs uri to snippet content
-            var contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
-            // load snippet HTML
-            var snippetContent = self.data.load(contentURL);
-            // emit modify event and passes snippet HTML as a string
-            worker.port.emit('modify', snippetContent);
-
-            // listens to an intent message and calls the relevant function
-            // based on intent.
-            worker.port.on('intent', function(intent) {
-                switch(intent) {
-                    case 'bookmarks':
-                        highLight('bookmarks');
-                        break;
-                    case 'customize':
-                        highLight('customize');
-                        break;
-                    case 'privateBrowsing':
-                        highLight('privateWindow');
-                        break;
-                    case 'search':
-                        showSearch();
-                        break;
-                    default:
-                        break;
-                }
-            });
-        }
-    });
 }
 
 /**
@@ -630,6 +593,49 @@ function showImportDataSidebar() {
 
     content.show();
     setSidebarSize();
+}
+
+/**
+ * Modifies the about:home page to show a snippet that matches the current sidebar.
+ * @param {string} track - The current sidebar's track
+ * @param {int} step - The current sidebar's content step
+ */
+function modifyAboutHome(track, step) {
+    aboutHome = pageMod.PageMod({
+        include: /about:home/,
+        contentScriptFile: './js/about-home.js',
+        contentScriptWhen: 'ready',
+        contentStyleFile: './css/about-home.css',
+        onAttach: function(worker) {
+            // constructs uri to snippet content
+            var contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
+            // load snippet HTML
+            var snippetContent = self.data.load(contentURL);
+            // emit modify event and passes snippet HTML as a string
+            worker.port.emit('modify', snippetContent);
+
+            // listens to an intent message and calls the relevant function
+            // based on intent.
+            worker.port.on('intent', function(intent) {
+                switch(intent) {
+                    case 'bookmarks':
+                        highLight('bookmarks');
+                        break;
+                    case 'customize':
+                        highLight('customize');
+                        break;
+                    case 'privateBrowsing':
+                        highLight('privateWindow');
+                        break;
+                    case 'search':
+                        showSearch();
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+    });
 }
 
 /**
