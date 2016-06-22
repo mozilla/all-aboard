@@ -3,6 +3,7 @@
 var fxAccountsContainer = document.querySelector('.fxaccounts');
 var choices = {};
 var contentContainer;
+var dismiss;
 var heading;
 var mainContainer;
 
@@ -53,6 +54,10 @@ function showFxAccountWidget() {
     // show the default heading and the Fx accounts widget
     heading.style.display = 'block';
     mainContainer.style.display = 'block';
+
+    // show the no thanks link again
+    dismiss.classList.remove('hidden');
+
     // ammend utm param
     ammendUtmCampaign();
 }
@@ -79,11 +84,11 @@ function showDialog() {
 function interactionHandler() {
     var addonContent = document.querySelector('#all-aboard');
     var button = addonContent.querySelector('button');
-    var dismiss = document.querySelector('#dismiss');
     var footer = addonContent.querySelector('footer');
     var yupNope = addonContent.querySelector('#yup_nope');
     var whatMatters = addonContent.querySelector('.what-matters');
 
+    dismiss = document.querySelector('#dismiss');
     // listen for a click event on the 'No Thanks' link and send preference
     dismiss.addEventListener('click', function() {
         self.port.emit('onboardingDismissed', 'true');
@@ -92,6 +97,11 @@ function interactionHandler() {
     // when the user selects either yup or nope, show the second question
     yupNope.addEventListener('change', function() {
         addonContent.classList.add('step2');
+
+        // as soon as the user has interacted with the first questions
+        // hide the no thanks link until we call showFxAccountWidget
+        dismiss.classList.add('hidden');
+
         whatMatters.classList.remove('hidden');
         whatMatters.setAttribute('aria-hidden', false);
     });

@@ -80,13 +80,13 @@
     display: inline-block;
 }
 
-#all-aboard .hidden {
-    display: none;
-}
-
 /* no thanks fx accounts link */
 .no-thanks {
     display: block;
     margin-top: 20px;
     font-size: 1rem;
+}
+
+.hidden {
+    display: none;
 }
