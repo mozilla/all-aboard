@@ -245,12 +245,24 @@ a:focus {
     border: 0;
 }
 
+/* customization sidebar styles */
 .button-container button {
     margin-bottom: 20px;
 }
 
 .button-container button:last-child {
     margin: 0;
+}
+
+.more-themes:before {
+    display: inline-block;
+    content: '';
+    background: transparent url(../media/icons/themes.png) 0 0 no-repeat;
+    background-size: 45px 40px;
+    margin: 10px 3px 0 0;
+    width: 45px;
+    height: 40px;
+    vertical-align: bottom;
 }
 
 .button:hover,
