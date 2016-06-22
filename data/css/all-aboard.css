@@ -219,6 +219,10 @@ a:focus {
     display: inline-block;
 }
 
+.options-response {
+    font-style: italic;
+}
+
 /* buttons */
 .button {
     position: relative;

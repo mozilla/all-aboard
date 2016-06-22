@@ -15,24 +15,30 @@
         <ul class="options">
           <li>
             <label for="option-a">
-              <input type="radio" name="options" value="a" id="option-a" />
+              <input type="radio" name="options" id="option-a" data-response="response_a" />
               <span>Just look at the time!</span>
             </label>
           </li>
           <li>
             <label for="option-b">
-              <input type="radio" name="options" value="b" id="option-b" />
+              <input type="radio" name="options" id="option-b" data-response="response_b" />
               <span>You need to schedule that root canal.</span>
             </label>
           </li>
           <li>
             <label for="option-c" id="answer">
-              <input type="radio" name="options" value="c" id="option-c" />
+              <input type="radio" name="options" value="answer" id="option-c" data-response="response_c" />
               <span>You haven’t discovered how easy Mozilla makes it.</span>
             </label>
           </li>
         </ul>
         <button id="tell_me" class="button">Show Answer</button>
+
+        <!-- conditional messaging based on options selection -->
+        <p id="response_a" class="options-response hidden" aria-hidden="true">Wait! it’s easier than you think.</p>
+        <p id="response_b" class="options-response hidden" aria-hidden="true">Wait! Dental health is important, but so is this.</p>
+        <p id="response_c" class="options-response hidden" aria-hidden="true">Correct. But now you can.</p>
+
         <div id="secondary_content" class="secondary-content hide">
           <p>Improve your security online with these <a href="https://www.mozilla.org/teach/smarton/security/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=security" id="secondary_cta" data-intent="smarton">safety measures recommended by Mozilla policy pros</a>.</p>
         </div>
