@@ -15,24 +15,30 @@
         <ul class="options">
           <li>
             <label for="option-a">
-              <input type="radio" name="options" value="a" id="option-a" />
+              <input type="radio" name="options" id="option-a" data-response="response_a" />
               <span>Number of hours you spent watching cat videos last week.</span>
             </label>
           </li>
           <li>
             <label for="option-b">
-              <input type="radio" name="options" value="b" id="option-b" />
+              <input type="radio" name="options" id="option-b" data-response="response_b" />
               <span>Number of unread emails you have.</span>
             </label>
           </li>
           <li>
             <label for="option-c" id="answer">
-              <input type="radio" name="options" value="c" id="option-c" />
+              <input type="radio" name="options" value="answer" id="option-c" data-response="response_c" />
               <span>Number of volunteers who keep Mozilla and Firefox humming.</span>
             </label>
           </li>
         </ul>
         <button id="tell_me" class="button">Show Answer</button>
+
+        <!-- conditional messaging based on options selection -->
+        <p id="response_a" class="options-response hidden" aria-hidden="true">Us too. You see the one where the cat gets surprised by the cucumber?</p>
+        <p id="response_b" class="options-response hidden" aria-hidden="true">Us too. But don’t let that stop you from signing up below.</p>
+        <p id="response_c" class="options-response hidden" aria-hidden="true">Really! It’s getting harder and harder to organize a potluck around here.</p>
+
         <div id="secondary_content" class="secondary-content hide">
           <p>Love the Web? Get the <a href="https://www.mozilla.org/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=community#newsletter-subscribe" id="secondary_cta" data-intent="newsletter">Mozilla newsletter</a> and help us keep it open and free.</p>
         </div>
