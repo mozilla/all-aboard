@@ -4,14 +4,6 @@
     // set template names
     var templateNames = ['template1','template2','template3'];
 
-    // add the correct number of tokens to our sidebar
-    addon.port.on('tokens', function(tokens) {
-        for (var i = 0, l = tokens.length; i < l; i++) {
-            // set the token container to active and shows the token
-            document.querySelector('#' + tokens[i]).classList.add('active');
-        }
-    });
-
     // add listeners to all of our buttons for clicking
     for(var x=0, l=templateNames.length; x<l; x++) {
         // get the current template
