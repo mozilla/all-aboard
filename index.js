@@ -125,9 +125,9 @@ function setSidebarSize() {
 */
 function showDesktopNotification() {
     notifications.notify({
-        title: 'All Aboard',
-        text: 'You have a new message',
-        iconURL: './media/icons/icon-32.png',
+        title: 'Welcome Aboard',
+        text: 'Firefox has something special for you.',
+        iconURL: './media/icons/icon-32_active.png',
         onClick: toggleSidebar
     });
 }
