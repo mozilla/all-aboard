@@ -751,12 +751,12 @@ function overrideDefaults() {
         // if the file existed, parse the contents to a JSON object
         if (config) {
             config = JSON.parse(config);
-            // override time intervals with values from config
-            afterInteractionCloseTime = config.afterInteractionCloseTime;
-            defaultSidebarInterval = config.defaultSidebarInterval;
-            defaultSidebarCloseTime = config.defaultSidebarCloseTime;
-            timeElapsedFormula = config.timeElapsedFormula;
-            waitInterval = config.waitInterval;
+            // override time intervals with values from config if they exist
+            afterInteractionCloseTime = config.afterInteractionCloseTime || afterInteractionCloseTime;
+            defaultSidebarInterval = config.defaultSidebarInterval || defaultSidebarInterval;
+            defaultSidebarCloseTime = config.defaultSidebarCloseTime || defaultSidebarCloseTime;
+            timeElapsedFormula = config.timeElapsedFormula || timeElapsedFormula;
+            waitInterval = config.waitInterval || waitInterval;
         }
     } catch(e) {
         console.error('Either no config.json file was created, or it was placed at the wrong location. Error:', e);
