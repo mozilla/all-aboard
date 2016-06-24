@@ -435,6 +435,7 @@ function showSidebar(sidebarProps) {
         onDetach: function() {
             if (content) {
                 content.dispose();
+                isVisible = false;
             }
         },
         onHide: function() {
@@ -498,29 +499,34 @@ function toggleSidebar() {
         return;
     }
 
-    // Ensure that we have not already shown all content items, and that at least 24
-    // hours have elapsed since we've shown the last sidebar before continuing to
-    // increment the step counter and show the next sidebar.
-    if (simpleStorage.step !== 5
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
-        // To make sure that we aren't progressing the sidebar when we shouldn't with getSidebarProps(),
-        // we check to see if the first step has been set, or if our current set step is the same as the number of
-        // tokens that have been awarded (tokens are our indicator for the furthest "step" that the user can load at any given point)
-        if(simpleStorage.step === undefined || (simpleStorage.tokens !== undefined && simpleStorage.tokens.length === simpleStorage.step))
-        {
-            // get the current sidebar's properties
-            sidebarProps = getSidebarProps();
-            // shows the relevant sidebar
-            showSidebar(sidebarProps);
-            // initialize the about:home pageMod
-            modifyAboutHome(sidebarProps.track, sidebarProps.step);
-        }
+    // Ensure that we have not already shown all content items, that at least 24
+    // hours have elapsed since we've shown the last sidebar, and that the user has
+    // completed the main CTA for the current step before continuing to increment
+    // the step counter and show the next sidebar.
+    if (simpleStorage.step !== 5 && typeof simpleStorage.tokens !== 'undefined'
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval
+        && simpleStorage.tokens.indexOf('token' + simpleStorage.step) > -1) {
+        // get the current sidebar's properties
+        sidebarProps = getSidebarProps();
+        // shows the relevant sidebar
+        showSidebar(sidebarProps);
+        // initialize the about:home pageMod
+        modifyAboutHome(sidebarProps.track, sidebarProps.step);
     } else {
         // 24 hours has not elapsed since the last content sidebar has been shown so,
-        // simply show the current sidebar again. We cannot just simply call .show(),
-        // because either the sidebar or browser might have been closed which would have
-        // disposed of the sidebar instance. Safest is to get a new instance.
-        showSidebar(sidebarProps);
+        // simply show or hide the current sidebar.
+        if (isVisible) {
+            content.hide();
+        } else if (typeof sidebarProps !== 'undefined') {
+            // We cannot just simply call .show(), because either the sidebar or
+            // browser might have been closed which would have disposed of the
+            // sidebar instance. Safest is to get a new instance.
+            showSidebar(sidebarProps);
+        } else {
+            // this is the first time we are showing a content sidebar.
+            sidebarProps = getSidebarProps();
+            showSidebar(sidebarProps);
+        }
     }
 }
 
