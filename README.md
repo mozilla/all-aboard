@@ -71,7 +71,9 @@ In the root of the project folder, add a file called `config.json` as follows:
 
 ```
 {
+    "afterInteractionCloseTime": 2000,
     "defaultSidebarInterval": 5,
+    "defaultSidebarCloseTime": 5000,
     "timeElapsedFormula": 1000,
     "waitInterval": 5000
 }
@@ -79,7 +81,9 @@ In the root of the project folder, add a file called `config.json` as follows:
 
 The values are defined as follows:
 
+* `afterInteractionCloseTime` - The amount of time to wait before auto closing the sidebar after user interaction.
 * `defaultSidebarInterval` - Time between sidebars defined in seconds
+* `defaultSidebarCloseTime` - Time to wait before auto closing the sidebar if there is no interaction by the user.
 * `timeElapsedFormula` - This is the formula used to convert milliseconds to either minutes, hours etc. If you for example set this to `1000`, it will devide the milliseconds to seconds.
 * `waitInterval` - This is the interval, set in milliseconds, that the timer will wait until triggering the next badge update and notification.
 

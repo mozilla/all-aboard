@@ -67,24 +67,27 @@ var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightTheme
 var activeWindow = windowUtils.getMostRecentBrowserWindow();
 // the awesomebar node from the browser window
 var awesomeBar = activeWindow.document.getElementById('urlbar');
-
+// whether we have assigned a token for our current content step
+var assignedToken = false;
 var aboutHome;
+// Time to wait before auto closing the sidebar after user interaction
+var afterInteractionCloseTime = 120000;
 var allAboard;
 var content;
 // the default interval between sidebars. Here set as hours.
 var defaultSidebarInterval = 24;
+// the time to wait before automatically closing the sidebar
+var defaultSidebarCloseTime = 300000;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
 var hostnameMatch = /^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)(\/[^?#]*)(\?[^#]*|)(#.*|)$/;
+// is the sidebar currently visible
+var isVisible = false;
+var sidebarProps;
 var timeElapsedFormula = 1000*60*60;
 // initialize timer to -1 to indicate that there is no timer currently running.
 var timer = -1;
-var sidebarProps;
 // 24 hours in milliseconds
 var waitInterval = 86400000;
-// is the sidebar currently visible
-var isVisible = false;
-// whether we have assigned a token for our current content step
-var assignedToken = false;
 
 /**
 * Determines the number of hours that has elapsed since the last sidebar was shown.
@@ -106,6 +109,24 @@ function startTimer() {
         timers.clearInterval(timer);
         timer = -1;
     }, waitInterval);
+}
+
+/**
+ * Closes a currently visible sidebar after the defaultSidebarCloseTime
+ * @param {boolean} clear - Inidcates whether to clear or start the timer.
+ */
+function autoCloseTimer(clear) {
+    var autoClose;
+
+    if (clear) {
+        timers.clearTimeout(autoClose);
+    } else {
+        autoClose = timers.setTimeout(function() {
+            if (isVisible) {
+                content.hide();
+            }
+        }, defaultSidebarCloseTime);
+    }
 }
 
 /**
@@ -418,6 +439,11 @@ function showSidebar(sidebarProps) {
                 // assign new token and notify sidebar as long as we haven't done so already
                 if(!assignedToken) {
                     assignTokens(sidebarProps.step, worker);
+                    timers.setTimeout(function() {
+                        content.hide();
+                        // clear the autoCloseTimer if it is running
+                        autoCloseTimer(true);
+                    }, afterInteractionCloseTime);
                 }
             });
 
@@ -431,11 +457,15 @@ function showSidebar(sidebarProps) {
             utils.store('step', sidebarProps.step);
             // update the distribution id with the current step
             utils.updatePref('-' + sidebarProps.step);
+            // start the auto close timer
+            autoCloseTimer();
         },
         onDetach: function() {
             if (content) {
                 content.dispose();
                 isVisible = false;
+                // clear the current auto close timer
+                autoCloseTimer(true);
             }
         },
         onHide: function() {
@@ -721,10 +751,12 @@ function overrideDefaults() {
         // if the file existed, parse the contents to a JSON object
         if (config) {
             config = JSON.parse(config);
-            // override time intervals with values from config
-            defaultSidebarInterval = config.defaultSidebarInterval;
-            timeElapsedFormula = config.timeElapsedFormula;
-            waitInterval = config.waitInterval;
+            // override time intervals with values from config if they exist
+            afterInteractionCloseTime = config.afterInteractionCloseTime || afterInteractionCloseTime;
+            defaultSidebarInterval = config.defaultSidebarInterval || defaultSidebarInterval;
+            defaultSidebarCloseTime = config.defaultSidebarCloseTime || defaultSidebarCloseTime;
+            timeElapsedFormula = config.timeElapsedFormula || timeElapsedFormula;
+            waitInterval = config.waitInterval || waitInterval;
         }
     } catch(e) {
         console.error('Either no config.json file was created, or it was placed at the wrong location. Error:', e);
