@@ -2,7 +2,6 @@
 
 var fxAccountsContainer = document.querySelector('.fxaccounts');
 var choices = {};
-var contentContainer;
 var dismiss;
 var heading;
 var mainContainer;
@@ -30,6 +29,7 @@ var dialog = '<section id="all-aboard" class="dialog">' +
              '</footer>' +
              '</section>' +
              '<a href="about:home" id="dismiss" class="no-thanks">No thanks</a>';
+var noThanks = '<a href="about:home" id="dismiss" class="no-thanks">No thanks</a>';
 
 /**
  * Ammends the utm_campaign param passed when submitting the FxA form, to indicate
@@ -49,14 +49,13 @@ function ammendUtmCampaign() {
 
 // shows the default heading and the Fx accounts widget
 function showFxAccountWidget() {
-    var intro = document.querySelector('#intro');
-    intro.removeChild(document.querySelector('#all-aboard'));
+    var innerContainer = document.querySelector('#intro .inner-container');
+    innerContainer.removeChild(document.querySelector('#all-aboard'));
     // show the default heading and the Fx accounts widget
     heading.style.display = 'block';
     mainContainer.style.display = 'block';
 
-    // show the no thanks link again
-    dismiss.classList.remove('hidden');
+    fxAccountsContainer.insertAdjacentHTML('afterend', noThanks);
 
     // ammend utm param
     ammendUtmCampaign();
@@ -72,9 +71,8 @@ function hideFxAccountWidget() {
  * Shows the questions dialog on the /firstrun page
  */
 function showDialog() {
-    contentContainer = document.querySelector('#intro .container');
-    contentContainer.insertAdjacentHTML('afterend', dialog);
-    contentContainer.focus();
+    mainContainer.insertAdjacentHTML('afterend', dialog);
+    document.querySelector('#all-aboard').focus();
     interactionHandler();
 }
 
@@ -130,7 +128,7 @@ self.port.on('modify', function() {
     // see whether a Firefox Accounts section exists
     if (fxAccountsContainer) {
         heading = document.querySelector('#intro header h2');
-        mainContainer = document.querySelector('main');
+        mainContainer = document.querySelector('.fxaccounts-container');
 
         hideFxAccountWidget();
         showDialog();
