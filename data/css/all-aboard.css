@@ -186,6 +186,43 @@ a:focus {
     margin-top: 20px;
 }
 
+main.reward-sidebar {
+    padding: 20px 40px;
+    text-align: left;
+}
+
+.reward-sidebar h1 {
+    padding-bottom: 0;
+}
+
+.reward-sidebar label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.reward-sidebar input[type="text"] {
+    margin-bottom: 20px;
+    padding: 5px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    min-width: 240px;
+    height: 35px;
+    font-size: 1rem;
+}
+
+.reward-sidebar input[type="text"]:focus {
+    border-color: #37A3CC;
+}
+
+.reward-sidebar input[type="submit"] {
+    margin-top: 10px;
+}
+
+.small-print {
+    font-size: .75rem;
+    text-align: left;
+}
+
 /* tokens */
 .tokens {
     margin: 0;
@@ -295,4 +332,16 @@ a:focus {
 .hide {
     height: 0;
     opacity: 0;
+}
+
+/* Hide visually, but not to screen readers */
+.visually-hidden {
+    position: absolute!important;
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    padding: 0;
+    border: 0;
 }
