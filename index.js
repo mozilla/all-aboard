@@ -74,6 +74,7 @@ var aboutHome;
 var afterInteractionCloseTime = 120000;
 var allAboard;
 var content;
+var firstRun;
 // the default interval between sidebars. Here set as hours.
 var defaultSidebarInterval = 24;
 // the time to wait before automatically closing the sidebar
@@ -84,10 +85,13 @@ var hostnameMatch = /^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)(\/[^?#]*)(\?[^#
 var isVisible = false;
 var sidebarProps;
 var timeElapsedFormula = 1000*60*60;
-// initialize timer to -1 to indicate that there is no timer currently running.
+// initialize timers to -1 to indicate that there are no timers currently running.
 var timer = -1;
+var destroyTimer = -1;
 // 24 hours in milliseconds
 var waitInterval = 86400000;
+// 3 weeks in milliseconds
+var nonuseDestroyTime = 1814400000;
 
 /**
 * Determines the number of hours that has elapsed since the last sidebar was shown.
@@ -429,6 +433,10 @@ function showSidebar(sidebarProps) {
                     case 'highlightURL':
                         highLight('urlbar');
                         break;
+                    // if the redeem sticker sidebar is shown anywhere other than within content, this will need to move with it
+                    case 'stickerRedeemed':
+                        startDestroyTimer(afterInteractionCloseTime);
+                        break;
                     default:
                         break;
                 }
@@ -436,6 +444,11 @@ function showSidebar(sidebarProps) {
 
             // listen for events when a user completes a sidebar cta
             worker.port.on('cta_complete', function() {
+                // anytime the user interacts with a sidebar, remove the previous 3 week destroy timer
+                timers.clearInterval(destroyTimer);
+                // start a new 3 week destroy timer
+                startDestroyTimer(nonuseDestroyTime);
+                
                 // assign new token and notify sidebar as long as we haven't done so already
                 if(!assignedToken) {
                     assignTokens(sidebarProps.step, worker);
@@ -515,6 +528,11 @@ function getSidebarProps() {
 * Shows the next sidebar for the current track i.e. values or utility
 */
 function toggleSidebar() {
+    // anytime the user opens a sidebar, remove the previous 3 week destroy timer
+    timers.clearInterval(destroyTimer);
+    // start a new 3 week destroy timer
+    startDestroyTimer(nonuseDestroyTime);
+
     // clears the badge
     allAboard.state('window', {
         badge: null
@@ -681,7 +699,7 @@ function modifyAboutHome(track, step) {
 */
 function modifyFirstrun() {
 
-    var firstRun = pageMod.PageMod({
+    firstRun = pageMod.PageMod({
         include: firstrunRegex,
         contentScriptFile: './js/firstrun.js',
         contentScriptWhen: 'ready',
@@ -702,8 +720,8 @@ function modifyFirstrun() {
 
             // listens for a message from pageMod when a user clicks on "No thanks"
             worker.port.on('onboardingDismissed', function(dismissed) {
-                // user has opted out of onboarding, destroy pageMod
-                firstRun.destroy();
+                // user has opted out of onboarding, destroy the addon
+                destroy();
                 utils.store('onboardingDismissed', dismissed);
             });
 
@@ -759,9 +777,47 @@ function overrideDefaults() {
             defaultSidebarCloseTime = config.defaultSidebarCloseTime || defaultSidebarCloseTime;
             timeElapsedFormula = config.timeElapsedFormula || timeElapsedFormula;
             waitInterval = config.waitInterval || waitInterval;
+            nonuseDestroyTime = config.nonuseDestroyTime || nonuseDestroyTime;
         }
     } catch(e) {
         console.error('Either no config.json file was created, or it was placed at the wrong location. Error:', e);
+    }
+}
+
+/**
+ * Starts the timer based upon the afterInteractionCloseTime to destroy the addon
+ */
+function startDestroyTimer(destroyTime) {
+    destroyTimer = timers.setTimeout(function() {
+        // clear the autoCloseTimer if it is running
+        autoCloseTimer(true);
+        // destroys the addon
+        destroy();
+    }, destroyTime);
+}
+
+/** This is called to explicitly 'uninstall' the addon, destroying functional
+ *  pieces needed for user interaction, effectively removing the addon
+ */
+function destroy() {
+    // removes the currently running timer, if one exists
+    timers.clearInterval(timer);
+
+    // removes the button from the UI, and disables its further use
+    if(allAboard) {
+        allAboard.destroy();
+    }
+    // stops pagemod from making more modifications on abouthome in the future, and disables its further use
+    if(aboutHome) {
+        aboutHome.destroy();
+    }
+    // stops pagemod from making more modifications on firstrun in the future, and disables its further use
+    if(firstRun) {
+        firstRun.destroy();
+    }
+    // destroys the addon sidebar, and disables its further use
+    if(content) {
+        content.dispose();
     }
 }
 
