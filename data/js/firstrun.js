@@ -5,30 +5,6 @@ var choices = {};
 var dismiss;
 var heading;
 var mainContainer;
-
-// template strings
-var dialog = '<section id="all-aboard" class="dialog">' +
-             '<header>' +
-             '<h2>Have you used Firefox in the last 30 days?</h2>' +
-             '<br><div id="yup_nope" class="form-elements">' +
-             '<br><label for="yup">' +
-             '<input type="radio" name="isOnBoarding" value="existing" id="yup" />yup</label>' +
-             '<br><br><label for="nope">' +
-             '<input type="radio" name="isOnBoarding" value="new" id="nope" />nope</label>' +
-             '</div>' +
-             '</header>' +
-             '<main class="what-matters hidden" aria-hidden="true">' +
-             '<h2>Are you more:</h2>' +
-             '<label for="features">' +
-             '<input type="radio" name="whatMatters" value="utility" id="features" />Do it yourself</label>' +
-             '<label for="values">' +
-             '<input type="radio" name="whatMatters" value="values" id="values" />Do good</label>' +
-             '</main>' +
-             '<footer class="hidden" aria-hidden="true">' +
-             '<button type="button" class="button">Go!</button>' +
-             '</footer>' +
-             '</section>' +
-             '<a href="about:home" id="dismiss" class="no-thanks">No thanks</a>';
 var noThanks = '<a href="about:home" id="dismiss" class="no-thanks">No thanks</a>';
 
 /**
@@ -69,9 +45,10 @@ function hideFxAccountWidget() {
 
 /**
  * Shows the questions dialog on the /firstrun page
+ * @param {string} tmpl - The firstrun template HTML as a string
  */
-function showDialog() {
-    mainContainer.insertAdjacentHTML('afterend', dialog);
+function showDialog(tmpl) {
+    mainContainer.insertAdjacentHTML('afterend', tmpl);
     document.querySelector('#all-aboard').focus();
     interactionHandler();
 }
@@ -82,7 +59,6 @@ function showDialog() {
 function interactionHandler() {
     var addonContent = document.querySelector('#all-aboard');
     var button = addonContent.querySelector('button');
-    var footer = addonContent.querySelector('footer');
     var yupNope = addonContent.querySelector('#yup_nope');
     var whatMatters = addonContent.querySelector('.what-matters');
 
@@ -105,8 +81,8 @@ function interactionHandler() {
     });
 
     whatMatters.addEventListener('change', function() {
-        footer.classList.remove('hidden');
-        footer.setAttribute('aria-hidden', false);
+        button.classList.remove('hidden');
+        button.setAttribute('aria-hidden', false);
     });
 
     button.addEventListener('click', function() {
@@ -122,15 +98,18 @@ function interactionHandler() {
     });
 }
 
-// listen for the modify event emitted from the add-on, and only then,
-// start executiion of the code.
-self.port.on('modify', function() {
+/**
+ * listen for the modify event emitted from the add-on, and only then,
+ * start executiion of the code.
+ * @param {string} tmpl - The firstrun template HTML as a string
+ */
+self.port.on('modify', function(tmpl) {
     // see whether a Firefox Accounts section exists
     if (fxAccountsContainer) {
         heading = document.querySelector('#intro header h2');
         mainContainer = document.querySelector('.fxaccounts-container');
 
         hideFxAccountWidget();
-        showDialog();
+        showDialog(tmpl);
     }
 });

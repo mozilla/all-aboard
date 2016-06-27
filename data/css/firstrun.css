@@ -19,7 +19,7 @@
 }
 
 #all-aboard header {
-    padding: 20px 40px;
+    padding: 20px;
     text-align: left;
 }
 
@@ -39,12 +39,9 @@
     margin-right: 50px;
 }
 
-#all-aboard header .form-elements {
-    display: inline;
-}
-
 #all-aboard label {
-    display: inline-block;
+    display: block;
+    margin-top: 15px;
     width: 70px;
 }
 
@@ -54,26 +51,26 @@
 
 #all-aboard .what-matters {
     background-color: #f4f4f4;
-    padding: 20px 35px;
+    padding: 20px;
     text-align: left;
 }
 
 #all-aboard .what-matters label {
-    display: block;
-    margin-bottom: 15px;
     width: auto;
 }
 
 #all-aboard footer {
     background-color: #f4f4f4;
     margin-top: 0;
-    padding: 10px 40px 20px;
+    padding: 10px 20px 20px;
     border-radius: 0 0 4px 4px;
-    text-align: right;
+    text-align: left;
 }
 
-#all-aboard footer button {
-    margin-left: 40px;
+#all-aboard footer .intro-message {
+    display: inline-block;
+    max-width: 440px;
+    font-size: .75rem;
 }
 
 #all-aboard footer a:link,
@@ -88,6 +85,7 @@
     font-size: 1rem;
 }
 
+.button.hidden,
 .hidden {
     display: none;
 }

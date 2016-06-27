@@ -687,10 +687,12 @@ function modifyFirstrun() {
         contentScriptWhen: 'ready',
         contentStyleFile: './css/firstrun.css',
         onAttach: function(worker) {
+            var firstRunTmpl = self.data.load('./tmpl/firstrun.html');
             // because calling destroy does not unregister the injected script
             // we do not want the script to be self executing. We therefore intentionally
-            // emit an event that tells the firstrun code to execute.
-            worker.port.emit('modify');
+            // emit an event that tells the firstrun code to execute, we also pass the
+            // template as a string.
+            worker.port.emit('modify', firstRunTmpl);
 
             worker.port.on('dialogSubmit', function(choices) {
                 utils.store('isOnBoarding', choices.isOnBoarding);
