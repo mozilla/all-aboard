@@ -1,0 +1,17 @@
+dependencies:
+  override:
+    - npm install
+
+deployment:
+  master:
+    branch: master
+    owner: mozilla
+    commands:
+        - git config --global user.name "circleci"
+        - git config --global user.email "sneethling@mozilla.com"
+        - npm run deploy
+
+general:
+    branches:
+        only:
+            - master

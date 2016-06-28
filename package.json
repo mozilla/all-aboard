@@ -5,31 +5,21 @@
   "description": "The Mozilla Firefox onboarding add-on",
   "homepage": "https://github.com/mozilla/all-aboard",
   "main": "index.js",
+  "scripts": {
+    "test": "jpm test",
+    "build-xpi": "jpm xpi",
+    "build": "npm-run-all test build-xpi"
+  },
   "author": "Mozilla Corporation",
   "engines": {
     "firefox": ">=38.0a1",
     "fennec": ">=38.0a1"
   },
   "license": "MPL-2.0",
-  "preferences": [{
-    "name": "isOnBoarding",
-    "title": "User type",
-    "type": "string",
-    "hidden": true
-  },
-  {
-    "name": "whatMatters",
-    "title": "What matters",
-    "type": "string",
-    "hidden": true
-  },
-  {
-    "name": "onboardingDismissed",
-    "title": "No thanks",
-    "type": "string",
-    "hidden": true
-  }],
   "keywords": [
     "jetpack"
-  ]
+  ],
+  "devDependencies": {
+    "npm-run-all": "^2.2.2"
+  }
 }
