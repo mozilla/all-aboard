@@ -1,15 +1,14 @@
 {
   "title": "All Aboard",
   "name": "all-aboard",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "The Mozilla Firefox onboarding add-on",
   "homepage": "https://github.com/mozilla/all-aboard",
   "repository": "https://github.com/mozilla/all-aboard",
   "main": "index.js",
   "scripts": {
     "test": "jpm test",
-    "build-xpi": "jpm xpi",
-    "build": "npm-run-all test build-xpi"
+    "build-xpi": "jpm xpi"
   },
   "author": "Mozilla Corporation",
   "engines": {
@@ -21,7 +20,6 @@
     "jetpack"
   ],
   "devDependencies": {
-    "jpm": "^1.0.7",
-    "npm-run-all": "^2.2.2"
+    "jpm": "^1.0.7"
   }
 }

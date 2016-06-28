@@ -1,10 +1,6 @@
 dependencies:
   override:
     - npm install
-  pre:
-    - sudo apt-add-repository ppa:mozillateam/firefox-next -y
-    - sudo apt-get update && sudo apt-get upgrade
-    - sudo apt-get install firefox
 
 deployment:
   master:
@@ -13,7 +9,7 @@ deployment:
     commands:
         - git config --global user.name "circleci"
         - git config --global user.email "sneethling@mozilla.com"
-        - npm run build
+        - npm run build-xpi
 
 general:
     branches:
