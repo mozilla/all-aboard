@@ -10,9 +10,10 @@ deployment:
         - git config --global user.name "circleci"
         - git config --global user.email "sneethling@mozilla.com"
         - npm run build-xpi
-        - git add --force *.xpi
+        - git fetch orgin dist && git checkout dist
+        - git add --all
         - git commit -m 'Latest automated XPI build from CircleCI'
-        - git push -f origin master:dist
+        - git push origin dist
 
 general:
     branches:
