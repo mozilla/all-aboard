@@ -12,7 +12,7 @@ deployment:
         - npm run build-xpi
         - git add --force *.xpi
         - git commit -m 'Latest automated XPI build from CircleCI'
-        - git push -f origin dist
+        - git push -f dist
 
 general:
     branches:
