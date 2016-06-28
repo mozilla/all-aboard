@@ -1,6 +1,8 @@
 dependencies:
   override:
     - npm install
+  pre:
+    - sudo apt-get update; sudo apt-get install firefox
 
 deployment:
   master:
@@ -9,7 +11,7 @@ deployment:
     commands:
         - git config --global user.name "circleci"
         - git config --global user.email "sneethling@mozilla.com"
-        - npm run deploy
+        - npm run build
 
 general:
     branches:
