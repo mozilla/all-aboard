@@ -2,7 +2,9 @@ dependencies:
   override:
     - npm install
   pre:
-    - sudo apt-get update; sudo apt-get install firefox
+    - sudo apt-add-repository ppa:mozillateam/firefox-next
+    - sudo apt-get update && sudo apt-get upgrade
+    - sudo apt-get install firefox
 
 deployment:
   master:
