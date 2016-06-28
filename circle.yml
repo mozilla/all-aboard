@@ -9,8 +9,9 @@ deployment:
     commands:
         - git config --global user.name "circleci"
         - git config --global user.email "sneethling@mozilla.com"
+        - sudo rm *.xpi
         - npm run build-xpi
-        - git add --all
+        - git add --force *.xpi
         - git commit -m 'Latest automated XPI build from CircleCI'
         - git push origin master
 
