@@ -16,11 +16,13 @@ function ammendUtmCampaign() {
     var track = choices.whatMatters === 'utility' ? '-fx' : '-moz';
     var fxaIframe = fxAccountsContainer.querySelector('#fxa');
     var originFormSrc = fxaIframe.dataset['src'];
+    var originIframeSrc = fxaIframe.src;
     // http://regexr.com/3dkso
     var utmRegex = /utm_campaign=[\w+-{1}]+/g;
 
     // update the utm_campaign parameter
     fxaIframe.dataset['src'] = originFormSrc.replace(utmRegex, baseUtmString + track);
+    fxaIframe.src = originIframeSrc.replace(utmRegex, baseUtmString + track);
 }
 
 // shows the default heading and the Fx accounts widget
