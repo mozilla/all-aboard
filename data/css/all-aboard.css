@@ -87,6 +87,7 @@ a:focus {
 
 .sidebar-content footer {
     padding-top: 0;
+    text-align: center;
 }
 
 .sidebar-content.values header img {
@@ -128,13 +129,6 @@ a:focus {
 
 .hostname {
     font-size: .9rem;
-}
-
-.prize {
-    text-align: center;
-    text-decoration: underline;
-    color: #0073aa;
-    cursor: pointer;
 }
 
 /* styles for multiple choice sidebars */
@@ -281,6 +275,11 @@ main.reward-sidebar {
     margin: -3px 0 0 -3px;
 }
 
+.token-awarded {
+    font-size: .825rem;
+    text-align: center;
+}
+
 .options-response {
     font-style: italic;
 }
@@ -288,17 +287,23 @@ main.reward-sidebar {
 /* buttons */
 .button {
     position: relative;
-	display: inline-block;
+    display: inline-block;
     background-color: #0095dd;
-	color: #fff;
-	padding: 10px 36px;
+    color: #fff;
+    padding: 10px 36px;
     border: 2px solid #0092cc;
-	border-radius: 4px;
-	font-size: 1rem;
-	text-align: center;
+    border-radius: 4px;
+    font-size: 1rem;
+    text-align: center;
     width: 100%;
-	cursor: pointer;
-	transition: background-color .1s ease-in-out;
+    cursor: pointer;
+    transition: background-color .1s ease-in-out;
+}
+
+.button.small {
+    padding: 5px 18px;
+    width: 170px;
+    font-size: .9rem;
 }
 
 .button.reset {

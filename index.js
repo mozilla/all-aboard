@@ -97,11 +97,11 @@ var waitInterval = 86400000;
 var nonuseDestroyTime = 1814400000;
 
 try {
-    Cu.import("resource:///modules/AutoMigrate.jsm");
+    Cu.import('resource:///modules/AutoMigrate.jsm');
     var canUndoPromise = AutoMigrate.canUndo();
 }
 catch (e) {
-    console.log('Unable to access automigrate.jsm' + e);
+    console.error('Unable to access automigrate.jsm' + e);
 }
 
 /**
@@ -528,15 +528,13 @@ function showSidebar(sidebarProps) {
                 // assign new token and notify sidebar as long as we haven't done so already
                 if(!assignedToken) {
                     assignTokens(sidebarProps.step, worker);
+                    // notify the sidebar that this is the first time the token
+                    // is being awarded so, show the success message.
+                    worker.port.emit('showTokenMsg');
+                    // start autoCloseTimer
                     autoCloseTimer(afterInteractionCloseTime);
                 }
             });
-
-            // for the mobile sidebar, utility - content5, we assign a token
-            // simply for opening the sidebar, no interaction required.
-            if (sidebarProps.track === 'utility' && sidebarProps.step === 5) {
-                assignTokens(sidebarProps.step, worker);
-            }
 
             // store the current step we are on
             utils.store('step', sidebarProps.step);
@@ -865,7 +863,7 @@ function modifyNewtab() {
                 });
             // if we couldn't check if we can do the auto import because we weren't able to run the canUndo function, throw an error, and don't modify the newtab page with anything
             } catch(e) {
-                console.log("Not able to resolve autoimport undo promise." + e);
+                console.error('Not able to resolve autoimport undo promise.' + e);
             }
 
             worker.port.on('intent', function(intent) {
