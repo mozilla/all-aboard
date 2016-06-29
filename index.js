@@ -58,7 +58,8 @@ var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
 // staging for automigrate to land
-//var autoMigrate = Cu.import('resource:///modules/AutoMigrate.jsm').AutoMigrate;
+//Cu.import("resource:///modules/AutoMigrate.jsm");
+//var canUndoPromise = AutoMigrate.canUndo();
 
 var syncPref = "services.sync.account";
 var sync = require("sdk/preferences/service").get(syncPref);
@@ -115,6 +116,20 @@ function getTimeElapsed(sidebarLaunchTime) {
 */
 function startTimer() {
     timer = timers.setInterval(function() {
+        // if we haven't already created our addon button because we haven't gotten to our first step, create it now
+        if(typeof simpleStorage.step === "undefined") {
+            // Create the sidebar button, this will add the add-on to the chrome
+            allAboard = buttons.ActionButton({
+                id: 'all-aboard',
+                label: 'Mozilla Firefox Onboarding',
+                icon: {
+                    '16': './media/icons/icon-16.png',
+                    '32': './media/icons/icon-32.png',
+                    '64': './media/icons/icon-64.png'
+                },
+                onClick: toggleSidebar
+            });
+        }
         showBadge();
         timers.clearInterval(timer);
         timer = -1;
@@ -255,113 +270,6 @@ function changeTheme(themeNum) {
     };
 
     personaRequest.send();
-}
-
-/**
-* Grabs user history after auto-import happens
-* and selects top 3 non-identical hostname history items, sorted by visit count
-* @param {object} worker - used to emit browser history to the sidebar
-*/
-function getHistory(worker) {
-    let { search } = require('sdk/places/history');
-
-    let topHistory = [];
-    let lastWeek = Date.now - (1000*60*60*24*7);
-
-    try {
-        search(
-            { to: lastWeek},
-            { count: 1000, sort: 'visitCount', descending: true}
-            ).on('end', function (results) {
-                // if we imported any browser history
-                if (results) {
-                    // search through to find history which fits our critera
-                    for(var x = 0, y = results.length; x < y; x++) {
-                        // if history has a title stored
-                        if (results[x].title) {
-                            // parse url
-                            var parsedURL = results[x].url.match(hostnameMatch);
-                            var duplicateHost = false;
-
-                            // check if the current hostname is already in our top history
-                            for(var z = 0, a = topHistory.length; z < a; z++) {
-                                if (topHistory[z].indexOf(parsedURL[3]) !== -1) {
-                                    duplicateHost = true;
-                                }
-                            }
-
-                            // if the hostname isn't already in our top history, add this history element
-                            if (!duplicateHost) {
-                                // add element to the top history
-                                topHistory.push('<a href=' + results[x].url + '>' + results[x].title + ' ' + results[x].visitCount +'</a><br><a class=\"hostname\">' + parsedURL[3] + '</a>');
-
-                                // if we have the top 3 history elements which fit our parameters, break from the loop
-                                if (topHistory.length >= 2) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                }
-                // send the top 3 history elements to the sidebar
-                worker.port.emit('history', topHistory);
-        });
-    }
-    catch (e) {
-        console.error('Couldn\'t grab history: ', e);
-    }
-}
-
-/**
-* Grabs user bookmarks after auto-import happens
-* and selects top 3 non-identical hostname bookmark items, sorted by date added
-* @param {object} worker - used to emit browser bookmarks to the sidebar
-*/
-function getBookmarks(worker) {
-    let { search } = require('sdk/places/bookmarks');
-    let topBookmarks = [];
-
-    try {
-        search(
-            { count: 20, sort: 'dateAdded', descending: true}
-            ).on('end', function (results) {
-                // if we have any bookmark data
-                if (results) {
-                    // search through each item
-                    for(var x = 0, y = results.length; x < y; x++) {
-                        if (results[x].title) {
-                            // parse url
-                            var parsedURL = results[x].url.match(hostnameMatch);
-                            var duplicateHost = false;
-
-                            // check if the current hostname is already in our top bookmark
-                            for(var z = 0, a = topBookmarks.length; z < a; z++) {
-                                if (topBookmarks[z].indexOf(parsedURL[3]) !== -1) {
-                                    duplicateHost = true;
-                                }
-                            }
-
-                            // if the hostname isn't already in our top bookmark, add this bookmark element
-                            if (!duplicateHost) {
-                                // add element to the top bookmark
-                                topBookmarks.push('<a href=' + results[x].url + '>' + results[x].title + '</a><br><a class=\"hostname\">' + parsedURL[3] + '</a>');
-
-                                // if we have the top 3 bookmark elements which fit our parameters, break from the loop
-                                if (topBookmarks.length >= 2) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                // send the top 3 bookmark elements to the sidebar
-                worker.port.emit('bookmarks', topBookmarks);
-        });
-    }
-    catch (e) {
-        console.error('Couldn\'t grab bookmarks: ', e);
-    }
 }
 
 /**
@@ -554,15 +462,6 @@ function toggleSidebar() {
         }
     });
 
-    // After the import data sidebar has been shown, 24 hours needs to elapse before
-    // we start showing the content sidebars. If the add-on icon is clicked before this,
-    // we need to simply show the import data sidebar again.
-    if (typeof simpleStorage.step === 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < defaultSidebarInterval) {
-        showImportDataSidebar();
-        return;
-    }
-
     // Ensure that we have not already shown all content items, that at least 24
     // hours have elapsed since we've shown the last sidebar, and that the user has
     // completed the main CTA for the current step before continuing to increment
@@ -592,77 +491,6 @@ function toggleSidebar() {
             showSidebar(sidebarProps);
         }
     }
-}
-
-/**
-* Shows the user data sidebar which provides the user with a button to
-* open the newtab page, reset the auto-import, and view a preview of the data that was imported
-*/
-function showUserDataSidebar() {
-    utils.store('lastSidebarLaunchTime', Date.now());
-
-    content = sidebar.Sidebar({
-        id: 'allboard-importdata',
-        title: 'We\'ve got your back.',
-        url: './tmpl/show_data.html',
-        onAttach: function(worker) {
-            getHistory(worker);
-            getBookmarks(worker);
-        },
-        onDetach: function() {
-            content.dispose();
-            if (timer === -1) {
-                startTimer();
-            }
-        }
-    });
-
-    content.show();
-    setSidebarSize();
-}
-
-/**
-* Shows the import data sidebar which provides the user with a button to
-* start the migration wizard.
-*/
-function showImportDataSidebar() {
-
-    utils.store('lastSidebarLaunchTime', Date.now());
-
-    content = sidebar.Sidebar({
-        id: 'allboard-importdata',
-        title: 'Make Firefox your own',
-        url: './tmpl/import_data.html',
-        onAttach: function(worker) {
-            worker.port.on('openMigrationTool', function() {
-                // Imports the MigrationUtils needed to show the migration tool, and imports
-                // Services, needed for the observer.
-                // Note: Need to use the `chrome` module to do this which, according to the
-                // docs should not really be done:
-                // https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs/chrome
-                Cu.import('resource:///modules/MigrationUtils.jsm');
-                Cu.import('resource://gre/modules/Services.jsm');
-
-                MigrationUtils.showMigrationWizard();
-
-                Services.obs.addObserver(function() {
-                    worker.port.emit('migrationCompleted');
-                }, 'Migration:Ended', false);
-            });
-        },
-        onDetach: function() {
-            content.dispose();
-            // starts the timer that will call showBadge and queue up the next
-            // sidebar to be shown. Only start the timer if there is not one
-            // already scheduled.
-            if (timer === -1) {
-                startTimer();
-            }
-        }
-    });
-
-    content.show();
-    setSidebarSize();
 }
 
 /**
@@ -749,9 +577,24 @@ function modifyFirstrun() {
 
             // listens for a message from pageMod when a user clicks on "No thanks"
             worker.port.on('onboardingDismissed', function(dismissed) {
+                tabs.open('about:newtab');
                 // user has opted out of onboarding, destroy the addon
                 destroy();
                 utils.store('onboardingDismissed', dismissed);
+            });
+
+            // listens for a message from pageMod when a user clicks on "No thanks"
+            worker.port.on('noFxAccounts', function(dismissed) {
+                tabs.open('about:newtab');
+                // starts the timer that will call showBadge and queue up the next
+                // sidebar to be shown. Only start the timer if there is not one
+                // already scheduled.
+                if (timer === -1) {
+                    startTimer();
+                }
+
+                // store the time we opened the newtab user data page
+                utils.store('lastSidebarLaunchTime', Date.now());
             });
 
             // The code below will be executed once(1 time) when the user navigates away from the
@@ -781,8 +624,16 @@ function modifyFirstrun() {
                     && !firstrunRegex.test(tabs.activeTab.url)) {
                     // destroy the pageMod as it is no longer needed
                     firstRun.destroy();
-                    // show the sidebar
-                    showImportDataSidebar();
+
+                    // starts the timer that will call showBadge and queue up the next
+                    // sidebar to be shown. Only start the timer if there is not one
+                    // already scheduled.
+                    if (timer === -1) {
+                        startTimer();
+                    }
+
+                    // store the time we opened the newtab user data page
+                    utils.store('lastSidebarLaunchTime', Date.now());
                 }
             });
         }
@@ -805,28 +656,36 @@ function modifyNewtab() {
             // load snippet HTML
             var headerContent = self.data.load(headerContentURL).replace("%url", self.data.url("media/moving-truck.png"));
             // don't load the footer if the user has a sync account
-            if(typeof sync !== 'undefined') {
+            if (typeof sync !== 'undefined') {
                 footerContent = "";
             }
             // do load the footer if the user doesn't have a sync account
             else {
                 var footerContent = self.data.load(footerContentURL);
             }
+            
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', headerContent, footerContent);
 
-            // listens to an intent message and calls the relevant function
-            // based on intent.
-            worker.port.on('intent', function(intent) {
-                switch(intent) {
-                    case 'undoMigrate':
-                        // staging for automigrate to land:
-                        //autoMigrate.undo();
-                        break;
-                    default:
-                        break;
+           /* staging for autoimport code
+           canUndoPromise.then(canUndo => {
+                if (!canUndo) {
+                    // emit remove event for the footer if we aren't able to undo the import
+                    worker.port.emit('removeFooter');
                 }
-            });
+
+                // listens to an intent message and calls the relevant function
+                // based on intent.
+                worker.port.on('intent', function(intent) {
+                    switch(intent) {
+                        case 'undoMigrate':
+                            AutoMigrate.undo();
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            });*/
 
             // flag that we've shown the user their data
             utils.store('seenUserData', true);
@@ -931,18 +790,6 @@ exports.main = function(options) {
         // sized appropriately though so, we call setSidebarSize
         setSidebarSize();
     }
-
-    // Create the sidebar button, this will add the add-on to the chrome
-    allAboard = buttons.ActionButton({
-        id: 'all-aboard',
-        label: 'Mozilla Firefox Onboarding',
-        icon: {
-            '16': './media/icons/icon-16.png',
-            '32': './media/icons/icon-32.png',
-            '64': './media/icons/icon-64.png'
-        },
-        onClick: toggleSidebar
-    });
 
     // do not call modifyFirstrun again if the user has either opted out or,
     // already answered a questions(as both questions need to be answered, checking

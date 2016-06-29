@@ -37,6 +37,12 @@ function showFxAccountWidget() {
 
     // ammend utm param
     ammendUtmCampaign();
+
+    dismiss = document.querySelector('#dismiss');
+    // listen for a click event on the 'No Thanks' link and send preference
+    dismiss.addEventListener('click', function() {
+        self.port.emit('noFxAccounts', 'true');
+    });
 }
 
 // hide the default heading and the Fx accounts widget
