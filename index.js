@@ -705,7 +705,20 @@ function modifyFirstrun() {
         contentScriptWhen: 'ready',
         contentStyleFile: './css/firstrun.css',
         onAttach: function(worker) {
-            var firstRunTmpl = self.data.load('./tmpl/firstrun.html');
+            var firstRunTmpl;
+            var utility = "<input type=\"radio\" name=\"whatMatters\" value=\"utility\" id=\"features\" />Do it yourself";
+            var values = "<input type=\"radio\" name=\"whatMatters\" value=\"values\" id=\"values\" />Do good";
+            // generate a random number, 1 or 2
+            var firstOption = Math.floor(Math.random() * 2) + 1 ;
+
+            // depeding upon the random number, either set values option first, or utility option first
+            if(firstOption === 2) {
+                firstRunTmpl = self.data.load('./tmpl/firstrun.html').replace("%optionOne", values).replace("%optionTwo", utility);
+            }
+            else {
+                firstRunTmpl = self.data.load('./tmpl/firstrun.html').replace("%optionOne", utility).replace("%optionTwo", values);
+            }
+
             // because calling destroy does not unregister the injected script
             // we do not want the script to be self executing. We therefore intentionally
             // emit an event that tells the firstrun code to execute, we also pass the
