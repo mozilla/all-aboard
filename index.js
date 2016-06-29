@@ -448,7 +448,7 @@ function showSidebar(sidebarProps) {
                 timers.clearInterval(destroyTimer);
                 // start a new 3 week destroy timer
                 startDestroyTimer(nonuseDestroyTime);
-                
+
                 // assign new token and notify sidebar as long as we haven't done so already
                 if(!assignedToken) {
                     assignTokens(sidebarProps.step, worker);
@@ -706,17 +706,17 @@ function modifyFirstrun() {
         contentStyleFile: './css/firstrun.css',
         onAttach: function(worker) {
             var firstRunTmpl;
-            var utility = "<input type=\"radio\" name=\"whatMatters\" value=\"utility\" id=\"features\" />Do it yourself";
-            var values = "<input type=\"radio\" name=\"whatMatters\" value=\"values\" id=\"values\" />Do good";
+            var utility = self.data.load('./tmpl/fragments/what-matters-option1.html');
+            var values = self.data.load('./tmpl/fragments/what-matters-option2.html');
             // generate a random number, 1 or 2
             var firstOption = Math.floor(Math.random() * 2) + 1 ;
 
             // depeding upon the random number, either set values option first, or utility option first
             if(firstOption === 2) {
-                firstRunTmpl = self.data.load('./tmpl/firstrun.html').replace("%optionOne", values).replace("%optionTwo", utility);
+                firstRunTmpl = self.data.load('./tmpl/firstrun.html').replace('%optionOne', values).replace('%optionTwo', utility);
             }
             else {
-                firstRunTmpl = self.data.load('./tmpl/firstrun.html').replace("%optionOne", utility).replace("%optionTwo", values);
+                firstRunTmpl = self.data.load('./tmpl/firstrun.html').replace('%optionOne', utility).replace('%optionTwo', values);
             }
 
             // because calling destroy does not unregister the injected script
