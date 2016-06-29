@@ -218,6 +218,11 @@ main.reward-sidebar {
     margin-top: 10px;
 }
 
+.reward-form {
+    border: 0;
+    width: 100%;
+}
+
 .small-print {
     font-size: .75rem;
     text-align: left;
