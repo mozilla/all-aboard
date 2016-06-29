@@ -64,21 +64,25 @@ a:focus {
 
 /* specific sidebar styling for the values track */
 .sidebar-content.values {
-    padding: 20px;
+    padding: 0 20px 20px 20px;
     text-align: left;
 }
 
+.sidebar-content.values h1 {
+    padding-bottom: 20px;
+}
+
 .sidebar-content.values header {
-    padding: 10px 0 20px;
+    padding: 10px 0 10px;
 }
 
 .sidebar-content.values main,
 .sidebar-content.values footer {
-    padding: 20px;
+    padding: 10px 20px 20px 20px;
 }
 
 .sidebar-content.values main {
-    padding-bottom: 40px;
+    padding-bottom: 20px;
 }
 
 .sidebar-content footer {
@@ -349,4 +353,8 @@ main.reward-sidebar {
     clip: rect(0 0 0 0);
     padding: 0;
     border: 0;
+}
+
+.sidebar-content.values.options {
+    padding-bottom: 20px;
 }
