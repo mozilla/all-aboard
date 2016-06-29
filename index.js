@@ -164,7 +164,12 @@ function showDesktopNotification() {
 function showBadge() {
     allAboard.state('window', {
         badge: '1',
-        badgeColor: '#5F9B0A'
+        badgeColor: '#5F9B0A',
+        icon: {
+            '16': './media/icons/icon-16_active.png',
+            '32': './media/icons/icon-32_active.png',
+            '64': './media/icons/icon-64_active.png'
+        }
     });
     showDesktopNotification();
 }
@@ -533,9 +538,14 @@ function toggleSidebar() {
     // start a new 3 week destroy timer
     startDestroyTimer(nonuseDestroyTime);
 
-    // clears the badge
+    // clears the badge and changes the icon back to a non-active state
     allAboard.state('window', {
-        badge: null
+        badge: null,
+        icon: {
+            '16': './media/icons/icon-16.png',
+            '32': './media/icons/icon-32.png',
+            '64': './media/icons/icon-64.png'
+        }
     });
 
     // After the import data sidebar has been shown, 24 hours needs to elapse before
