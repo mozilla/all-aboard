@@ -214,6 +214,19 @@ function showSearch() {
     });
 }
 
+/*
+ * Opens the bookmark menu
+ */
+function showBookmarks() {
+    let activeWindow = windowUtils.getMostRecentBrowserWindow();
+
+    try {
+        UITour.showMenu(activeWindow, 'bookmarks');
+    } catch(e) {
+        console.error('Could not open element. Check if UITour.jsm supports opening of element passed.', e);
+    }
+}
+
 /**
  * Remove highlight and event listener on the awesomebar
  */
@@ -671,8 +684,27 @@ function modifyNewtab() {
            canUndoPromise.then(canUndo => {
                 if (!canUndo) {
                     // emit remove event for the footer if we aren't able to undo the import
-                    worker.port.emit('removeFooter');
-                }
+                    worker.port.emit('removeFooter');*/
+                    
+                    // listens to an intent message and calls the relevant function
+                    // based on intent.
+                    worker.port.on('intent', function(intent) {
+                        switch(intent) {
+                            case 'showAwesomebar':
+                                highLight('urlbar');
+                                break;
+                            case 'showBookmarks':
+                                showBookmarks();
+                                break;
+                            case 'undoMigrate':
+                                // staging for automigrate to land:
+                                //autoMigrate.undo();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                /*}
 
                 // listens to an intent message and calls the relevant function
                 // based on intent.
