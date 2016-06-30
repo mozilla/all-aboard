@@ -245,7 +245,7 @@ function highLight(item) {
  * @param {int} themeNum - a number passed based on the button clicked by the user
  */
 function changeTheme(themeNum) {
-    var personaIDs = [111387, 539838, 157076];
+    var personaIDs = [539838, 157076];
 
     // if there is no number passed, set the theme to default and return
     if (typeof themeNum === 'undefined') {
