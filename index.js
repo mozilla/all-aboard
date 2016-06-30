@@ -329,7 +329,7 @@ function showSidebar(sidebarProps) {
                         showSearch();
                         break;
                     case 'smarton':
-                        tabs.open('https://www.mozilla.org/teach/smarton/security/');
+                        tabs.open('https://www.mozilla.org/teach/smarton/security/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=security/');
                         break;
                     case 'newsletter':
                         tabs.open('https://www.mozilla.org/#newsletter-subscribe');
