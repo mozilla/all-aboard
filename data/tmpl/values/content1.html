@@ -32,7 +32,7 @@
             </label>
           </li>
         </ul>
-        <button class="button">Show Answer</button>
+        <button id="show_answer" class="button">Show Answer</button>
         <!-- conditional messaging based on options selection -->
         <p id="response_a" class="options-response hidden" aria-hidden="true">We wish: Then we’d call it 'Boogie Wonderland-fox'</p>
         <p id="response_b" class="options-response hidden" aria-hidden="true">We wish: There’s nothing like flaming desserts.</p>
@@ -40,11 +40,31 @@
       </main>
       <footer>
         <ul class="tokens">
-          <li id="token1"><img src="/data/media/tokens/values/token1.svg" width="42" alt="Token for completing step 1" /></li>
-          <li id="token2"><img src="/data/media/tokens/values/token2.svg" width="42" alt="Token for completing step 2" /></li>
-          <li id="token3"><img src="/data/media/tokens/values/token3.svg" width="42" alt="Token for completing step 3" /></li>
-          <li id="token4"><img src="/data/media/tokens/values/token4.svg" width="42" alt="Token for completing step 4" /></li>
-          <li id="token5"><img src="/data/media/tokens/values/token5.svg" width="42" alt="Token for completing step 5" /></li>
+          <li id="token1">
+            <button class="token-trigger" data-step="1" data-track="values">
+              <img src="/data/media/tokens/values/token1.svg" width="42" alt="Token for completing step 1" />
+            </button>
+          </li>
+          <li id="token2">
+            <button class="token-trigger" data-step="2" data-track="values">
+              <img src="/data/media/tokens/values/token2.svg" width="42" alt="Token for completing step 2" />
+            </button>
+          </li>
+          <li id="token3">
+            <button class="token-trigger" data-step="3" data-track="values">
+              <img src="/data/media/tokens/values/token3.svg" width="42" alt="Token for completing step 3" />
+            </button>
+          </li>
+          <li id="token4">
+            <button class="token-trigger" data-step="4" data-track="values">
+              <img src="/data/media/tokens/values/token4.svg" width="42" alt="Token for completing step 4" />
+            </button>
+          </li>
+          <li id="token5">
+            <button class="token-trigger" data-step="5" data-track="values">
+              <img src="/data/media/tokens/values/token5.svg" width="42" alt="Token for completing step 5" />
+            </button>
+          </li>
         </ul>
       </footer>
     </section>

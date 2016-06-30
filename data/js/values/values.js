@@ -1,7 +1,7 @@
 (function() {
     var mainContainer = document.querySelector('main');
     var answer = mainContainer.querySelector('#answer');
-    var button = mainContainer.querySelector('button');
+    var button = mainContainer.querySelector('#show_answer');
     var options = mainContainer.querySelectorAll('input[type="radio"]');
     var secondaryContent = mainContainer.querySelector('#secondary_content');
 

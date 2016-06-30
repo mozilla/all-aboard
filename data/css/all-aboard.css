@@ -257,7 +257,7 @@ main.reward-sidebar {
     margin: 0;
 }
 
-.tokens li img {
+.tokens li .token-trigger {
     display: none;
 }
 
@@ -265,8 +265,14 @@ main.reward-sidebar {
     border: 0;
 }
 
-.tokens li.active img {
+.tokens li.active .token-trigger {
     display: inline-block;
+    background: none;
+    margin: -3px 0;
+    padding: 0;
+    border: 0;
+    width: 42px;
+    cursor: pointer;
 }
 
 .options-response {
