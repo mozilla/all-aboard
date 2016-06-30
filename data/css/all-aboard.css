@@ -47,13 +47,17 @@ a:focus {
     padding-bottom: 0;
 }
 
+.sidebar-content.utility h1 {
+    padding-bottom: 0;
+}
+
 .sidebar-content p {
     line-height: 1.5;
 }
 
 .sidebar-content main,
 .sidebar-content footer {
-    padding: 40px;
+    padding: 20px 40px 40px 40px;
 }
 
 /* styleing for search providers image */
@@ -64,21 +68,25 @@ a:focus {
 
 /* specific sidebar styling for the values track */
 .sidebar-content.values {
-    padding: 20px;
+    padding: 0 20px 20px 20px;
     text-align: left;
 }
 
+.sidebar-content.values h1 {
+    padding-bottom: 20px;
+}
+
 .sidebar-content.values header {
-    padding: 10px 0 20px;
+    padding: 10px 0 10px;
 }
 
 .sidebar-content.values main,
 .sidebar-content.values footer {
-    padding: 20px;
+    padding: 10px 20px 20px 20px;
 }
 
 .sidebar-content.values main {
-    padding-bottom: 40px;
+    padding-bottom: 20px;
 }
 
 .sidebar-content footer {
@@ -281,6 +289,10 @@ main.reward-sidebar {
 	transition: background-color .1s ease-in-out;
 }
 
+.button.reset {
+    margin-bottom: 10px;
+}
+
 .mobile img {
     margin: 10px 0;
 }
@@ -298,17 +310,6 @@ main.reward-sidebar {
 
 .button-container button:last-child {
     margin: 0;
-}
-
-.more-themes:before {
-    display: inline-block;
-    content: '';
-    background: transparent url(../media/icons/themes.png) 0 0 no-repeat;
-    background-size: 45px 40px;
-    margin: 10px 3px 0 0;
-    width: 45px;
-    height: 40px;
-    vertical-align: bottom;
 }
 
 .button:hover,
@@ -349,4 +350,8 @@ main.reward-sidebar {
     clip: rect(0 0 0 0);
     padding: 0;
     border: 0;
+}
+
+.sidebar-content.values.options {
+    padding-bottom: 20px;
 }

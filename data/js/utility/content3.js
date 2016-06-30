@@ -2,7 +2,7 @@
     // retrieve our default text from the sidebar
     var defaultText = document.querySelector('#default');
     // set template names
-    var templateNames = ['template1','template2','template3'];
+    var templateNames = ['template1','template2'];
 
     // add listeners to all of our buttons for clicking
     for(var x=0, l=templateNames.length; x<l; x++) {
