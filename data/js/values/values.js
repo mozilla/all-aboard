@@ -48,6 +48,16 @@
         responseMsg = document.getElementById(responseId);
         responseMsg.classList.remove('hidden');
         responseMsg.setAttribute('aria-hidden', false);
+
+        //unhide "claim your prize!" for final sidebar
+        if (document.querySelector('.prize')) {
+            var prizeLink = document.querySelector('.prize');
+            prizeLink.classList.remove('hidden');
+
+            prizeLink.addEventListener('click', function() {
+                addon.port.emit('intent', 'claimPrize');
+            });
+        }
     }
 
     button.addEventListener('click', function() {

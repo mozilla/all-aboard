@@ -141,15 +141,16 @@ function clearTimers() {
 /**
 * Starts a timer that will call the showBadge function after 24 hours, should the
 * user not close the browser earlier.
+* @param {int} divideBy - number to divide the wait interval by
 */
-function startNotificationTimer() {
+function startNotificationTimer(divideBy) {
     // to avoid starting multiple timers,
     // proactively clear any existing timer
     timers.clearTimeout(timer);
     // schedule a new timer
     timer = timers.setTimeout(function() {
         showBadge();
-    }, waitInterval);
+    }, waitInterval/divideBy);
 }
 
 /**
@@ -328,7 +329,10 @@ function assignTokens(step, worker) {
         // update the lastSidebarLaunchTime to now
         utils.store('lastSidebarLaunchTime', Date.now());
         // start notification timer
-        startNotificationTimer();
+        startNotificationTimer(1);
+    }
+    else if (step === 5) {
+        startNotificationTimer(12);
     }
 }
 
@@ -365,9 +369,8 @@ function intentHandler(intent) {
         case 'highlightURL':
             highLight('urlbar');
             break;
-        // if the redeem sticker sidebar is shown anywhere other than within content, this will need to move with it
-        case 'stickerRedeemed':
-            startDestroyTimer(afterInteractionCloseTime);
+        case 'claimPrize':
+            showRewardSidebar();
             break;
         default:
             break;
@@ -439,6 +442,44 @@ function onDemandSidebar(sidebarProps) {
             if (typeof simpleStorage.tokens !== 'undefined') {
                 worker.port.emit('tokens', simpleStorage.tokens);
             }
+        },
+        onShow: function() {
+            isVisible = true;
+        }
+    });
+
+    content.show();
+    setSidebarSize();
+}
+
+function showRewardSidebar() {
+    // if the sidebar is open, close it before calling show again
+    // @see https://github.com/mozilla/all-aboard/issues/78 for details
+    if (isVisible) {
+        content.dispose();
+    }
+
+    content = sidebar.Sidebar({
+        id: 'all-aboard-reward',
+        title: 'Prize',
+        url: './tmpl/reward.html',
+        onAttach: function(worker) {
+            // remove the previous 3 week destroy timer
+            timers.clearInterval(destroyTimer);
+            // start a new 3 week destroy timer
+            startDestroyTimer(nonuseDestroyTime);
+
+            // start the auto close timer
+            autoCloseTimer(defaultSidebarCloseTime);
+        },
+        onDetach: function() {
+            content.dispose();
+            isVisible = false;
+            // clear all autoClose timers
+            clearTimers();
+        },
+        onHide: function() {
+            isVisible = false;
         },
         onShow: function() {
             isVisible = true;
@@ -578,6 +619,10 @@ function toggleSidebar() {
         // initialize the about:home pageMod
         modifyAboutHome(sidebarProps.track, sidebarProps.step);
     } else {
+        if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval && simpleStorage.step === 5) {
+            showRewardSidebar();
+        }
+        else
         // 24 hours has not elapsed since the last content sidebar has been shown so,
         // simply show or hide the current sidebar.
         if (isVisible) {
@@ -593,6 +638,8 @@ function toggleSidebar() {
             showSidebar(sidebarProps);
         }
     }
+
+
 }
 
 /**
@@ -702,7 +749,7 @@ function modifyFirstrun() {
                 }
                 // starts the timer that will call showBadge and queue up the next
                 // sidebar to be shown.
-                startNotificationTimer();
+                startNotificationTimer(1);
             });
 
             // The code below will be executed once(1 time) when the user navigates away from the
@@ -743,7 +790,7 @@ function modifyFirstrun() {
 
                     // starts the timer that will call showBadge and queue up the next
                     // sidebar to be shown.
-                    startNotificationTimer();
+                    startNotificationTimer(1);
                 }
             });
         }
@@ -800,7 +847,7 @@ function modifyNewtab() {
                             default:
                                 break;
                         }
-                    }
+                    });
                 /*}
 
                 // listens to an intent message and calls the relevant function
