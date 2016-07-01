@@ -610,7 +610,7 @@ function modifyAboutHome(track, step) {
             // constructs uri to snippet content
             var contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
             // load snippet HTML
-            var snippetContent = self.data.load(contentURL);
+            var snippetContent = self.data.load(contentURL).replace('%url', self.data.url('media/snippets/'+sidebarProps.track+'/content'+sidebarProps.step+'.gif'));
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', snippetContent);
 
@@ -800,7 +800,7 @@ function modifyNewtab() {
                             default:
                                 break;
                         }
-                    }
+                    });
                 /*}
 
                 // listens to an intent message and calls the relevant function

@@ -18,7 +18,7 @@ function showSnippet(snippetContent) {
 
     searchIconAndTextContainer.insertAdjacentHTML('afterend', snippetContent);
 
-    button = document.querySelector('#allaboard_anippet_intent');
+    button = document.querySelector('#allaboard_snippet_intent');
 
     // not all snippets have buttons, so test before adding the event listener
     if (button) {

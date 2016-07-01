@@ -3,30 +3,38 @@
     margin: 12px auto;
     font-size: .9rem;
     width: 470px;
+    text-align: left;
+}
+
+.allaboard-snippet p:not(.mobile) {
+    padding-top: 8px;
+    font-size: .8rem;
+}
+
+.mobile {
+    font-size: .8rem;
+}
+
+.allaboard-snippet img:not(.mobile) {
+    height: 50px;
+    width: 50px;
 }
 
 .allaboard-snippet .button {
-    position: relative;
-    display: inline-block;
-    background-color: #0095dd;
     color: #fff;
-    padding: 10px 36px;
-    border: 2px solid #0092cc;
-    border-radius: 4px;
-    font-size: 1rem;
-    text-align: center;
-    width: 65%;
     cursor: pointer;
-    transition: background-color .1s ease-in-out;
-}
-
-.allaboard-snippet .button:hover,
-.allaboard-snippet .button:focus {
-    background-color: #33aae4;
-    border-color: #0092cc;
+    color: #0073aa;
+    text-decoration: underline;
 }
 
 .allaboard-snippet .button:active {
     position: relative;
     top: 1px;
+}
+
+.snippetImage {
+    float: left;
+    margin-right: 10px;
+    vertical-align: middle;
+    display: inline-block;
 }
