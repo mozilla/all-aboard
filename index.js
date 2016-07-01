@@ -61,8 +61,8 @@ var windowUtils = require('sdk/window/utils');
 //Cu.import("resource:///modules/AutoMigrate.jsm");
 //var canUndoPromise = AutoMigrate.canUndo();
 
-var syncPref = "services.sync.account";
-var sync = require("sdk/preferences/service").get(syncPref);
+var syncPref = 'services.sync.account';
+var sync = require('sdk/preferences/service').get(syncPref);
 
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
@@ -76,24 +76,23 @@ var awesomeBar = activeWindow.document.getElementById('urlbar');
 // whether we have assigned a token for our current content step
 var assignedToken = false;
 var aboutHome;
+var aboutNewtab;
 // Time to wait before auto closing the sidebar after user interaction
 var afterInteractionCloseTime = 120000;
 var allAboard;
 var content;
 var firstRun;
-var aboutNewtab;
 // the default interval between sidebars. Here set as hours.
 var defaultSidebarInterval = 24;
 // the time to wait before automatically closing the sidebar
 var defaultSidebarCloseTime = 300000;
 var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
-var hostnameMatch = /^(https?\:)\/\/(([^:\/?#]*)(?:\:([0-9]+))?)(\/[^?#]*)(\?[^#]*|)(#.*|)$/;
 // is the sidebar currently visible
 var isVisible = false;
 var sidebarProps;
 var timeElapsedFormula = 1000*60*60;
-// initialize timers to -1 to indicate that there are no timers currently running.
-var timer = -1;
+var timer;
+var timersArray = [];
 var destroyTimer = -1;
 // 24 hours in milliseconds
 var waitInterval = 86400000;
@@ -111,47 +110,64 @@ function getTimeElapsed(sidebarLaunchTime) {
 }
 
 /**
+ * Adds the add-on ActionButton to the Firefox browser chrome
+ */
+function addAddOnButton() {
+    // if the action button does not already exist
+    if (typeof allAboard === 'undefined') {
+        // Create the action button, this will add the add-on to the chrome
+        allAboard = buttons.ActionButton({
+            id: 'all-aboard',
+            label: 'Mozilla Firefox Onboarding',
+            icon: {
+                '16': './media/icons/icon-16.png',
+                '32': './media/icons/icon-32.png',
+                '64': './media/icons/icon-64.png'
+            },
+            onClick: toggleSidebar
+        });
+    }
+}
+
+/**
+ * Loops through timersArray and clears all timers.
+ */
+function clearTimers() {
+    for (var i = 0, l = timersArray.length; i < l; i++) {
+        timers.clearTimeout(timersArray[i]);
+    }
+}
+
+/**
 * Starts a timer that will call the showBadge function after 24 hours, should the
 * user not close the browser earlier.
 */
-function startTimer() {
-    timer = timers.setInterval(function() {
-        // if we haven't already created our addon button because we haven't gotten to our first step, create it now
-        if(typeof simpleStorage.step === "undefined") {
-            // Create the sidebar button, this will add the add-on to the chrome
-            allAboard = buttons.ActionButton({
-                id: 'all-aboard',
-                label: 'Mozilla Firefox Onboarding',
-                icon: {
-                    '16': './media/icons/icon-16.png',
-                    '32': './media/icons/icon-32.png',
-                    '64': './media/icons/icon-64.png'
-                },
-                onClick: toggleSidebar
-            });
-        }
+function startNotificationTimer() {
+    // to avoid starting multiple timers,
+    // proactively clear any existing timer
+    timers.clearTimeout(timer);
+    // schedule a new timer
+    timer = timers.setTimeout(function() {
         showBadge();
-        timers.clearInterval(timer);
-        timer = -1;
     }, waitInterval);
 }
 
 /**
  * Closes a currently visible sidebar after the defaultSidebarCloseTime
- * @param {boolean} clear - Inidcates whether to clear or start the timer.
+ * @param {int} timeout - Time in milliseconds before function is executed
  */
-function autoCloseTimer(clear) {
-    var autoClose;
+function autoCloseTimer(timeout) {
+    // clear all currently scheduled auto close timers
+    clearTimers();
 
-    if (clear) {
-        timers.clearTimeout(autoClose);
-    } else {
-        autoClose = timers.setTimeout(function() {
-            if (isVisible) {
-                content.hide();
-            }
-        }, defaultSidebarCloseTime);
-    }
+    var autoClose = timers.setTimeout(function() {
+        if (isVisible) {
+            content.hide();
+        }
+    }, timeout);
+
+    // push the timer onto the timersArray
+    timersArray.push(autoClose);
 }
 
 /**
@@ -311,10 +327,126 @@ function assignTokens(step, worker) {
     if (step < 5) {
         // update the lastSidebarLaunchTime to now
         utils.store('lastSidebarLaunchTime', Date.now());
-        // this code will not be called again prior to at least 24 hours
-        // having elapsed, so it safe to simply call startTimer here.
-        startTimer();
+        // start notification timer
+        startNotificationTimer();
     }
+}
+
+/**
+ * Handles intents sent from the various sidebars.
+ * @param {string} intent - The intent of the current event
+ */
+function intentHandler(intent) {
+    switch(intent) {
+        case 'search':
+            showSearch();
+            break;
+        case 'smarton':
+            tabs.open('https://www.mozilla.org/teach/smarton/security/');
+            break;
+        case 'newsletter':
+            tabs.open('https://www.mozilla.org/#newsletter-subscribe');
+            break;
+        case 'privateBrowsing':
+            highLight('privateWindow');
+            break;
+        case 'template1':
+            changeTheme(1);
+            break;
+        case 'template2':
+            changeTheme(2);
+            break;
+        case 'template3':
+            changeTheme(3);
+            break;
+        case 'defaultTemplate':
+            changeTheme();
+            break;
+        case 'highlightURL':
+            highLight('urlbar');
+            break;
+        // if the redeem sticker sidebar is shown anywhere other than within content, this will need to move with it
+        case 'stickerRedeemed':
+            startDestroyTimer(afterInteractionCloseTime);
+            break;
+        default:
+            break;
+    }
+}
+
+/**
+ * Adds listeners common accross showSidebar and onDemandSidebar
+ * @param {object} worker - Worker object for the current sidebar
+ */
+function attachCommonSidebarListeners(worker) {
+    // listens to an intent message and calls the relevant function
+    // based on intent.
+    worker.port.on('intent', function(intent) {
+        intentHandler(intent);
+    });
+
+    // listen for click events on the assigned tokens
+    worker.port.on('show', function(props) {
+        // clear all timers in the timersArray
+        clearTimers();
+        onDemandSidebar(props);
+    });
+}
+
+/**
+ * Shows a specific user requested sidebar. These are sidebars the user has
+ * already seen, completed the main CTA, and received a token for.
+ * @param {object} sidebarProps - properties for this sidebar instance
+ */
+function onDemandSidebar(sidebarProps) {
+    var sidebarIdTitle = CONTENT_STORE[sidebarProps.track][sidebarProps.step - 1];
+    var contentURL = './tmpl/' + sidebarProps.track + '/content' + sidebarProps.step + '.html';
+
+    // if the sidebar is open, close it before calling show again
+    // @see https://github.com/mozilla/all-aboard/issues/78 for details
+    if (isVisible) {
+        content.dispose();
+    }
+
+    content = sidebar.Sidebar({
+        id: sidebarIdTitle.id,
+        title: sidebarIdTitle.title,
+        url: contentURL,
+        onAttach: function(worker) {
+
+            attachCommonSidebarListeners(worker);
+
+            // listen for events when a user completes a sidebar cta
+            worker.port.on('cta_complete', function() {
+                // anytime the user interacts with a sidebar, remove the previous destroy timer
+                timers.clearInterval(destroyTimer);
+                // start a new 3 week destroy timer
+                startDestroyTimer(nonuseDestroyTime);
+            });
+        },
+        onDetach: function() {
+            if (content) {
+                content.dispose();
+                isVisible = false;
+            }
+        },
+        onHide: function() {
+            isVisible = false;
+        },
+        onReady: function(worker) {
+            // when the sidebar opens, and there are tokens in the list,
+            // send it the current list of assigned tokens
+            if (typeof simpleStorage.tokens !== 'undefined') {
+                worker.port.emit('tokens', simpleStorage.tokens);
+            }
+        },
+        onShow: function() {
+            isVisible = true;
+        }
+    });
+
+    content.show();
+    setSidebarSize();
 }
 
 /**
@@ -334,45 +466,8 @@ function showSidebar(sidebarProps) {
         title: sidebarProps.title,
         url: sidebarProps.url,
         onAttach: function(worker) {
-            // listens to an intent message and calls the relevant function
-            // based on intent.
-            worker.port.on('intent', function(intent) {
-                switch(intent) {
-                    case 'search':
-                        showSearch();
-                        break;
-                    case 'smarton':
-                        tabs.open('https://www.mozilla.org/teach/smarton/security/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=security/');
-                        break;
-                    case 'newsletter':
-                        tabs.open('https://www.mozilla.org/#newsletter-subscribe');
-                        break;
-                    case 'privateBrowsing':
-                        highLight('privateWindow');
-                        break;
-                    case 'template1':
-                        changeTheme(1);
-                        break;
-                    case 'template2':
-                        changeTheme(2);
-                        break;
-                    case 'template3':
-                        changeTheme(3);
-                        break;
-                    case 'defaultTemplate':
-                        changeTheme();
-                        break;
-                    case 'highlightURL':
-                        highLight('urlbar');
-                        break;
-                    // if the redeem sticker sidebar is shown anywhere other than within content, this will need to move with it
-                    case 'stickerRedeemed':
-                        startDestroyTimer(afterInteractionCloseTime);
-                        break;
-                    default:
-                        break;
-                }
-            });
+
+            attachCommonSidebarListeners(worker);
 
             // listen for events when a user completes a sidebar cta
             worker.port.on('cta_complete', function() {
@@ -384,11 +479,7 @@ function showSidebar(sidebarProps) {
                 // assign new token and notify sidebar as long as we haven't done so already
                 if(!assignedToken) {
                     assignTokens(sidebarProps.step, worker);
-                    timers.setTimeout(function() {
-                        content.hide();
-                        // clear the autoCloseTimer if it is running
-                        autoCloseTimer(true);
-                    }, afterInteractionCloseTime);
+                    autoCloseTimer(afterInteractionCloseTime);
                 }
             });
 
@@ -403,15 +494,13 @@ function showSidebar(sidebarProps) {
             // update the distribution id with the current step
             utils.updatePref('-' + sidebarProps.step);
             // start the auto close timer
-            autoCloseTimer();
+            autoCloseTimer(defaultSidebarCloseTime);
         },
         onDetach: function() {
-            if (content) {
-                content.dispose();
-                isVisible = false;
-                // clear the current auto close timer
-                autoCloseTimer(true);
-            }
+            content.dispose();
+            isVisible = false;
+            // clear all autoClose timers
+            clearTimers();
         },
         onHide: function() {
             isVisible = false;
@@ -594,25 +683,26 @@ function modifyFirstrun() {
             });
 
             // listens for a message from pageMod when a user clicks on "No thanks"
+            // before answering any of the questions
             worker.port.on('onboardingDismissed', function(dismissed) {
                 tabs.open('about:newtab');
+                utils.store('onboardingDismissed', dismissed);
                 // user has opted out of onboarding, destroy the addon
                 destroy();
-                utils.store('onboardingDismissed', dismissed);
             });
 
             // listens for a message from pageMod when a user clicks on "No thanks"
-            worker.port.on('noFxAccounts', function(dismissed) {
+            // after having answered the questions and clicked "Go!"
+            worker.port.on('noFxAccounts', function() {
                 tabs.open('about:newtab');
-                // starts the timer that will call showBadge and queue up the next
-                // sidebar to be shown. Only start the timer if there is not one
-                // already scheduled.
-                if (timer === -1) {
-                    startTimer();
+                // if haven't gotten to our first step, the action button will not exist
+                // create and add it now before the first notification.
+                if(typeof simpleStorage.step === 'undefined') {
+                    addAddOnButton();
                 }
-
-                // store the time we opened the newtab user data page
-                utils.store('lastSidebarLaunchTime', Date.now());
+                // starts the timer that will call showBadge and queue up the next
+                // sidebar to be shown.
+                startNotificationTimer();
             });
 
             // The code below will be executed once(1 time) when the user navigates away from the
@@ -628,7 +718,7 @@ function modifyFirstrun() {
                         // besides ensuring that we are on the firstrun page,
                         // also ensure the above still holds true before calling modifyFirstrun
                         if (firstrunRegex.test(tabs.activeTab.url)
-                            && simpleStorage.onboardingDismissed === 'undefined'
+                            && typeof simpleStorage.onboardingDismissed === 'undefined'
                             && typeof simpleStorage.isOnBoarding === 'undefined') {
                             modifyFirstrun();
                         }
@@ -636,22 +726,24 @@ function modifyFirstrun() {
                 }
 
                 // If the yup/nope question has been answered,
-                // and the user is on a page other than /firstrun, we can safely destroy the
-                // firstrun pageMod and show the import data sidebar.
+                // and the user is on a page other than /firstrun,
+                // we can safely destroy the firstrun pageMod.
                 if (typeof simpleStorage.isOnBoarding !== 'undefined'
                     && !firstrunRegex.test(tabs.activeTab.url)) {
                     // destroy the pageMod as it is no longer needed
                     firstRun.destroy();
 
-                    // starts the timer that will call showBadge and queue up the next
-                    // sidebar to be shown. Only start the timer if there is not one
-                    // already scheduled.
-                    if (timer === -1) {
-                        startTimer();
+                    // if haven't gotten to our first step, the action button will not exist.
+                    // Create and add it now before the first notification. This code will be
+                    // reached if the user clicked netiher of the "No thanks" links and,
+                    // either signed up/in or simply navigated away from the firstrun page.
+                    if(typeof simpleStorage.step === 'undefined') {
+                        addAddOnButton();
                     }
 
-                    // store the time we opened the newtab user data page
-                    utils.store('lastSidebarLaunchTime', Date.now());
+                    // starts the timer that will call showBadge and queue up the next
+                    // sidebar to be shown.
+                    startNotificationTimer();
                 }
             });
         }
@@ -672,10 +764,10 @@ function modifyNewtab() {
             var headerContentURL = './tmpl/about-newtab-header.html';
             var footerContentURL = './tmpl/about-newtab-footer.html';
             // load snippet HTML
-            var headerContent = self.data.load(headerContentURL).replace("%url", self.data.url("media/moving-truck.png"));
+            var headerContent = self.data.load(headerContentURL).replace('%url', self.data.url('media/moving-truck.png'));
             // don't load the footer if the user has a sync account
             if (typeof sync !== 'undefined') {
-                footerContent = "";
+                footerContent = '';
             }
             // do load the footer if the user doesn't have a sync account
             else {
@@ -759,8 +851,8 @@ function overrideDefaults() {
  */
 function startDestroyTimer(destroyTime) {
     destroyTimer = timers.setTimeout(function() {
-        // clear the autoCloseTimer if it is running
-        autoCloseTimer(true);
+        // clear any autoCloseTimer that may be scheduled
+        clearTimers();
         // destroys the addon
         destroy();
     }, destroyTime);
@@ -777,14 +869,22 @@ function destroy() {
     if(allAboard) {
         allAboard.destroy();
     }
+
     // stops pagemod from making more modifications on abouthome in the future, and disables its further use
     if(aboutHome) {
         aboutHome.destroy();
     }
+
     // stops pagemod from making more modifications on firstrun in the future, and disables its further use
     if(firstRun) {
         firstRun.destroy();
     }
+
+    // stops pagemod from making more modifications on newtab in the future, and disables its further use
+    if(aboutNewtab) {
+        aboutNewtab.destroy();
+    }
+
     // destroys the addon sidebar, and disables its further use
     if(content) {
         content.dispose();
@@ -800,11 +900,12 @@ exports.onUnload = function(reason) {
         if (typeof aboutHome !== 'undefined') {
             aboutHome.destroy();
         }
+
     }
 };
 
 /**
-* Initializes the add-on, adds the icon to the chrome and checks the time elapsed
+* Initializes the add-on, and checks the time elapsed
 * since a sidebar was last shown.
 */
 exports.main = function(options) {

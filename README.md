@@ -71,11 +71,11 @@ In the root of the project folder, add a file called `config.json` as follows:
 
 ```
 {
-    "afterInteractionCloseTime": 2000,
-    "defaultSidebarInterval": 5,
-    "defaultSidebarCloseTime": 5000,
+    "afterInteractionCloseTime": 5000,
+    "defaultSidebarInterval": 10,
+    "defaultSidebarCloseTime": 7000,
     "timeElapsedFormula": 1000,
-    "waitInterval": 5000
+    "waitInterval": 10000
 }
 ```
 
