@@ -563,11 +563,16 @@ function modifyFirstrun() {
                 firstRunTmpl = self.data.load('./tmpl/firstrun.html').replace('%optionOne', utility).replace('%optionTwo', values);
             }
 
-            // because calling destroy does not unregister the injected script
-            // we do not want the script to be self executing. We therefore intentionally
-            // emit an event that tells the firstrun code to execute, we also pass the
-            // template as a string.
-            worker.port.emit('modify', firstRunTmpl);
+            // only emit the modify event if the user has not dismissed on-boarding,
+            // and has not answered the questions.
+            if (typeof simpleStorage.onboardingDismissed === 'undefined'
+                && typeof simpleStorage.isOnBoarding === 'undefined') {
+                // because calling destroy does not unregister the injected script
+                // we do not want the script to be self executing. We therefore intentionally
+                // emit an event that tells the firstrun code to execute, we also pass the
+                // template as a string.
+                worker.port.emit('modify', firstRunTmpl);
+            }
 
             worker.port.on('dialogSubmit', function(choices) {
                 utils.store('isOnBoarding', choices.isOnBoarding);
@@ -663,7 +668,7 @@ function modifyNewtab() {
             else {
                 var footerContent = self.data.load(footerContentURL);
             }
-            
+
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', headerContent, footerContent);
 
