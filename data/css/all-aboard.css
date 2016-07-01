@@ -57,7 +57,7 @@ a:focus {
 
 .sidebar-content main,
 .sidebar-content footer {
-    padding: 20px 40px 40px 40px;
+    padding: 20px 40px;
 }
 
 /* styleing for search providers image */
@@ -125,6 +125,13 @@ a:focus {
 
 .hostname {
     font-size: .9rem;
+}
+
+.prize {
+    text-align: center;
+    text-decoration: underline;
+    color: #0073aa;
+    cursor: pointer;
 }
 
 /* styles for multiple choice sidebars */
