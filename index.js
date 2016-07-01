@@ -800,7 +800,7 @@ function modifyNewtab() {
                             default:
                                 break;
                         }
-                    }
+                    });
                 /*}
 
                 // listens to an intent message and calls the relevant function
