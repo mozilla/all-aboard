@@ -782,7 +782,7 @@ function modifyNewtab() {
                 if (!canUndo) {
                     // emit remove event for the footer if we aren't able to undo the import
                     worker.port.emit('removeFooter');*/
-                    
+
                     // listens to an intent message and calls the relevant function
                     // based on intent.
                     worker.port.on('intent', function(intent) {
@@ -912,21 +912,27 @@ exports.main = function(options) {
     // set's up the addon for dev mode.
     overrideDefaults();
 
-    // if init was called as part of a browser startup, we first need to check
-    // whether lastSidebarLaunchTime exists and if it does, check whether
-    // more than 24 hours have elsapsed since the last time a sidebar was shown.
-    if (options.loadReason === 'startup'
-        && simpleStorage.lastSidebarLaunchTime !== 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
-        // if all of the above is true
-        showBadge();
-    }
-
     if (options.loadReason === 'startup') {
         // if the sidebar was open during Firefox shutdown, it will be shown by
         // default when Firefox is started up again. The sidebar will not be
         // sized appropriately though so, we call setSidebarSize
         setSidebarSize();
+
+        // if the user has seen at least step 1, we need to add the ActionButton
+        // now, or else the code in the following conditional could try to show
+        // a notification to the user but, this will error because allAboard is undefined.
+        if (typeof simpleStorage.step !== 'undefined') {
+            addAddOnButton();
+        }
+
+        // if init was called as part of a browser startup, we first need to check
+        // whether lastSidebarLaunchTime exists and if it does, check whether
+        // more than 24 hours have elsapsed since the last time a sidebar was shown.
+        if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
+            && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
+            // if all of the above is true
+            showBadge();
+        }
     }
 
     // do not call modifyFirstrun again if the user has either opted out or,
