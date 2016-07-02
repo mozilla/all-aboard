@@ -86,7 +86,7 @@ var firstRun;
 var defaultSidebarInterval = 24;
 // the time to wait before automatically closing the sidebar
 var defaultSidebarCloseTime = 300000;
-var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\//;
+var firstrunRegex = /.*firefox[\/\d*|\w*\.*]*\/firstrun\/.*/;
 // is the sidebar currently visible
 var isVisible = false;
 var sidebarProps;
