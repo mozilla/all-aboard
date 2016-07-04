@@ -150,7 +150,7 @@ function startNotificationTimer(divideBy) {
     // schedule a new timer
     timer = timers.setTimeout(function() {
         showBadge();
-    }, waitInterval/divideBy);
+    }, waitInterval / divideBy);
 }
 
 /**
@@ -972,13 +972,24 @@ exports.main = function(options) {
             addAddOnButton();
         }
 
-        // if init was called as part of a browser startup, we first need to check
-        // whether lastSidebarLaunchTime exists and if it does, check whether
+        // Check whether lastSidebarLaunchTime exists and if it does, check whether
         // more than 24 hours have elsapsed since the last time a sidebar was shown.
         if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
             && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
             // if all of the above is true
             showBadge();
+        }
+
+        // edge case time: If simpleStorage.step is undefined, it means the user has not seen
+        // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
+        // be undefined so, no need to check that. The user might however have answered the
+        // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
+        // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
+        // notification timer, and add the add-on button to the chrome.
+        if (typeof simpleStorage.step === 'undefined'
+            && typeof simpleStorage.isOnBoarding !== 'undefined') {
+            startNotificationTimer(1);
+            addAddOnButton();
         }
     }
 
