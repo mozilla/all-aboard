@@ -330,8 +330,7 @@ function assignTokens(step, worker) {
         utils.store('lastSidebarLaunchTime', Date.now());
         // start notification timer
         startNotificationTimer(1);
-    }
-    else if (step === 5) {
+    } else if (step === 5) {
         startNotificationTimer(12);
     }
 }
@@ -389,7 +388,7 @@ function attachCommonSidebarListeners(worker) {
     });
 
     // listen for click events on the assigned tokens
-    worker.port.on('show', function(props) {
+    worker.port.on('loadSidebar', function(props) {
         // clear all timers in the timersArray
         clearTimers();
         onDemandSidebar(props);
@@ -463,7 +462,7 @@ function showRewardSidebar() {
         id: 'all-aboard-reward',
         title: 'Prize',
         url: './tmpl/reward.html',
-        onAttach: function(worker) {
+        onAttach: function() {
             // remove the previous 3 week destroy timer
             timers.clearInterval(destroyTimer);
             // start a new 3 week destroy timer
