@@ -560,6 +560,9 @@ function showSidebar(sidebarProps) {
 
     content.show();
     setSidebarSize();
+
+    // initialize the about:home pageMod
+    modifyAboutHome(sidebarProps.track, sidebarProps.step);
 }
 
 /**
@@ -616,8 +619,6 @@ function toggleSidebar() {
         sidebarProps = getSidebarProps();
         // shows the relevant sidebar
         showSidebar(sidebarProps);
-        // initialize the about:home pageMod
-        modifyAboutHome(sidebarProps.track, sidebarProps.step);
     } else {
         if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval && simpleStorage.step === 5) {
             showRewardSidebar();
