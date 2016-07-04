@@ -47,10 +47,6 @@ a:focus {
     padding-bottom: 0;
 }
 
-.sidebar-content.utility h1 {
-    padding-bottom: 0;
-}
-
 .sidebar-content p {
     line-height: 1.5;
 }
@@ -103,6 +99,13 @@ a:focus {
     opacity: 1;
     transition: height 1s,
                 opacity 1s;
+}
+
+/* when using .hide the container is collapsed but, the content
+   inside it still occupies it's physical space, though hidden.
+   We therefore need to explicitly set the content to display:none */
+.secondary-content.hide p {
+    display: none;
 }
 
 .user-data {
@@ -275,12 +278,7 @@ main.reward-sidebar {
 
 .tokens li.active .token-trigger {
     display: inline-block;
-    background: none;
-    margin: -3px 0;
-    padding: 0;
-    border: 0;
-    width: 42px;
-    cursor: pointer;
+    margin: -3px 0 0 -3px;
 }
 
 .options-response {

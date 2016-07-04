@@ -2,21 +2,19 @@
     'use strict';
 
     function bindClickListeners() {
-        var tokenTriggers = document.querySelectorAll('.token-trigger');
+        var tokenTriggers = document.querySelectorAll('li.active input');
+        var tokensLength = tokenTriggers.length;
 
         // using let to avoid scope problems inside the loop
         // http://bit.ly/296Q9Dz
-        for (let i = 0, l = tokenTriggers.length; i < l; i++) {
+        for (let i = 0; i < tokensLength; i++) {
             let currentTrigger = tokenTriggers[i];
-            // only add event listeners to elements that are visible
-            if (window.getComputedStyle(currentTrigger).display !== 'none') {
-                currentTrigger.addEventListener('click', function() {
-                    addon.port.emit('show', {
-                        step: currentTrigger.dataset['step'],
-                        track: currentTrigger.dataset['track']
-                    });
+            currentTrigger.addEventListener('click', function() {
+                addon.port.emit('loadSidebar', {
+                    step: currentTrigger.dataset['step'],
+                    track: currentTrigger.dataset['track']
                 });
-            }
+            });
         }
     }
 
