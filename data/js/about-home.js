@@ -36,12 +36,7 @@ function showSnippet(snippetContent) {
 self.port.on('modify', function(snippetContent) {
     // see whether a default snippet container exists
     if (defaultSnippetContainer) {
-        // try to grab the stuff we're going to insert into the page
-        var snippetContent = document.querySelector('.allaboard-snippet');
-        // if it isn't inserted already, call the function to insert it
-        if (snippetContent === null) {
-            defaultSnippetContainer.style.display = 'none';
-            showSnippet(snippetContent);
-        }
+        defaultSnippetContainer.style.display = 'none';
+        showSnippet(snippetContent);
     }
 });
