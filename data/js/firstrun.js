@@ -114,10 +114,15 @@ function interactionHandler() {
 self.port.on('modify', function(tmpl) {
     // see whether a Firefox Accounts section exists
     if (fxAccountsContainer) {
-        heading = document.querySelector('#intro header h2');
-        mainContainer = document.querySelector('.fxaccounts-container');
+        // try to grab the stuff we're going to insert into the page
+        var allAboardDialog = document.querySelector('#all-aboard');
+        // if it isn't inserted already, call the function to insert it
+        if (allAboardDialog === null) {
+            heading = document.querySelector('#intro header h2');
+            mainContainer = document.querySelector('.fxaccounts-container');
 
-        hideFxAccountWidget();
-        showDialog(tmpl);
+            hideFxAccountWidget();
+            showDialog(tmpl);
+        }
     }
 });
