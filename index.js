@@ -203,6 +203,7 @@ function showBadge() {
     allAboard.state('window', {
         badge: '1',
         badgeColor: '#5F9B0A',
+        label: '1 new notification',
         icon: {
             '16': './media/icons/icon-16_active.png',
             '32': './media/icons/icon-32_active.png',
