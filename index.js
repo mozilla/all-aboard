@@ -487,6 +487,9 @@ function showRewardSidebar() {
 
     content.show();
     setSidebarSize();
+
+    // initialize the about:home pageMod for the reward snippet
+    modifyAboutHome('reward');
 }
 
 /**
@@ -619,13 +622,12 @@ function toggleSidebar() {
         // shows the relevant sidebar
         showSidebar(sidebarProps);
     } else {
-        if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval && simpleStorage.step === 5) {
+        if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval
+            && simpleStorage.step === 5) {
             showRewardSidebar();
-        }
-        else
-        // 24 hours has not elapsed since the last content sidebar has been shown so,
-        // simply show or hide the current sidebar.
-        if (isVisible) {
+        } else if (isVisible) {
+            // 24 hours has not elapsed since the last content sidebar has been shown so,
+            // simply show or hide the current sidebar.
             content.hide();
         } else if (typeof sidebarProps !== 'undefined') {
             // We cannot just simply call .show(), because either the sidebar or
@@ -638,13 +640,11 @@ function toggleSidebar() {
             showSidebar(sidebarProps);
         }
     }
-
-
 }
 
 /**
  * Modifies the about:home page to show a snippet that matches the current sidebar.
- * @param {string} track - The current sidebar's track
+ * @param {string} track - The current sidebar's track or reward, for the reward step
  * @param {int} step - The current sidebar's content step
  */
 function modifyAboutHome(track, step) {
@@ -654,10 +654,23 @@ function modifyAboutHome(track, step) {
         contentScriptWhen: 'ready',
         contentStyleFile: './css/about-home.css',
         onAttach: function(worker) {
-            // constructs uri to snippet content
-            var contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
+            var contentURL;
+            var imageURL;
+            var snippetContent;
+            var imageBase = 'media/snippets/';
+
+            if (track === 'reward') {
+                contentURL = './tmpl/reward-snippet.html';
+                imageURL = imageBase + 'reward.png';
+            } else {
+                // constructs uri to snippet content
+                contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
+                imageURL = imageBase + sidebarProps.track + '/content' + sidebarProps.step + '.gif';
+            }
+
             // load snippet HTML
-            var snippetContent = self.data.load(contentURL).replace('%url', self.data.url('media/snippets/'+sidebarProps.track+'/content'+sidebarProps.step+'.gif'));
+            snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL));
+
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', snippetContent);
 
@@ -667,6 +680,9 @@ function modifyAboutHome(track, step) {
                 switch(intent) {
                     case 'bookmarks':
                         highLight('bookmarks');
+                        break;
+                    case 'claimPrize':
+                        showRewardSidebar();
                         break;
                     case 'customize':
                         highLight('customize');
