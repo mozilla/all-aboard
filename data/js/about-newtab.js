@@ -4,24 +4,31 @@ var headDiv = document.querySelector('#newtab-search-container');
 var footDiv = document.querySelector('#newtab-margin-bottom');
 
 function showUserData(headerContent, footerContent) {
-    headDiv.insertAdjacentHTML('beforebegin', headerContent);
-    footDiv.insertAdjacentHTML('beforebegin', footerContent);
+    // if we have header content, display it
+    if (headerContent) {
+        headDiv.insertAdjacentHTML('beforebegin', headerContent);
 
-    var history = document.querySelector('#history');
-    var bookmarks = document.querySelector('#bookmarks');
-    /* staging for auto migrate
-    var undoMigrate = document.querySelector('#undo-migrate');
-    undoMigrate.addEventListener('click', function() {
-        addon.port.emit('intent', 'undoMigrate');
-    });*/
+        var history = document.querySelector('#history');
+        var bookmarks = document.querySelector('#bookmarks');
 
-    history.addEventListener('click', function() {
-        self.port.emit('intent', 'showAwesomebar');
-    });
+        history.addEventListener('click', function() {
+            self.port.emit('intent', 'showAwesomebar');
+        });
 
-    bookmarks.addEventListener('click', function() {
-        self.port.emit('intent', 'showBookmarks');
-    });
+        bookmarks.addEventListener('click', function() {
+            self.port.emit('intent', 'showBookmarks');
+        });
+    }
+    // if we have footer content, display it
+    if (footerContent) {
+        footDiv.insertAdjacentHTML('beforebegin', footerContent);
+
+        var undoMigrate = document.querySelector('#undo-migrate');
+
+        undoMigrate.addEventListener('click', function() {
+            self.port.emit('intent', 'undoMigrate');
+        });
+    }
 }
 
 // listen for the modify event emitted from the add-on, and only then,
