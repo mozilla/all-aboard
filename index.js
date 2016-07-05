@@ -993,8 +993,10 @@ exports.main = function(options) {
         // more than 24 hours have elsapsed since the last time a sidebar was shown.
         if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
             && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
-            // if all of the above is true
-            showBadge();
+            // if all of the above is true, wait 60 seconds and then notify
+            timers.setTimeout(function() {
+                showBadge();
+            }, 60000);
         }
 
         // edge case time: If simpleStorage.step is undefined, it means the user has not seen
