@@ -11,6 +11,7 @@
      * to inform the user of their new token.
      */
     function mainCTAComplete() {
+        var prizeButton = document.querySelector('#prize');
         var responseId;
         var responseMsg;
         var selectedOption;
@@ -49,12 +50,12 @@
         responseMsg.classList.remove('hidden');
         responseMsg.setAttribute('aria-hidden', false);
 
-        //unhide "claim your prize!" for final sidebar
-        if (document.querySelector('.prize')) {
-            var prizeLink = document.querySelector('.prize');
-            prizeLink.classList.remove('hidden');
+        // unhide "claim your prize!" for final sidebar
+        if (prizeButton) {
+            prizeButton.classList.remove('hidden');
+            prizeButton.setAttribute('aria-hidden', false);
 
-            prizeLink.addEventListener('click', function() {
+            prizeButton.addEventListener('click', function() {
                 addon.port.emit('intent', 'claimPrize');
             });
         }
