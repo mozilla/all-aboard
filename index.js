@@ -596,7 +596,7 @@ function showSidebar(sidebarProps) {
             // store the current step we are on
             utils.store('step', sidebarProps.step);
             // update the distribution id with the current step
-            utils.updatePref('-' + sidebarProps.step);
+            utils.updatePref(sidebarProps.step);
             // start the auto close timer
             autoCloseTimer(defaultSidebarCloseTime);
         },
@@ -848,6 +848,7 @@ function modifyFirstrun() {
             worker.port.on('onboardingDismissed', function(dismissed) {
                 tabs.open('about:newtab');
                 utils.store('onboardingDismissed', dismissed);
+                utils.updatePref('-no-thanks');
                 // user has opted out of onboarding, destroy the addon
                 destroy();
             });
