@@ -115,9 +115,6 @@ var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
 
-var syncPref = 'services.sync.account';
-var sync = require('sdk/preferences/service').get(syncPref);
-
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
@@ -671,15 +668,6 @@ function toggleSidebar() {
         }
     });
 
-    // if the user has clicked the add-on icon before having received the
-    // first notification, and now clicks it again because of the notification,
-    // do nothing but, set firstIconInteraction to false so that the flow
-    // from here on out will be as expected.
-    if (isVisible && simpleStorage.firstIconInteraction) {
-        simpleStorage.firstIconInteraction = false;
-        return;
-    }
-
     // Ensure that we have not already shown all content items, that at least 24
     // hours have elapsed since we've shown the last sidebar, and that the user has
     // completed the main CTA for the current step before continuing to increment
@@ -696,8 +684,8 @@ function toggleSidebar() {
             && simpleStorage.step === 5) {
             showRewardSidebar();
         } else if (isVisible) {
-            // we are not showing a new sidebar but, the current sidebar is open.
-            // Simply close it without disposing of the sidebar entirely.
+            // 24 hours has not elapsed since the last content sidebar has been shown so,
+            // simply show or hide the current sidebar.
             content.hide();
         } else if (typeof sidebarProps !== 'undefined') {
             // We cannot just simply call .show(), because either the sidebar or
@@ -705,9 +693,6 @@ function toggleSidebar() {
             // sidebar instance. Safest is to get a new instance.
             showSidebar(sidebarProps);
         } else {
-            // store a property to indicate that the very first sidebar has been
-            // triggered from the add-on icon. This will only ever happen once.
-            utils.store('firstIconInteraction', true);
             // this is the first time we are showing a content sidebar.
             sidebarProps = getSidebarProps();
             showSidebar(sidebarProps);
@@ -918,7 +903,6 @@ function modifyNewtab() {
     aboutNewtab = pageMod.PageMod({
         include: /about:newtab/,
         contentScriptFile: './js/about-newtab.js',
-        contentScriptWhen: 'ready',
         contentStyleFile: './css/about-newtab.css',
         onAttach: function(worker) {
             // constructs uri to snippet content
@@ -926,14 +910,7 @@ function modifyNewtab() {
             var footerContentURL = './tmpl/about-newtab-footer.html';
             // load snippet HTML
             var headerContent = self.data.load(headerContentURL).replace('%url', self.data.url('media/moving-truck.png'));
-            // don't load the footer if the user has a sync account
-            if (typeof sync !== 'undefined') {
-                footerContent = '';
-            }
-            // do load the footer if the user doesn't have a sync account
-            else {
-                var footerContent = self.data.load(footerContentURL);
-            }
+            var footerContent = self.data.load(footerContentURL);
 
             // try to check if we can undo the auto import
             try {
@@ -958,6 +935,7 @@ function modifyNewtab() {
             // if we couldn't check if we can do the auto import because we weren't able to run the canUndo function, throw an error, and don't modify the newtab page with anything
             } catch(e) {
                 console.error('Not able to resolve autoimport undo promise.' + e);
+                worker.port.emit('modify', headerContent, footerContent);
             }
 
             worker.port.on('intent', function(intent) {
