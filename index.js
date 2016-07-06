@@ -671,6 +671,15 @@ function toggleSidebar() {
         }
     });
 
+    // if the user has clicked the add-on icon before having received the
+    // first notification, and now clicks it again because of the notification,
+    // do nothing but, set firstIconInteraction to false so that the flow
+    // from here on out will be as expected.
+    if (isVisible && simpleStorage.firstIconInteraction) {
+        simpleStorage.firstIconInteraction = false;
+        return;
+    }
+
     // Ensure that we have not already shown all content items, that at least 24
     // hours have elapsed since we've shown the last sidebar, and that the user has
     // completed the main CTA for the current step before continuing to increment
@@ -687,8 +696,8 @@ function toggleSidebar() {
             && simpleStorage.step === 5) {
             showRewardSidebar();
         } else if (isVisible) {
-            // 24 hours has not elapsed since the last content sidebar has been shown so,
-            // simply show or hide the current sidebar.
+            // we are not showing a new sidebar but, the current sidebar is open.
+            // Simply close it without disposing of the sidebar entirely.
             content.hide();
         } else if (typeof sidebarProps !== 'undefined') {
             // We cannot just simply call .show(), because either the sidebar or
@@ -696,6 +705,9 @@ function toggleSidebar() {
             // sidebar instance. Safest is to get a new instance.
             showSidebar(sidebarProps);
         } else {
+            // store a property to indicate that the very first sidebar has been
+            // triggered from the add-on icon. This will only ever happen once.
+            utils.store('firstIconInteraction', true);
             // this is the first time we are showing a content sidebar.
             sidebarProps = getSidebarProps();
             showSidebar(sidebarProps);
