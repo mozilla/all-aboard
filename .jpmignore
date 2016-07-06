@@ -4,3 +4,6 @@ circle.yml
 README.md
 node_modules/
 test/
+.gitignore
+.eslintrc.js
+.tmp

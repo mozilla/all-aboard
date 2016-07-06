@@ -57,9 +57,6 @@ var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
-// staging for automigrate to land
-//Cu.import("resource:///modules/AutoMigrate.jsm");
-//var canUndoPromise = AutoMigrate.canUndo();
 
 var syncPref = 'services.sync.account';
 var sync = require('sdk/preferences/service').get(syncPref);
@@ -98,6 +95,14 @@ var destroyTimer = -1;
 var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
+
+try {
+    Cu.import("resource:///modules/AutoMigrate.jsm");
+    var canUndoPromise = AutoMigrate.canUndo();
+}
+catch (e) {
+    console.log('Unable to access automigrate.jsm' + e);
+}
 
 /**
 * Determines the number of hours that has elapsed since the last sidebar was shown.
@@ -341,7 +346,7 @@ function assignTokens(step, worker) {
  * @param {string} intent - The intent of the current event
  */
 function intentHandler(intent) {
-    switch(intent) {
+    switch (intent) {
         case 'search':
             showSearch();
             break;
@@ -678,7 +683,7 @@ function modifyAboutHome(track, step) {
             // listens to an intent message and calls the relevant function
             // based on intent.
             worker.port.on('intent', function(intent) {
-                switch(intent) {
+                switch (intent) {
                     case 'bookmarks':
                         highLight('bookmarks');
                         break;
@@ -838,47 +843,43 @@ function modifyNewtab() {
                 var footerContent = self.data.load(footerContentURL);
             }
 
-            // emit modify event and passes snippet HTML as a string
-            worker.port.emit('modify', headerContent, footerContent);
+            // try to check if we can undo the auto import
+            try {
+                canUndoPromise.then(canUndo => {
+                    // if we can't undo the auto import, don't send the footercontent to our sidebar
+                    if (!canUndo) {
+                        // emit modify event and passes snippet HTML as a string
+                        worker.port.emit('modify', headerContent, null);
+                    }
+                    // if we can undo the auto import, send the footercontent to our sidebar, and then listen for when we would like to actually execute the "undo"
+                    else {
+                        // emit modify event and passes snippet HTML as a string
+                        worker.port.emit('modify', headerContent, footerContent);
 
-           /* staging for autoimport code
-           canUndoPromise.then(canUndo => {
-                if (!canUndo) {
-                    // emit remove event for the footer if we aren't able to undo the import
-                    worker.port.emit('removeFooter');*/
-
-                    // listens to an intent message and calls the relevant function
-                    // based on intent.
-                    worker.port.on('intent', function(intent) {
-                        switch(intent) {
-                            case 'showAwesomebar':
-                                highLight('urlbar');
-                                break;
-                            case 'showBookmarks':
-                                showBookmarks();
-                                break;
-                            case 'undoMigrate':
-                                // staging for automigrate to land:
-                                //autoMigrate.undo();
-                                break;
-                            default:
-                                break;
-                        }
-                    });
-                /*}
-
-                // listens to an intent message and calls the relevant function
-                // based on intent.
-                worker.port.on('intent', function(intent) {
-                    switch(intent) {
-                        case 'undoMigrate':
-                            AutoMigrate.undo();
-                            break;
-                        default:
-                            break;
+                        worker.port.on('intent', function(intent) {
+                            if (intent === 'undoMigrate') {
+                                AutoMigrate.undo();
+                            }
+                        });
                     }
                 });
-            });*/
+            // if we couldn't check if we can do the auto import because we weren't able to run the canUndo function, throw an error, and don't modify the newtab page with anything
+            } catch(e) {
+                console.log("Not able to resolve autoimport undo promise." + e);
+            }
+
+            worker.port.on('intent', function(intent) {
+                switch (intent) {
+                    case 'showAwesomebar':
+                        highLight('urlbar');
+                        break;
+                    case 'showBookmarks':
+                        showBookmarks();
+                        break;
+                    default:
+                        break;
+                }
+            });
 
             // flag that we've shown the user their data
             utils.store('seenUserData', true);
@@ -930,27 +931,27 @@ function destroy() {
     timers.clearInterval(timer);
 
     // removes the button from the UI, and disables its further use
-    if(allAboard) {
+    if (allAboard) {
         allAboard.destroy();
     }
 
     // stops pagemod from making more modifications on abouthome in the future, and disables its further use
-    if(aboutHome) {
+    if (aboutHome) {
         aboutHome.destroy();
     }
 
     // stops pagemod from making more modifications on firstrun in the future, and disables its further use
-    if(firstRun) {
+    if (firstRun) {
         firstRun.destroy();
     }
 
     // stops pagemod from making more modifications on newtab in the future, and disables its further use
-    if(aboutNewtab) {
+    if (aboutNewtab) {
         aboutNewtab.destroy();
     }
 
     // destroys the addon sidebar, and disables its further use
-    if(content) {
+    if (content) {
         content.dispose();
     }
 }
