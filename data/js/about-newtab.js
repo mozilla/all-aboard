@@ -35,17 +35,9 @@ function showUserData(headerContent, footerContent) {
 // start execution of the code.
 self.port.on('modify', function(headerContent, footerContent) {
     // try to grab the stuff we're going to insert into the page
-    var autoImportHeader = document.querySelector('.auto-import');
+    var autoImportHeader = document.querySelector('.allaboard-auto-import');
     // if it isn't inserted already, call the function to insert it
     if (autoImportHeader === null) {
         showUserData(headerContent, footerContent);
     }
-});
-
-// listen for the remove footer event
-self.port.on('removeFooter', function() {
-    // we can only grab this after it is added to the page, which it should anytime removeFooter is emitted
-    var footer = document.querySelector('#footer');
-    // hide the footer content
-    footer.style.visibility = "hidden";
 });

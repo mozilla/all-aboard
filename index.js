@@ -115,9 +115,6 @@ var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
 
-var syncPref = 'services.sync.account';
-var sync = require('sdk/preferences/service').get(syncPref);
-
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
@@ -919,7 +916,6 @@ function modifyNewtab() {
     aboutNewtab = pageMod.PageMod({
         include: /about:newtab/,
         contentScriptFile: './js/about-newtab.js',
-        contentScriptWhen: 'ready',
         contentStyleFile: './css/about-newtab.css',
         onAttach: function(worker) {
             // constructs uri to snippet content
@@ -927,14 +923,7 @@ function modifyNewtab() {
             var footerContentURL = './tmpl/about-newtab-footer.html';
             // load snippet HTML
             var headerContent = self.data.load(headerContentURL).replace('%url', self.data.url('media/moving-truck.png'));
-            // don't load the footer if the user has a sync account
-            if (typeof sync !== 'undefined') {
-                footerContent = '';
-            }
-            // do load the footer if the user doesn't have a sync account
-            else {
-                var footerContent = self.data.load(footerContentURL);
-            }
+            var footerContent = self.data.load(footerContentURL);
 
             // try to check if we can undo the auto import
             try {
@@ -959,6 +948,7 @@ function modifyNewtab() {
             // if we couldn't check if we can do the auto import because we weren't able to run the canUndo function, throw an error, and don't modify the newtab page with anything
             } catch(e) {
                 console.error('Not able to resolve autoimport undo promise.' + e);
+                worker.port.emit('modify', headerContent, footerContent);
             }
 
             worker.port.on('intent', function(intent) {
