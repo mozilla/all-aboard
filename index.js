@@ -114,6 +114,7 @@ var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
+var configPrefs = require("sdk/preferences/service")
 
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
@@ -149,6 +150,8 @@ var destroyTimer = -1;
 var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
+var resetPreloadTime = 86400000;
+var resetPreloadTimer;
 
 try {
     Cu.import('resource:///modules/AutoMigrate.jsm');
@@ -927,6 +930,7 @@ function modifyNewtab() {
     aboutNewtab = pageMod.PageMod({
         include: /about:newtab/,
         contentScriptFile: './js/about-newtab.js',
+        contentScriptWhen: 'ready',
         contentStyleFile: './css/about-newtab.css',
         onAttach: function(worker) {
             // constructs uri to snippet content
@@ -959,7 +963,6 @@ function modifyNewtab() {
             // if we couldn't check if we can do the auto import because we weren't able to run the canUndo function, throw an error, and don't modify the newtab page with anything
             } catch(e) {
                 console.error('Not able to resolve autoimport undo promise.' + e);
-                worker.port.emit('modify', headerContent, footerContent);
             }
 
             worker.port.on('intent', function(intent) {
@@ -973,6 +976,12 @@ function modifyNewtab() {
                     default:
                         break;
                 }
+            });
+
+            // Listen for when our content script has modified our page
+            worker.port.on('pageModified', function() {
+                // Once the the page is modified, reset the preload preference if it hasn't been already
+                resetPreload();
             });
 
             // flag that we've shown the user their data
@@ -1050,6 +1059,16 @@ function destroy() {
     }
 }
 
+function resetPreload() {
+    // Check to see if the newtab is not being preloaded
+    // note: The binary that this addon will be packaged with will have browser.newtab.preload set to false. 
+    //       This is to mitigate the cache overriding our pagemod when users load newtab.
+    if(!configPrefs.get('browser.newtab.preload')) {
+        // if it isn't being preloaded, now that we've modified the page (loaded the content script), set it to preload in the future
+        configPrefs.set('browser.newtab.preload', true);
+    }
+}
+
 /** This is called when the add-on is unloaded. If the reason is either disable,
  * or shutdown, we can do some cleanup.
  */
@@ -1117,4 +1136,9 @@ exports.main = function() {
     if(typeof simpleStorage.seenUserData === 'undefined') {
         modifyNewtab();
     }
+
+    var resetPreloadTimer = timers.setTimeout(function() {
+        // reset the preload preference
+        resetPreload();
+    }, resetPreloadTime);
 };
