@@ -408,7 +408,7 @@ function intentHandler(intent) {
             tabs.open('https://www.mozilla.org/teach/smarton/security/');
             break;
         case 'newsletter':
-            tabs.open('https://www.mozilla.org/#newsletter-subscribe');
+            tabs.open('https://www.mozilla.org/newsletter/mozilla/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=community');
             break;
         case 'privateBrowsing':
             highLight('privateWindow');
