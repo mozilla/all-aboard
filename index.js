@@ -1056,44 +1056,42 @@ exports.onUnload = function(reason) {
 * Initializes the add-on, and checks the time elapsed
 * since a sidebar was last shown.
 */
-exports.main = function(options) {
+exports.main = function() {
     // set's up the addon for dev mode.
     overrideDefaults();
 
-    if (options.loadReason === 'startup') {
-        // if the sidebar was open during Firefox shutdown, it will be shown by
-        // default when Firefox is started up again. The sidebar will not be
-        // sized appropriately though so, we call setSidebarSize
-        setSidebarSize();
+    // if the sidebar was open during Firefox shutdown, it will be shown by
+    // default when Firefox is started up again. The sidebar will not be
+    // sized appropriately though so, we call setSidebarSize
+    setSidebarSize();
 
-        // if the user has seen at least step 1, we need to add the ActionButton
-        // now, or else the code in the following conditional could try to show
-        // a notification to the user but, this will error because allAboard is undefined.
-        if (typeof simpleStorage.step !== 'undefined') {
-            addAddOnButton();
-        }
+    // if the user has seen at least step 1, we need to add the ActionButton
+    // now, or else the code in the following conditional could try to show
+    // a notification to the user but, this will error because allAboard is undefined.
+    if (typeof simpleStorage.step !== 'undefined') {
+        addAddOnButton();
+    }
 
-        // Check whether lastSidebarLaunchTime exists and if it does, check whether
-        // more than 24 hours have elsapsed since the last time a sidebar was shown.
-        if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
-            && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
-            // if all of the above is true, wait 60 seconds and then notify
-            timers.setTimeout(function() {
-                showBadge();
-            }, 60000);
-        }
+    // Check whether lastSidebarLaunchTime exists and if it does, check whether
+    // more than 24 hours have elsapsed since the last time a sidebar was shown.
+    if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
+        // if all of the above is true, wait 60 seconds and then notify
+        timers.setTimeout(function() {
+            showBadge();
+        }, 60000);
+    }
 
-        // edge case time: If simpleStorage.step is undefined, it means the user has not seen
-        // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
-        // be undefined so, no need to check that. The user might however have answered the
-        // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
-        // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
-        // notification timer, and add the add-on button to the chrome.
-        if (typeof simpleStorage.step === 'undefined'
-            && typeof simpleStorage.isOnBoarding !== 'undefined') {
-            startNotificationTimer(1);
-            addAddOnButton();
-        }
+    // edge case time: If simpleStorage.step is undefined, it means the user has not seen
+    // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
+    // be undefined so, no need to check that. The user might however have answered the
+    // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
+    // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
+    // notification timer, and add the add-on button to the chrome.
+    if (typeof simpleStorage.step === 'undefined'
+        && typeof simpleStorage.isOnBoarding !== 'undefined') {
+        startNotificationTimer(1);
+        addAddOnButton();
     }
 
     // do not call modifyFirstrun again if the user has either opted out or,
