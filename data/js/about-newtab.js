@@ -18,6 +18,9 @@ function showUserData(headerContent, footerContent) {
         bookmarks.addEventListener('click', function() {
             self.port.emit('intent', 'showBookmarks');
         });
+
+        // As soon as the script loads and modifys the page, emit a message back to our sidebar that we've loaded the page
+        self.port.emit('pageModified');
     }
     // if we have footer content, display it
     if (footerContent) {
