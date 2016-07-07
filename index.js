@@ -231,6 +231,16 @@ function autoCloseTimer(timeout) {
 }
 
 /**
+ * Visibly hides the title of the current sidebar
+ * @param {object} activeWindow - The currently active window object
+ */
+function clearSidebarTitle(activeWindow) {
+    var sidebarTitle = activeWindow.document.getElementById('sidebar-title');
+    // hide visibly so the closing [x] does not float to the left
+    sidebarTitle.style.visibility = 'hidden';
+}
+
+/**
 * Utility function to set the desired size for the sidebar.
 */
 function setSidebarSize() {
@@ -238,6 +248,7 @@ function setSidebarSize() {
     var _sidebar = activeWindow.document.getElementById('sidebar');
     _sidebar.style.width = '320px';
     _sidebar.style.maxWidth = '320px';
+    clearSidebarTitle(activeWindow);
 }
 
 /**
