@@ -180,7 +180,7 @@ function addAddOnButton() {
         // Create the action button, this will add the add-on to the chrome
         allAboard = buttons.ActionButton({
             id: 'all-aboard',
-            label: 'Mozilla Firefox Onboarding',
+            label: 'Firefox Notifications',
             icon: {
                 '16': './media/icons/icon-16.png',
                 '32': './media/icons/icon-32.png',
