@@ -71,7 +71,7 @@ const SNIPPET_COPY = {
         },
         {
             copy1: 'Join the millions browsing freely on their phones.',
-            copy2: 'Voila! Your tabs and history auto-magically appear on your phone.',
+            copy2: 'Voilà! Your tabs and history auto-magically appear on your phone.',
             copy3: 'Leave no tab behind. Switch from laptop to phone and continue where you Webbed off.'
         }
     ],
