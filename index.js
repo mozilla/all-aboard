@@ -724,7 +724,12 @@ function toggleSidebar() {
     } else {
         if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval
             && simpleStorage.step === 5) {
-            showRewardSidebar();
+            if (isVisible) {
+                content.hide();
+            }
+            else {
+                showRewardSidebar();
+            }
         } else if (isVisible) {
             // we are not showing a new sidebar but, the current sidebar is open.
             // Simply close it without disposing of the sidebar entirely.
