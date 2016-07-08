@@ -1,6 +1,8 @@
 (function() {
     // retrieve our default text from the sidebar
     var defaultText = document.querySelector('#default');
+    // retrieve our explore themes link from the sidebar
+    var exploreThemes = document.querySelector('#exploreThemes');
     // set template names
     var templateNames = ['template1','template2'];
 
@@ -21,6 +23,13 @@
             });
         })(templateNames[x]);
     }
+
+    // add click listener on default theme text option
+    exploreThemes.addEventListener('click', function(event) {
+        event.preventDefault();
+        // notify addon that we've clicked the button
+        addon.port.emit('intent', 'exploreThemes');
+    });
 
     // add click listener on default theme text option
     defaultText.addEventListener('click', function() {
