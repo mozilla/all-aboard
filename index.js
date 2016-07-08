@@ -261,8 +261,8 @@ function setSidebarSize() {
 */
 function showDesktopNotification() {
     notifications.notify({
-        title: 'Welcome Aboard',
-        text: 'Firefox has something special for you.',
+        title: 'Firefox',
+        text: 'You have 1 new notification.',
         iconURL: './media/icons/icon-32_active.png',
         onClick: toggleSidebar
     });
@@ -276,7 +276,7 @@ function showBadge() {
     allAboard.state('window', {
         badge: '1',
         badgeColor: '#5F9B0A',
-        label: '1 new notification',
+        label: '1 new notification.',
         icon: {
             '16': './media/icons/icon-16_active.png',
             '32': './media/icons/icon-32_active.png',
