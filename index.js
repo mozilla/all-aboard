@@ -114,7 +114,7 @@ var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 var utils = require('lib/utils.js');
 var windowUtils = require('sdk/window/utils');
-var configPrefs = require("sdk/preferences/service")
+var configPrefs = require('sdk/preferences/service');
 
 var { Cu } = require('chrome');
 var { XMLHttpRequest } = require('sdk/net/xhr');
@@ -151,7 +151,6 @@ var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
 var resetPreloadTime = 86400000;
-var resetPreloadTimer;
 
 try {
     Cu.import('resource:///modules/AutoMigrate.jsm');
@@ -544,6 +543,9 @@ function showRewardSidebar() {
 
             // start the auto close timer
             autoCloseTimer(defaultSidebarCloseTime);
+
+            // set flag that the reward sidebar has been shown
+            simpleStorage.rewardSidebarShown = true;
         },
         onDetach: function() {
             content.dispose();
@@ -1069,24 +1071,26 @@ function destroy() {
 
 function resetPreload() {
     // Check to see if the newtab is not being preloaded
-    // note: The binary that this addon will be packaged with will have browser.newtab.preload set to false. 
-    //       This is to mitigate the cache overriding our pagemod when users load newtab.
+    // note: The binary that this addon will be packaged with will have browser.newtab.preload set
+    // to false. This is to mitigate the cache overriding our pagemod when users load newtab.
     if(!configPrefs.get('browser.newtab.preload')) {
-        // if it isn't being preloaded, now that we've modified the page (loaded the content script), set it to preload in the future
+        // if it isn't being preloaded, now that we've modified the page (loaded the content
+        // script), set it to preload in the future
         configPrefs.set('browser.newtab.preload', true);
     }
 }
 
-/** This is called when the add-on is unloaded. If the reason is either disable,
+/**
+ * This is called when the add-on is unloaded. If the reason is either disable,
  * or shutdown, we can do some cleanup.
  */
-exports.onUnload = function(reason) {
-    if (reason === 'disable' || reason === 'shutdown') {
+exports.onUnload = function() {
+    if (typeof aboutHome !== 'undefined') {
+        aboutHome.destroy();
+    }
 
-        if (typeof aboutHome !== 'undefined') {
-            aboutHome.destroy();
-        }
-
+    if (typeof content !== 'undefined') {
+        content.dispose();
     }
 };
 
@@ -1098,11 +1102,6 @@ exports.main = function() {
     // set's up the addon for dev mode.
     overrideDefaults();
 
-    // if the sidebar was open during Firefox shutdown, it will be shown by
-    // default when Firefox is started up again. The sidebar will not be
-    // sized appropriately though so, we call setSidebarSize
-    setSidebarSize();
-
     // if the user has seen at least step 1, we need to add the ActionButton
     // now, or else the code in the following conditional could try to show
     // a notification to the user but, this will error because allAboard is undefined.
@@ -1112,8 +1111,10 @@ exports.main = function() {
 
     // Check whether lastSidebarLaunchTime exists and if it does, check whether
     // more than 24 hours have elsapsed since the last time a sidebar was shown.
+    // Also, make sure that the user has not actually completed the on-boarding process.
     if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval) {
+        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval
+        && typeof simpleStorage.rewardSidebarShown === 'undefined') {
         // if all of the above is true, wait 60 seconds and then notify
         timers.setTimeout(function() {
             showBadge();
@@ -1145,7 +1146,7 @@ exports.main = function() {
         modifyNewtab();
     }
 
-    var resetPreloadTimer = timers.setTimeout(function() {
+    timers.setTimeout(function() {
         // reset the preload preference
         resetPreload();
     }, resetPreloadTime);
