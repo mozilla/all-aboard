@@ -423,6 +423,15 @@ function intentHandler(intent) {
         case 'newsletter':
             tabs.open('https://www.mozilla.org/newsletter/mozilla/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=community');
             break;
+        case 'exploreThemes':
+            tabs.open('https://addons.mozilla.org/firefox/themes/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1');
+            break;
+        case 'appleStore':
+            tabs.open('https://mzl.la/1YtDCxH');
+            break;
+        case 'playStore':
+            tabs.open('http://mzl.la/1HKLL5H');
+            break;
         case 'privateBrowsing':
             highLight('privateWindow');
             break;
