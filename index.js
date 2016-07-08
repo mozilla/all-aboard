@@ -922,6 +922,20 @@ function modifyFirstrun() {
                     // either signed up/in or simply navigated away from the firstrun page.
                     if(typeof simpleStorage.step === 'undefined') {
                         addAddOnButton();
+
+                        var newtabOpen = false;
+                        for (let tab of tabs) {
+                            if(tab.url === 'about:newtab') {
+                                newtabOpen = true;
+                            }
+                        }
+
+                        if (!newtabOpen) {
+                            tabs.open({
+                                url: 'about:newtab',
+                                inBackground: true
+                            });
+                        }
                     }
 
                     // starts the timer that will call showBadge and queue up the next
