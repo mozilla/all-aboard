@@ -392,7 +392,7 @@ function assignTokens(step, worker) {
     if (tokens.indexOf(token) === -1) {
         tokens.push(token);
         // store the new token
-        utils.store('tokens', tokens);
+        simpleStorage.tokens = tokens;
     }
     // emit the array of tokens to the sidebar
     worker.port.emit('tokens', tokens);
@@ -401,7 +401,7 @@ function assignTokens(step, worker) {
     // the final content item.
     if (step < 5) {
         // update the lastSidebarLaunchTime to now
-        utils.store('lastSidebarLaunchTime', Date.now());
+        simpleStorage.lastSidebarLaunchTime = Date.now();
         // start notification timer
         startNotificationTimer(1);
     } else if (step === 5) {
@@ -605,7 +605,7 @@ function showSidebar(sidebarProps) {
             });
 
             // store the current step we are on
-            utils.store('step', sidebarProps.step);
+            simpleStorage.step = sidebarProps.step;
             // update the distribution id with the current step
             utils.updatePref(sidebarProps.step);
             // start the auto close timer
@@ -653,7 +653,7 @@ function getSidebarProps() {
     assignedToken = false;
 
     // store the current step
-    utils.store('step', contentStep);
+    simpleStorage.step = contentStep;
 
     // set the additional sidebar properties
     sidebarProps.step = contentStep;
@@ -718,7 +718,7 @@ function toggleSidebar() {
         } else {
             // store a property to indicate that the very first sidebar has been
             // triggered from the add-on icon. This will only ever happen once.
-            utils.store('firstIconInteraction', true);
+            simpleStorage.firstIconInteraction = true;
             // this is the first time we are showing a content sidebar.
             sidebarProps = getSidebarProps();
             showSidebar(sidebarProps);
@@ -849,8 +849,8 @@ function modifyFirstrun() {
             }
 
             worker.port.on('dialogSubmit', function(choices) {
-                utils.store('isOnBoarding', choices.isOnBoarding);
-                utils.store('whatMatters', choices.whatMatters);
+                simpleStorage.isOnBoarding = choices.isOnBoarding;
+                simpleStorage.whatMatters = choices.whatMatters;
                 utils.updatePref('-' + choices.whatMatters + '-' + choices.isOnBoarding);
             });
 
@@ -858,7 +858,7 @@ function modifyFirstrun() {
             // before answering any of the questions
             worker.port.on('onboardingDismissed', function(dismissed) {
                 tabs.open('about:newtab');
-                utils.store('onboardingDismissed', dismissed);
+                simpleStorage.onboardingDismissed = dismissed;
                 utils.updatePref('-no-thanks');
                 // user has opted out of onboarding, destroy the addon
                 destroy();
@@ -985,7 +985,7 @@ function modifyNewtab() {
             });
 
             // flag that we've shown the user their data
-            utils.store('seenUserData', true);
+            simpleStorage.seenUserData = true;
         }
     });
 }
