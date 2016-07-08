@@ -644,11 +644,19 @@ function showSidebar(sidebarProps) {
  * @returns updated sidebarProps
  */
 function getSidebarProps() {
+    var tokens = simpleStorage.tokens || [];
+    var latestToken = 'token' + simpleStorage.step;
+
     var track = simpleStorage.whatMatters;
     // we get the properties before we increment the contentStep as arrays are 0 indexed.
     var sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
+    var contentStep;
     // determine the current content step we are on
-    var contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+    if(tokens.indexOf(latestToken) > -1 && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
+        contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
+    } else {
+        contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step) : 1;
+    }
     // reset our assigned token flag for the new sidebar
     assignedToken = false;
 
