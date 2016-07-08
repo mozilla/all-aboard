@@ -60,18 +60,18 @@ const SNIPPET_COPY = {
             copy3: 'Free to be private. Only Firefox lets you turn off the trackers.'
         },
         {
-            copy1: 'We bet your other browser didn’t let you move icons around.',
-            copy2: 'Unlike the others, moving stuff around is one of our perks.',
-            copy3: 'Free to make it yours. Let’s put things where you want them.'
+            copy1: 'Free to make it yours. Let’s put things where you want them.',
+            copy2: 'Moving stuff around is one of our perks.',
+            copy3: 'Let’s put things where you want them.'
         },
         {
             copy1: 'This is your browser. This is your browser on bookmarks. Any questions?',
-            copy2: 'Feeding Firefox makes it even more powerful. Import your bookmarks and witness true power.',
-            copy3: 'T-minus 10, 9, 8… the bookmark toolbar is your launch pad. Activate toolbar now.'
+            copy2: 'Feeding Firefox makes it even more powerful. Cook up some bookmarks and witness true power.',
+            copy3: 'T-minus 10, 9, 8… bookmarks are your launch pad.'
         },
         {
-            copy1: 'Join 100,000,000 people browsing freely on their phones.',
-            copy2: 'Voila! your tabs and history auto-magically appear on your phone.',
+            copy1: 'Join the millions browsing freely on their phones.',
+            copy2: 'Voila! Your tabs and history auto-magically appear on your phone.',
             copy3: 'Leave no tab behind. Switch from laptop to phone and continue where you Webbed off.'
         }
     ],
@@ -98,8 +98,8 @@ const SNIPPET_COPY = {
         },
         {
             copy1: 'Be a Web know-it-all and do the Web some good.',
-            copy2: 'Now Playing: cyber security, government surveillance, the free Web.',
-            copy3: 'You’re different, that’s why we like you. Keep up with issues surrounding the Web.'
+            copy2: 'Now Playing: cyber security and government surveillance.',
+            copy3: 'You’re different. That’s why we like you. Keep up with issues surrounding the Web.'
         }
     ]
 };
