@@ -54,6 +54,7 @@ module.exports = {
         "exports": true,
         "require": true,
         "MigrationUtils": true,
-        "Services": true
+        "Services": true,
+        "AutoMigrate": true
     }
 };
