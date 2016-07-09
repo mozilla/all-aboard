@@ -18,7 +18,7 @@ body {
 }
 
 header {
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 a:link,
@@ -39,7 +39,6 @@ a:focus {
 
 .sidebar-content h1 {
     margin: 0;
-    padding-bottom: 40px;
     font-size: 1.5rem;
 }
 
@@ -53,8 +52,9 @@ a:focus {
 
 .sidebar-content main,
 .sidebar-content footer {
-    padding: 20px 40px;
+    padding: 20px 40px 0px 40px;
 }
+
 
 /* styleing for search providers image */
 .search-providers {
@@ -68,27 +68,16 @@ a:focus {
     text-align: left;
 }
 
-.sidebar-content.values h1 {
-    padding-bottom: 20px;
-}
-
-.sidebar-content.values header {
-    padding: 10px 0 10px;
-}
-
 .sidebar-content.values main,
 .sidebar-content.values footer {
-    padding: 10px 20px 20px 20px;
+    padding: 20px 20px 0px 20px;
 }
 
-.sidebar-content.values main {
-    padding-bottom: 20px;
-}
 
 .sidebar-content footer {
-    padding-top: 0;
     text-align: center;
 }
+
 
 .sidebar-content.values header img {
     display: block;
@@ -107,6 +96,7 @@ a:focus {
    We therefore need to explicitly set the content to display:none */
 .secondary-content.hide p {
     display: none;
+	padding: 0;
 }
 
 .user-data {
@@ -133,7 +123,6 @@ a:focus {
 
 /* styles for multiple choice sidebars */
 .options {
-    margin: 0 0 40px;
     padding: 0;
     list-style: none;
 }
@@ -311,7 +300,7 @@ main.reward-sidebar {
 }
 
 .mobile img {
-    margin: 10px 0;
+    margin: 5px;
 }
 
 .reset {
@@ -367,8 +356,4 @@ main.reward-sidebar {
     clip: rect(0 0 0 0);
     padding: 0;
     border: 0;
-}
-
-.sidebar-content.values.options {
-    padding-bottom: 20px;
 }
