@@ -1,8 +1,8 @@
 {
   "title": "All Aboard",
-  "name": "all-aboard",
-  "version": "0.0.4",
-  "description": "The Mozilla Firefox onboarding add-on",
+  "name": "all-aboard-dev",
+  "version": "0.0.9",
+  "description": "The Mozilla Firefox Educational Tool",
   "homepage": "https://github.com/mozilla/all-aboard",
   "repository": "https://github.com/mozilla/all-aboard",
   "main": "index.js",

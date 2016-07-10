@@ -11,7 +11,7 @@ xpinstall.signatures.required
 
 [See SUMO if you get stuck](https://support.mozilla.org/en-US/kb/add-on-signing-in-firefox?#w_override-add-on-signing-advanced-users)
 
-Double click on the item and it's value should change to false. You can now [download and install](https://github.com/schalkneethling/all-aboard) the add-on.
+Double click on the item and it's value should change to false. You can now [download and install](https://github.com/mozilla/all-aboard) the add-on.
 
 ## All-Aboard
 
@@ -22,7 +22,7 @@ The add-on by itself does not do much at the moment. You can click the little Fi
 The more interesing interaction All-Aboard offers is the new interactions on the /firstrun page for Firefox. To see this in action, go to:
 
 ```
-https://www.mozilla.org//firefox/46.0/firstrun/
+https://www.mozilla.org/firefox/47.0/firstrun/
 ```
 
 ### The Paths
@@ -62,7 +62,7 @@ https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm#Installation
 Once installed you can launch the add-on as follows:
 
 ```
-jpm run --binary-args www.mozilla.org/en-US/firefox/46.0/firstrun/
+jpm run --binary-args www.mozilla.org/en-US/firefox/47.0/firstrun/
 ```
 
 To ease development and testing of the add-on, it is possible to configure the time intervals and elapsed time formula using a JSON config file.
