@@ -792,17 +792,19 @@ function modifyAboutHome(track, step) {
             var imageURL;
             var imageBase = 'media/snippets/';
 
+            var snippetContent;
             if (track === 'reward') {
                 contentURL = './tmpl/reward-snippet.html';
                 imageURL = imageBase + 'reward.png';
+                // load snippet HTML
+                snippetContent = self.data.load(contentURL).replace('%url', self.data.url(imageURL));
             } else {
                 // constructs uri to snippet content
                 contentURL = './tmpl/' + track + '/content' + step + '-snippet.html';
                 imageURL = imageBase + sidebarProps.track + '/content' + sidebarProps.step + '.gif';
+                // load snippet HTML
+                snippetContent = replaceSnippetCopy(track, contentURL, imageURL);
             }
-
-            // load snippet HTML
-            var snippetContent = replaceSnippetCopy(track, contentURL, imageURL);
 
             // emit modify event and passes snippet HTML as a string
             worker.port.emit('modify', snippetContent);
