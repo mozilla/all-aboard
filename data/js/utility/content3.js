@@ -4,7 +4,7 @@
     // retrieve our explore themes link from the sidebar
     var exploreThemes = document.querySelector('#exploreThemes');
     // set template names
-    var templateNames = ['template1','template2'];
+    var templateNames = ['template1'];
 
     // add listeners to all of our buttons for clicking
     for(var x=0, l=templateNames.length; x<l; x++) {

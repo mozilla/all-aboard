@@ -71,7 +71,7 @@ const SNIPPET_COPY = {
         },
         {
             copy1: 'Join the millions browsing freely on their phones.',
-            copy2: 'Voila! Your tabs and history auto-magically appear on your phone.',
+            copy2: 'Voilà! Your tabs and history auto-magically appear on your phone.',
             copy3: 'Leave no tab behind. Switch from laptop to phone and continue where you Webbed off.'
         }
     ],
@@ -348,7 +348,7 @@ function highLight(item) {
  * @param {int} themeNum - a number passed based on the button clicked by the user
  */
 function changeTheme(themeNum) {
-    var personaIDs = [539838, 157076];
+    var personaIDs = [157076];
 
     // if there is no number passed, set the theme to default and return
     if (typeof themeNum === 'undefined') {
