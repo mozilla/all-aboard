@@ -1167,12 +1167,15 @@ exports.main = function() {
 
     // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
     // If so, we should refresh it so that our pagemod shows up
-    tabs.on('ready', function() {
+    try {
         if (tabs.activeTab.url === 'about:home' && !aboutHomeReloaded) {
             aboutHomeReloaded = true;
             tabs.activeTab.reload();
         }
-    });
+    }
+    catch (e) {
+        console.error("Could not reload snippet content: " + e);
+    }
 
     // Check whether lastSidebarLaunchTime exists and if it does, check whether
     // more than 24 hours have elsapsed since the last time a sidebar was shown.
