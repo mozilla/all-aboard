@@ -151,6 +151,7 @@ var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
 var resetPreloadTime = 86400000;
+var aboutHomeReloaded = false;
 
 try {
     Cu.import('resource:///modules/AutoMigrate.jsm');
@@ -572,9 +573,6 @@ function showRewardSidebar() {
 
     content.show();
     setSidebarSize();
-
-    // initialize the about:home pageMod for the reward snippet
-    modifyAboutHome('reward');
 }
 
 /**
@@ -1137,7 +1135,30 @@ exports.main = function() {
     // a notification to the user but, this will error because allAboard is undefined.
     if (typeof simpleStorage.step !== 'undefined') {
         addAddOnButton();
+        sidebarProps = getSidebarProps();
+        modifyAboutHome(sidebarProps.track, sidebarProps.step);
+    } 
+    // edge case time: If simpleStorage.step is undefined, it means the user has not seen
+    // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
+    // be undefined so, no need to check that. The user might however have answered the
+    // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
+    // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
+    // notification timer, and add the add-on button to the chrome.
+    else if (typeof simpleStorage.isOnBoarding !== 'undefined') {
+        startNotificationTimer(1);
+        addAddOnButton();
+        sidebarProps = getSidebarProps();
+        modifyAboutHome(sidebarProps.track, sidebarProps.step);
     }
+
+    // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
+    // If so, we should refresh it so that our pagemod shows up
+    tabs.on('ready', function() {
+        if (tabs.activeTab.url === 'about:home' && !aboutHomeReloaded) {
+            aboutHomeReloaded = true;
+            tabs.activeTab.reload();
+        }
+    });
 
     // Check whether lastSidebarLaunchTime exists and if it does, check whether
     // more than 24 hours have elsapsed since the last time a sidebar was shown.
@@ -1149,18 +1170,6 @@ exports.main = function() {
         timers.setTimeout(function() {
             showBadge();
         }, 60000);
-    }
-
-    // edge case time: If simpleStorage.step is undefined, it means the user has not seen
-    // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
-    // be undefined so, no need to check that. The user might however have answered the
-    // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
-    // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
-    // notification timer, and add the add-on button to the chrome.
-    if (typeof simpleStorage.step === 'undefined'
-        && typeof simpleStorage.isOnBoarding !== 'undefined') {
-        startNotificationTimer(1);
-        addAddOnButton();
     }
 
     // do not call modifyFirstrun again if the user has either opted out or,
