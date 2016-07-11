@@ -125,6 +125,8 @@ var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightTheme
 var activeWindow = windowUtils.getMostRecentBrowserWindow();
 // the awesomebar node from the browser window
 var awesomeBar = activeWindow.document.getElementById('urlbar');
+// the bookmark button node from the browser window
+var bookmarkButton = activeWindow.document.getElementById('bookmarks-menu-button');
 // whether we have assigned a token for our current content step
 var assignedToken = false;
 var aboutHome;
@@ -152,6 +154,8 @@ var waitInterval = 86400000;
 var nonuseDestroyTime = 1814400000;
 var resetPreloadTime = 86400000;
 var aboutHomeReloaded = false;
+var awesomeBarListen = false;
+var bookmarkListen = false;
 
 try {
     Cu.import('resource:///modules/AutoMigrate.jsm');
@@ -323,7 +327,13 @@ function showBookmarks() {
  */
 function removeHighlight() {
     UITour.hideHighlight(activeWindow);
-    awesomeBar.removeEventListener('focus', removeHighlight);
+    if (awesomeBarListen) {
+        awesomeBar.removeEventListener('focus', removeHighlight);
+        awesomeBarListen = false;
+    } else if (bookmarkListen) {
+        bookmarkButton.removeEventListener('focus', removeHighlight);
+        bookmarkListen = false;
+    }
 }
 
 /**
@@ -331,8 +341,12 @@ function removeHighlight() {
  * @param {string} item - Item you wish to highlight's name as a string
  */
 function highLight(item) {
-    if (item === 'urlbar') {
+    if (item === 'urlbar' && !awesomeBarListen) {
         awesomeBar.addEventListener('focus', removeHighlight);
+        awesomeBarListen = true;
+    } else if (item === 'bookmarks' && !bookmarkListen) {
+        bookmarkButton.addEventListener('click', removeHighlight);
+        bookmarkListen = true;
     }
 
     UITour.getTarget(activeWindow, item, false).then(function(chosenItem) {
