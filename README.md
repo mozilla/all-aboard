@@ -1,5 +1,5 @@
 #All Aboard
-The Mozilla Firefox onboarding add-on
+The Mozilla Firefox Educational Tool
 
 ## Installing All-Aboard
 
@@ -13,13 +13,9 @@ xpinstall.signatures.required
 
 Double click on the item and it's value should change to false. You can now [download and install](https://github.com/mozilla/all-aboard) the add-on.
 
-## All-Aboard
-
-The add-on by itself does not do much at the moment. You can click the little Firefox icon in the toolbar but, it will show an underwhelming 'Hello World' message in a XUL sidebar.
-
 ## First run
 
-The more interesing interaction All-Aboard offers is the new interactions on the /firstrun page for Firefox. To see this in action, go to:
+In order to trigger the onboarding experiment, you must visit the firstrun page and answer the two questions your are prompted with.
 
 ```
 https://www.mozilla.org/firefox/47.0/firstrun/
@@ -27,7 +23,7 @@ https://www.mozilla.org/firefox/47.0/firstrun/
 
 ### The Paths
 
-The above page will show a new dialog asking whether you have used Firefox in the last 30 days, and what matters to you as user. There is also a link to opt out presented as a linked titled "No thanks".
+Firstrun will show a dialog asking whether you have used Firefox in the last 30 days and what matters to you as user. There is also a link to opt out presented as a linked titled "No thanks".
 
 There are currently three paths a user can take from this point:
 
@@ -42,8 +38,8 @@ There are currently three paths a user can take from this point:
 * A second question is shown to the user.
 * The user here either selects "Do it yourself" or "Do good", and clicks Go!.
 * The Fx accounts form is shown.
-* Internally the user is classified as an `existing` user
-* Once the user submits the form or, navigates away from the first run page, the side bar will be shown inviting the user to import their data.
+* Internally the user is classified as an `existing-utility` or `existing-values` user
+* Once the user submits the form or, navigates away from the first run page, the about:newtab page will be shown
 
 #### Nope
 
@@ -51,8 +47,8 @@ There are currently three paths a user can take from this point:
 * A second question is shown to the user.
 * The user here either selects "Do it yourself" or "Do good", and clicks Go!.
 * The Fx accounts form is shown.
-* Internally the user is classified as a `new` user
-* Once the user submits the form or, navigates away from the first run page, the side bar will be shown inviting the user to import their data.
+* Internally the user is classified as a `new-utility` or `new-values` user
+* Once the user submits the form or, navigates away from the first run page, the about:newtab page will be shown
 
 ## Contributing
 
@@ -63,6 +59,11 @@ Once installed you can launch the add-on as follows:
 
 ```
 jpm run --binary-args www.mozilla.org/en-US/firefox/47.0/firstrun/
+```
+
+To run the addon in keeping with proper sessioning, you can launch the addon using:
+```
+jpm run --binary-args www.mozilla.org/en-US/firefox/47.0/firstrun/ --profile PROFILE_NAME --no-copy
 ```
 
 To ease development and testing of the add-on, it is possible to configure the time intervals and elapsed time formula using a JSON config file.
