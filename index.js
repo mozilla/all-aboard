@@ -172,7 +172,7 @@ catch (e) {
 */
 function getTimeElapsed(sidebarLaunchTime) {
     var lastSidebarLaunch = new Date(sidebarLaunchTime);
-    return Math.round((Date.now() - lastSidebarLaunch.getTime()) / (timeElapsedFormula));
+    return (Date.now() - lastSidebarLaunch.getTime()) / (timeElapsedFormula);
 }
 
 /**
@@ -890,6 +890,17 @@ function modifyFirstrun() {
                 simpleStorage.isOnBoarding = choices.isOnBoarding;
                 simpleStorage.whatMatters = choices.whatMatters;
                 utils.updatePref('-' + choices.whatMatters + '-' + choices.isOnBoarding);
+
+                // if haven't gotten to our first step, the action button will not exist
+                // create and add it now before the first notification.
+                if(typeof simpleStorage.step === 'undefined') {
+                    addAddOnButton();
+                }
+                // starts the timer that will call showBadge and queue up the next
+                // sidebar to be shown.
+                startNotificationTimer(1);
+                // And store our onboarding initialization time so that we can set a new timer for the first notification if the user exits and restarts the session
+                simpleStorage.lastSidebarLaunchTime = Date.now();
             });
 
             // listens for a message from pageMod when a user clicks on "No thanks"
@@ -906,14 +917,6 @@ function modifyFirstrun() {
             // after having answered the questions and clicked "Go!"
             worker.port.on('noFxAccounts', function() {
                 tabs.open('about:newtab');
-                // if haven't gotten to our first step, the action button will not exist
-                // create and add it now before the first notification.
-                if(typeof simpleStorage.step === 'undefined') {
-                    addAddOnButton();
-                }
-                // starts the timer that will call showBadge and queue up the next
-                // sidebar to be shown.
-                startNotificationTimer(1);
             });
 
             // The code below will be executed once(1 time) when the user navigates away from the
@@ -965,11 +968,8 @@ function modifyFirstrun() {
                             });
                         }
                     }
-
-                    // starts the timer that will call showBadge and queue up the next
-                    // sidebar to be shown.
-                    startNotificationTimer(1);
                 }
+
             });
         }
     });
@@ -1147,7 +1147,8 @@ exports.main = function() {
     // if the user has seen at least step 1, we need to add the ActionButton
     // now, or else the code in the following conditional could try to show
     // a notification to the user but, this will error because allAboard is undefined.
-    if (typeof simpleStorage.step !== 'undefined') {
+    // Also ensure that the user hasn't hit the last sidebar, because we can't get that info through sidebarProps
+    if (typeof simpleStorage.step !== 'undefined' && simpleStorage.step < 5) {
         addAddOnButton();
         sidebarProps = getSidebarProps();
         modifyAboutHome(sidebarProps.track, sidebarProps.step);
@@ -1158,11 +1159,15 @@ exports.main = function() {
     // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
     // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
     // notification timer, and add the add-on button to the chrome.
-    else if (typeof simpleStorage.isOnBoarding !== 'undefined') {
-        startNotificationTimer(1);
+    // Also ensure that the user hasn't hit the last sidebar, because we can't get that info through sidebarProps
+    else if (typeof simpleStorage.isOnBoarding !== 'undefined' && simpleStorage.step < 5) {
         addAddOnButton();
         sidebarProps = getSidebarProps();
         modifyAboutHome(sidebarProps.track, sidebarProps.step);
+    // else, if we've reached the reward sidebar, so just add the all-aboard button to the page
+    } else if (simpleStorage.step >= 5) {
+        //add the addon button
+        addAddOnButton();
     }
 
     // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
@@ -1177,16 +1182,28 @@ exports.main = function() {
         console.error("Could not reload snippet content: " + e);
     }
 
-    // Check whether lastSidebarLaunchTime exists and if it does, check whether
-    // more than 24 hours have elsapsed since the last time a sidebar was shown.
+    // Check whether more than 24 hours have elsapsed since the last time a sidebar was shown
     // Also, make sure that the user has not actually completed the on-boarding process.
-    if (simpleStorage.lastSidebarLaunchTime !== 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) > defaultSidebarInterval
-        && typeof simpleStorage.rewardSidebarShown === 'undefined') {
+    if ((getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval || 
+        ((timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarLaunchTime)))) < 60000)) 
+        && typeof simpleStorage.rewardSidebarShown === 'undefined' )  {
         // if all of the above is true, wait 60 seconds and then notify
         timers.setTimeout(function() {
             showBadge();
         }, 60000);
+
+    // If we aren't hitting the above conditions, it is because we haven't reached the correct amount of time passed between sidebars.
+    // The timers don't persist, which means that the only case in which a timer will go off after the first session, is when
+    // the second session starts after it was supposed to go off, at which point a 60 second timer will start and it will go off after that time.
+    // Now we are starting a new timer when the browser starts with the time left it needs to run if the current amt of time has not elapsed yet.
+    } else if ((getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < defaultSidebarInterval) && 
+        typeof simpleStorage.rewardSidebarShown === 'undefined') {
+        // clear any potential open timers (there shouldn't be any persisting, but doing it anyway in case exports.main is running due to an update)
+        timers.clearTimeout(timer);
+        // create a new timer with the time left in our timer that didn't persist between sessions
+        timer = timers.setTimeout(function() {
+            showBadge();
+        }, (timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarLaunchTime)))));
     }
 
     // do not call modifyFirstrun again if the user has either opted out or,
