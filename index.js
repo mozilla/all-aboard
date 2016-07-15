@@ -270,6 +270,9 @@ function showDesktopNotification() {
         iconURL: './media/icons/icon-32_active.png',
         onClick: toggleSidebar
     });
+
+    // note that we have shown our notification so we don't try showing it again
+    simpleStorage.shownNotification = true;
 }
 
 /**
@@ -414,12 +417,24 @@ function assignTokens(step, worker) {
     // do not call the timer once we have reached
     // the final content item.
     if (step < 5) {
-        // update the lastSidebarLaunchTime to now
-        simpleStorage.lastSidebarLaunchTime = Date.now();
+        // update the lastSidebarCTACompleteTime to now
+        simpleStorage.lastSidebarCTACompleteTime = Date.now();
+        // note that we haven't yet shown our notification for this sidebar
+        simpleStorage.shownNotification = false;
         // start notification timer
         startNotificationTimer(1);
     } else if (step === 5) {
+        // update the lastSidebarCTACompleteTime to now
+        simpleStorage.lastSidebarCTACompleteTime = Date.now();
+        // note that we haven't yet shown our notification for this sidebar
+        simpleStorage.shownNotification = false;
         startNotificationTimer(12);
+
+        // note that we can now show the reward sidebar because the 5th sidebar has been completed
+        simpleStorage.canShowReward = true;
+
+        // add the reward snippets
+        modifyAboutHome('reward');
     }
 }
 
@@ -606,7 +621,6 @@ function showSidebar(sidebarProps) {
         title: sidebarProps.title,
         url: sidebarProps.url,
         onAttach: function(worker) {
-
             attachCommonSidebarListeners(worker);
 
             // listen for events when a user completes a sidebar cta
@@ -671,17 +685,27 @@ function getSidebarProps() {
     var latestToken = 'token' + simpleStorage.step;
 
     var track = simpleStorage.whatMatters;
-    // we get the properties before we increment the contentStep as arrays are 0 indexed.
-    var sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
+    var sidebarProps;
     var contentStep;
+
+    // if we are on the 5th step:
+    // reset our assigned token flag for the new sidebar, because it would restart the timer on every content5 sidebar open if we didn't 
+    // and get the sidebar props
+    if (simpleStorage.step === 5) {
+        sidebarProps = CONTENT_STORE[track][4];
+    } else {
+        // in every other case, we get the properties before we increment the contentStep as arrays are 0 indexed.
+        sidebarProps = CONTENT_STORE[track][simpleStorage.step || 0];
+        assignedToken = false;
+    }
+
     // determine the current content step we are on
-    if(tokens.indexOf(latestToken) > -1 && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval) {
+    if(tokens.indexOf(latestToken) > -1 && getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) >= defaultSidebarInterval
+        && simpleStorage.step !== 5) {
         contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step + 1) : 1;
     } else {
         contentStep = typeof simpleStorage.step !== 'undefined' ? (simpleStorage.step) : 1;
     }
-    // reset our assigned token flag for the new sidebar
-    assignedToken = false;
 
     // store the current step
     simpleStorage.step = contentStep;
@@ -727,15 +751,14 @@ function toggleSidebar() {
     // completed the main CTA for the current step before continuing to increment
     // the step counter and show the next sidebar.
     if (simpleStorage.step !== 5 && typeof simpleStorage.tokens !== 'undefined'
-        && getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval
+        && getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) >= defaultSidebarInterval
         && simpleStorage.tokens.indexOf('token' + simpleStorage.step) > -1) {
         // get the current sidebar's properties
         sidebarProps = getSidebarProps();
         // shows the relevant sidebar
         showSidebar(sidebarProps);
     } else {
-        if (getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval
-            && simpleStorage.step === 5) {
+        if (simpleStorage.step === 5 && simpleStorage.canShowReward) {
             if (isVisible) {
                 content.hide();
             }
@@ -900,7 +923,9 @@ function modifyFirstrun() {
                 // sidebar to be shown.
                 startNotificationTimer(1);
                 // And store our onboarding initialization time so that we can set a new timer for the first notification if the user exits and restarts the session
-                simpleStorage.lastSidebarLaunchTime = Date.now();
+                simpleStorage.lastSidebarCTACompleteTime = Date.now();
+                // note that we haven't sent our notification for this sidebar yet
+                simpleStorage.shownNotification = false;
             });
 
             // listens for a message from pageMod when a user clicks on "No thanks"
@@ -1144,23 +1169,11 @@ exports.main = function() {
     // set's up the addon for dev mode.
     overrideDefaults();
 
-    // if the user has seen at least step 1, we need to add the ActionButton
-    // now, or else the code in the following conditional could try to show
-    // a notification to the user but, this will error because allAboard is undefined.
-    // Also ensure that the user hasn't hit the last sidebar, because we can't get that info through sidebarProps
-    if (typeof simpleStorage.step !== 'undefined' && simpleStorage.step < 5) {
-        addAddOnButton();
-        sidebarProps = getSidebarProps();
-        modifyAboutHome(sidebarProps.track, sidebarProps.step);
-    } 
-    // edge case time: If simpleStorage.step is undefined, it means the user has not seen
-    // even our first sidebar. This also means that simpleStorage.lastSidebarLaunchTime will
-    // be undefined so, no need to check that. The user might however have answered the
-    // initial on-boarding questions and then closed Firefox(or it crashed :-/). This means that
-    // if simpleStorage.step is undefined but, simpleStorage.isOnBoarding is not, start the
-    // notification timer, and add the add-on button to the chrome.
-    // Also ensure that the user hasn't hit the last sidebar, because we can't get that info through sidebarProps
-    else if (typeof simpleStorage.isOnBoarding !== 'undefined' && simpleStorage.step < 5) {
+    // if the user has seen at least step 1, and we aren't already to the reward sidebar
+    // OR if the user is onboarding and hasn't seen a step yet or they aren't to the 5th step,  
+    // add the get the sidebar props for the current step, add the actionButton, and modify about:home
+    if ((typeof simpleStorage.step !== 'undefined' && simpleStorage.step < 5) || (typeof simpleStorage.isOnBoarding !== 'undefined' && 
+        (simpleStorage.step < 5 || typeof simpleStorage.step === 'undefined'))) {
         addAddOnButton();
         sidebarProps = getSidebarProps();
         modifyAboutHome(sidebarProps.track, sidebarProps.step);
@@ -1168,6 +1181,7 @@ exports.main = function() {
     } else if (simpleStorage.step >= 5) {
         //add the addon button
         addAddOnButton();
+        modifyAboutHome('reward');
     }
 
     // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
@@ -1182,28 +1196,35 @@ exports.main = function() {
         console.error("Could not reload snippet content: " + e);
     }
 
-    // Check whether more than 24 hours have elsapsed since the last time a sidebar was shown
-    // Also, make sure that the user has not actually completed the on-boarding process.
-    if ((getTimeElapsed(simpleStorage.lastSidebarLaunchTime) >= defaultSidebarInterval || 
-        ((timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarLaunchTime)))) < 60000)) 
-        && typeof simpleStorage.rewardSidebarShown === 'undefined' )  {
+    // catch the anomaly where users aren't getting a notification because their lastSidebarCTACompleteTime isn't set, but they ARE onboarding
+    if(typeof simpleStorage.lastSidebarCTACompleteTime === 'undefined' && typeof simpleStorage.isOnBoarding !== 'undefined') {
+        // update the lastSidebarCTACompleteTime to 24 hours prior to when this line is hit
+        simpleStorage.lastSidebarCTACompleteTime = (Date.now() - 86400000);
+        // note that we haven't sent our notification for this sidebar yet
+        simpleStorage.shownNotification = false;
+    }
+
+    // If more than 24 hours have elsapsed since the last time a sidebar was shown or there are less than 60 seconds left until
+    // 24 hours has elapased, AND we have not shown the reward sidebar yet, set a 60 second timer to notify the user of their sidebar
+    if ((((getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) >= defaultSidebarInterval 
+        || ((timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime)))) < 60000)) 
+        && typeof simpleStorage.rewardSidebarShown === 'undefined'))
+        && (!simpleStorage.shownNotification))  {
         // if all of the above is true, wait 60 seconds and then notify
         timers.setTimeout(function() {
             showBadge();
         }, 60000);
 
-    // If we aren't hitting the above conditions, it is because we haven't reached the correct amount of time passed between sidebars.
-    // The timers don't persist, which means that the only case in which a timer will go off after the first session, is when
-    // the second session starts after it was supposed to go off, at which point a 60 second timer will start and it will go off after that time.
-    // Now we are starting a new timer when the browser starts with the time left it needs to run if the current amt of time has not elapsed yet.
-    } else if ((getTimeElapsed(simpleStorage.lastSidebarLaunchTime) < defaultSidebarInterval) && 
+    // If 24 hours hasn't yet elapsed and we haven't yet shown the reward sidebar, start a new timer as if the old timer
+    // never stopped counting
+    } else if ((getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) < defaultSidebarInterval) && 
         typeof simpleStorage.rewardSidebarShown === 'undefined') {
         // clear any potential open timers (there shouldn't be any persisting, but doing it anyway in case exports.main is running due to an update)
         timers.clearTimeout(timer);
         // create a new timer with the time left in our timer that didn't persist between sessions
         timer = timers.setTimeout(function() {
             showBadge();
-        }, (timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarLaunchTime)))));
+        }, (timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime)))));
     }
 
     // do not call modifyFirstrun again if the user has either opted out or,
@@ -1218,9 +1239,4 @@ exports.main = function() {
     if(typeof simpleStorage.seenUserData === 'undefined') {
         modifyNewtab();
     }
-
-    timers.setTimeout(function() {
-        // reset the preload preference
-        resetPreload();
-    }, resetPreloadTime);
 };
