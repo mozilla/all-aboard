@@ -7,19 +7,12 @@
   "repository": "https://github.com/mozilla/all-aboard",
   "main": "index.js",
   "scripts": {
-    "test": "jpm test",
-    "build-xpi": "jpm xpi"
+    "test": "jpm test"
   },
   "author": "Mozilla Corporation",
-  "engines": {
-    "firefox": ">=38.0a1",
-    "fennec": ">=38.0a1"
-  },
   "license": "MPL-2.0",
   "keywords": [
-    "jetpack"
+    "web extensions"
   ],
-  "devDependencies": {
-    "jpm": "^1.0.7"
-  }
+  "devDependencies": {}
 }

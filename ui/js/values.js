@@ -17,7 +17,11 @@
         var selectedOption;
 
         // main cta action complete, notify add-on
-        addon.port.emit('cta_complete');
+        //addon.port.emit('cta_complete');
+        console.log('sending message');
+        chrome.runtime.sendMessage({
+            intent: 'cta-complete'
+        });
 
         // loop through the radio buttons, highlighting the answer and disabling
         // the incorrect options.
@@ -56,7 +60,7 @@
             prizeButton.setAttribute('aria-hidden', false);
 
             prizeButton.addEventListener('click', function() {
-                addon.port.emit('intent', 'claimPrize');
+                //addon.port.emit('intent', 'claimPrize');
             });
         }
     }
@@ -72,7 +76,7 @@
 
             secondaryCTA.addEventListener('click', function(event) {
                 event.preventDefault();
-                addon.port.emit('intent', secondaryCTA.dataset.intent);
+                //addon.port.emit('intent', secondaryCTA.dataset.intent);
             });
         }
     });

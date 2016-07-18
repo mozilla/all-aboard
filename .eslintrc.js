@@ -50,11 +50,8 @@ module.exports = {
         ]
     },
     "globals": {
-        "addon": true,
+        "chrome": true,
         "exports": true,
-        "require": true,
-        "MigrationUtils": true,
-        "Services": true,
-        "AutoMigrate": true
+        "require": true
     }
 };
