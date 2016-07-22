@@ -14,4 +14,4 @@ before_script:
   - npm install jpm -g
 
 script:
-- npm run jpm-travis
+- npm run test-travis
