@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jpm test",
-    "test-travis": "jpm --binary 'which firefox' test -v",
+    "test-travis": "jpm --binary `which firefox` test -v",
     "build-xpi": "jpm xpi"
   },
   "author": "Mozilla Corporation",
