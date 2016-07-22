@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mozilla/all-aboard.svg?branch=master)](https://travis-ci.org/mozilla/all-aboard)
+
 #All Aboard
 The Mozilla Firefox Educational Tool
 
