@@ -5,7 +5,7 @@ var choices = {};
 var dismiss;
 var heading;
 var mainContainer;
-var noThanks = '<a href="about:home" id="dismiss" class="no-thanks">No thanks</a>';
+var noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">No thanks</a>';
 
 /**
  * Ammends the utm_campaign param passed when submitting the FxA form, to indicate
@@ -38,7 +38,7 @@ function showFxAccountWidget() {
     // ammend utm param
     ammendUtmCampaign();
 
-    dismiss = document.querySelector('#dismiss');
+    dismiss = document.querySelector('#dismiss_fxa');
     // listen for a click event on the 'No Thanks' link and send preference
     dismiss.addEventListener('click', function() {
         self.port.emit('noFxAccounts', 'true');

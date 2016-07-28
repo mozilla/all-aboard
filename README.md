@@ -21,35 +21,6 @@ In order to trigger the onboarding experiment, you must visit the firstrun page 
 https://www.mozilla.org/firefox/47.0/firstrun/
 ```
 
-### The Paths
-
-Firstrun will show a dialog asking whether you have used Firefox in the last 30 days and what matters to you as user. There is also a link to opt out presented as a linked titled "No thanks".
-
-There are currently three paths a user can take from this point:
-
-#### Opt out
-
-* The user clicks the "No thanks" link and is sent to `about:home`
-* Internally the user is classified as `no-thanks` and will not be part of the rest of the on-boarding experience.
-
-#### Yup
-
-* The user selects `yup` as the answer to the first question, and clicks Go!.
-* A second question is shown to the user.
-* The user here either selects "Do it yourself" or "Do good", and clicks Go!.
-* The Fx accounts form is shown.
-* Internally the user is classified as an `existing-utility` or `existing-values` user
-* Once the user submits the form or, navigates away from the first run page, the about:newtab page will be shown
-
-#### Nope
-
-* The user selects `nope` as the answer to the first question
-* A second question is shown to the user.
-* The user here either selects "Do it yourself" or "Do good", and clicks Go!.
-* The Fx accounts form is shown.
-* Internally the user is classified as a `new-utility` or `new-values` user
-* Once the user submits the form or, navigates away from the first run page, the about:newtab page will be shown
-
 ## Contributing
 
 To run the add-on during development and testing, you will need to first follow the `jpm` installation instructions found on MDN here:
@@ -89,3 +60,45 @@ The values are defined as follows:
 * `waitInterval` - This is the interval, set in milliseconds, that the timer will wait until triggering the next badge update and notification.
 
 If the above file is not present, the add-on will use it’s defaults of 24 hours.
+
+### Functional tests
+
+Functional tests are implemented using Selenium and the python Marionette client to allow access to both web content and the browser chrome.
+
+To write and run the tests you need a couple of additional dependecies:
+
+* (Python)[https://www.python.org/]
+* (Virtualenvwrapper)[https://pypi.python.org/pypi/virtualenvwrapper]
+* (Gecko Driver)[https://github.com/mozilla/geckodriver/releases]
+
+Once you have the above installed, create a virtual environment for the project:
+
+```
+mkvirtualenv all-aboard
+```
+
+Once the environment has been created, you need to install Tox:
+
+```
+pip install tox
+```
+
+In order to run the tests, you will either have to have the `geckodriver` on your path or, pass it on the command line. To add it to your path, run the following:
+
+```
+export PATH=$PATH:/path/to/gecko/driver/
+```
+
+Note that currently you need the change the name of the driver from `geckodriver` to `wires` or else selenium will not detect the driver.
+
+Run the tests with Tox:
+
+```
+tox -e tests
+```
+
+You can also specifiy a specific Firefox binary to run the tests again as follows:
+
+```
+tox —e tests --firefox-path=/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox
+```
