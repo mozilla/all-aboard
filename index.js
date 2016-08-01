@@ -689,7 +689,7 @@ function getSidebarProps() {
     var contentStep;
 
     // if we are on the 5th step:
-    // reset our assigned token flag for the new sidebar, because it would restart the timer on every content5 sidebar open if we didn't 
+    // reset our assigned token flag for the new sidebar, because it would restart the timer on every content5 sidebar open if we didn't
     // and get the sidebar props
     if (simpleStorage.step === 5) {
         sidebarProps = CONTENT_STORE[track][4];
@@ -931,7 +931,6 @@ function modifyFirstrun() {
             // listens for a message from pageMod when a user clicks on "No thanks"
             // before answering any of the questions
             worker.port.on('onboardingDismissed', function(dismissed) {
-                tabs.open('about:newtab');
                 simpleStorage.onboardingDismissed = dismissed;
                 utils.updatePref('-no-thanks');
                 // user has opted out of onboarding, destroy the addon
@@ -1170,9 +1169,9 @@ exports.main = function() {
     overrideDefaults();
 
     // if the user has seen at least step 1, and we aren't already to the reward sidebar
-    // OR if the user is onboarding and hasn't seen a step yet or they aren't to the 5th step,  
+    // OR if the user is onboarding and hasn't seen a step yet or they aren't to the 5th step,
     // add the get the sidebar props for the current step, add the actionButton, and modify about:home
-    if ((typeof simpleStorage.step !== 'undefined' && simpleStorage.step < 5) || (typeof simpleStorage.isOnBoarding !== 'undefined' && 
+    if ((typeof simpleStorage.step !== 'undefined' && simpleStorage.step < 5) || (typeof simpleStorage.isOnBoarding !== 'undefined' &&
         (simpleStorage.step < 5 || typeof simpleStorage.step === 'undefined'))) {
         addAddOnButton();
         sidebarProps = getSidebarProps();
@@ -1206,8 +1205,8 @@ exports.main = function() {
 
     // If more than 24 hours have elsapsed since the last time a sidebar was shown or there are less than 60 seconds left until
     // 24 hours has elapased, AND we have not shown the reward sidebar yet, set a 60 second timer to notify the user of their sidebar
-    if ((((getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) >= defaultSidebarInterval 
-        || ((timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime)))) < 60000)) 
+    if ((((getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) >= defaultSidebarInterval
+        || ((timeElapsedFormula*(defaultSidebarInterval - (getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime)))) < 60000))
         && typeof simpleStorage.rewardSidebarShown === 'undefined'))
         && (!simpleStorage.shownNotification))  {
         // if all of the above is true, wait 60 seconds and then notify
@@ -1217,7 +1216,7 @@ exports.main = function() {
 
     // If 24 hours hasn't yet elapsed and we haven't yet shown the reward sidebar, start a new timer as if the old timer
     // never stopped counting
-    } else if ((getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) < defaultSidebarInterval) && 
+    } else if ((getTimeElapsed(simpleStorage.lastSidebarCTACompleteTime) < defaultSidebarInterval) &&
         typeof simpleStorage.rewardSidebarShown === 'undefined') {
         // clear any potential open timers (there shouldn't be any persisting, but doing it anyway in case exports.main is running due to an update)
         timers.clearTimeout(timer);

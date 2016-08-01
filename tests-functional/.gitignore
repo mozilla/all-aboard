@@ -1,0 +1,6 @@
+__pycache__
+.cache
+.tox
+*.pyc
+/results
+README.md
