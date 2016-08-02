@@ -7,6 +7,12 @@ import os
 
 
 @pytest.fixture
+def capabilities(capabilities):
+    capabilities['marionette'] = True
+    return capabilities
+
+
+@pytest.fixture
 def firefox_profile(firefox_profile):
     # allow unsigned add-on
     firefox_profile.set_preference('xpinstall.signatures.required', False)
