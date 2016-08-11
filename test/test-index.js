@@ -1,4 +1,4 @@
-let main = require('../lib/utils.js');
+let { utils } = require('../lib/utils.js');
 let { before, after } = require('sdk/test/utils');
 let prefService = require('sdk/preferences/service');
 
@@ -10,19 +10,19 @@ exports.testupdatePref = function(assert) {
     assert.equal(prefService.get('distribution.id'), 'mozilla86', 'Initial value should be mozilla86');
 
     //update the above pref
-    main.updatePref('-value-new-1');
+    utils.updatePref('-value-new-1');
 
     assert.equal(prefService.get('distribution.id'), testString, 'Pref should match updated value');
 
     // because we have already updated the pref with the
     // (new|existing)/(utility|values) parameters, the below
     // update should not have any effect.
-    main.updatePref('-value-existing');
+    utils.updatePref('-value-existing');
 
     assert.equal(prefService.get('distribution.id'), testString, 'Pref should match updated value');
 
     // update the step we are on
-    main.updatePref(2);
+    utils.updatePref(2);
 
     assert.equal(prefService.get('distribution.id'), stepTwoTestString, 'Pref should have updated to step 2');
 };

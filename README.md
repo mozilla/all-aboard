@@ -102,5 +102,5 @@ tox -e tests
 You can also specifiy a specific Firefox binary to run the tests again as follows:
 
 ```
-tox —e tests --firefox-path=/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox
+tox -e tests -- --firefox-path=/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox
 ```
