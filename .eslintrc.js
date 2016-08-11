@@ -52,6 +52,7 @@ module.exports = {
     "globals": {
         "addon": true,
         "exports": true,
+        "module": true,
         "require": true,
         "MigrationUtils": true,
         "Services": true,
