@@ -21,7 +21,7 @@ def test_first_sidebar_loads(base_url, selenium):
     # switch to browser chrome
     selenium.set_context('chrome')
 
-    all_aboard = AllAboard(selenium)
+    AllAboard(selenium)
     # ensure that add-on action button is added as soon as we leave firstrun
     Wait(selenium, 2).until(
         expected.presence_of_element_located(
@@ -29,13 +29,9 @@ def test_first_sidebar_loads(base_url, selenium):
         )
     )
 
-    notification = Wait(selenium, 10).until(
+    # enure that the sidebar is automatically shown on first notification
+    Wait(selenium, 10).until(
         expected.presence_of_element_located(
-            (By.CSS_SELECTOR, '#action-button--all-aboard-v1-all-aboard[badge="1"]')  # noqa E501
+            (By.CSS_SELECTOR, '#content-deck #sidebar-box[sidebarcommand="viewWebPanelsSidebar"]')  # noqa E501
         )
     )
-
-    # once the first content notification happens, click the action button
-    notification.click()
-
-    assert all_aboard.sidebar.get_attribute('hidden') == 'false'
