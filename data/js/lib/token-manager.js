@@ -31,6 +31,7 @@
 
     // only show the token awarded message if the below event is received.
     addon.port.on('showTokenMsg', function() {
+
         var tokenAwarded = document.querySelector('.token-awarded');
         // show the token awarded message
         tokenAwarded.classList.remove('hidden');

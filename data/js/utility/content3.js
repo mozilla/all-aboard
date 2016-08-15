@@ -5,6 +5,8 @@
     var exploreThemes = document.querySelector('#exploreThemes');
     // set template names
     var templateNames = ['template1'];
+    // retrieve our next button from the sidebar
+    var nextButton = document.querySelector('.next-button');
 
     // add listeners to all of our buttons for clicking
     for(var x=0, l=templateNames.length; x<l; x++) {
@@ -20,6 +22,9 @@
                 // the add-on handles duplicates so, calling this multiple
                 // times is fine.
                 addon.port.emit('cta_complete');
+
+                // unhide our next button
+                nextButton.classList.remove('hidden');
             });
         })(templateNames[x]);
     }
@@ -35,5 +40,10 @@
     defaultText.addEventListener('click', function() {
         // notify addon that we've clicked the button
         addon.port.emit('intent', 'defaultTemplate');
+    });
+
+    nextButton.addEventListener('click', function() {
+        // notify addon that we've clicked the next button
+        addon.port.emit('next_selected');
     });
 })();

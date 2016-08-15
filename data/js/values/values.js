@@ -1,9 +1,12 @@
 (function() {
+    var step = parseInt(document.querySelector('.step').innerHTML);
     var mainContainer = document.querySelector('main');
     var answer = mainContainer.querySelector('#answer');
     var button = mainContainer.querySelector('#show_answer');
     var options = mainContainer.querySelectorAll('input[type="radio"]');
     var secondaryContent = mainContainer.querySelector('#secondary_content');
+    var nextButton = document.querySelector('.next-button');
+    var nextToken = document.querySelector('#token' + (step + 1));
 
     /**
      * Emits a cta_complete message to the add-on which will then assign
@@ -58,6 +61,9 @@
             prizeButton.addEventListener('click', function() {
                 addon.port.emit('intent', 'claimPrize');
             });
+        } else if (!nextToken.classList.contains('active')) {
+                // unhide our next button, 
+            nextButton.classList.remove('hidden');
         }
     }
 
@@ -77,4 +83,8 @@
         }
     });
 
+    nextButton.addEventListener('click', function() {
+        // notify addon that we've clicked the next button
+        addon.port.emit('next_selected');
+    });
 })();
