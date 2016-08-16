@@ -1,12 +1,11 @@
 (function() {
-    var step = parseInt(document.querySelector('.step').innerHTML);
     var mainContainer = document.querySelector('main');
     var answer = mainContainer.querySelector('#answer');
     var button = mainContainer.querySelector('#show_answer');
     var options = mainContainer.querySelectorAll('input[type="radio"]');
     var secondaryContent = mainContainer.querySelector('#secondary_content');
     var nextButton = document.querySelector('.next-button');
-    var nextToken = document.querySelector('#token' + (step + 1));
+    var nextToken = document.querySelector('#token' + (parseInt(button.dataset.step) + 1));
 
     /**
      * Emits a cta_complete message to the add-on which will then assign
