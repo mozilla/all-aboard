@@ -8,6 +8,9 @@
     // retrieve our next button from the sidebar
     var nextButton = document.querySelector('.next-button');
 
+    // attach click listener to next button
+    nextButton = attachNextButtonListener(nextButton);
+
     // add listeners to all of our buttons for clicking
     for(var x=0, l=templateNames.length; x<l; x++) {
         // get the current template
@@ -40,10 +43,5 @@
     defaultText.addEventListener('click', function() {
         // notify addon that we've clicked the button
         addon.port.emit('intent', 'defaultTemplate');
-    });
-
-    nextButton.addEventListener('click', function() {
-        // notify addon that we've clicked the next button
-        addon.port.emit('next_selected');
     });
 })();

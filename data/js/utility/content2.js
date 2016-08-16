@@ -4,6 +4,9 @@
     var nextButton = document.querySelector('.next-button');
     var nextToken = document.querySelector('#token3');
 
+    // attach click listener to next button
+    nextButton = attachNextButtonListener(nextButton);
+
     // add event listeners for a button click on the button
     button.addEventListener('click', function() {
         // if this is the furtherst sidebar the user has achieved (the next token hasn't been awarded)
@@ -16,10 +19,5 @@
         addon.port.emit('intent', 'privateBrowsing');
         // main cta action complete, notify add-on
         addon.port.emit('cta_complete');
-    });
-
-    nextButton.addEventListener('click', function() {
-        // notify addon that we've clicked the next button
-        addon.port.emit('next_selected');
     });
 })();

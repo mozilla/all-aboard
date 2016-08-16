@@ -4,6 +4,9 @@
     // retrieve our next button from the sidebar
     var nextButton = document.querySelector('.next-button');
 
+    // attach click listener to next button
+    nextButton = attachNextButtonListener(nextButton);
+
     // add event listener for a button click on search button
     button.addEventListener('click', function() {
         // alert the back-end that we've clicked the button
@@ -13,10 +16,5 @@
         
         // unhide our next button
         nextButton.classList.remove('hidden');
-    });
-
-    nextButton.addEventListener('click', function() {
-        // notify addon that we've clicked the next button
-        addon.port.emit('next_selected');
     });
 })();
