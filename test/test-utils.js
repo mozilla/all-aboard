@@ -1,6 +1,8 @@
-let { utils } = require('../lib/utils.js');
-let { before, after } = require('sdk/test/utils');
-let prefService = require('sdk/preferences/service');
+var { before, after } = require('sdk/test/utils');
+var prefService = require('sdk/preferences/service');
+
+var { intervals } = require('../lib/intervals.js');
+var { utils } = require('../lib/utils.js');
 
 exports.testupdatePref = function(assert) {
     let testString = 'mozilla86-value-new-1';
@@ -25,6 +27,16 @@ exports.testupdatePref = function(assert) {
     utils.updatePref(2);
 
     assert.equal(prefService.get('distribution.id'), stepTwoTestString, 'Pref should have updated to step 2');
+};
+
+exports.testTimeElapsed = function(assert) {
+    let twentyFourHoursAgo = Date.now() - intervals.oneDay;
+    let twelveHoursAgo = Date.now() - (intervals.oneDay / 2);
+    let tenAndAHalfHoursAgo = Date.now() - 37800000;
+
+    assert.equal(utils.getTimeElapsed(twentyFourHoursAgo), 24, 'getTimeElapsed should return 24');
+    assert.equal(utils.getTimeElapsed(twelveHoursAgo), 12, 'getTimeElapsed should return 12');
+    assert.equal(utils.getTimeElapsed(tenAndAHalfHoursAgo), 10.5, 'getTimeElapsed should return 10.5');
 };
 
 before(exports, function () {
