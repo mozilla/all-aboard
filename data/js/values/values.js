@@ -72,7 +72,7 @@
                 addon.port.emit('intent', 'claimPrize');
             });
         } else if (!nextToken.classList.contains('active')) {
-                // unhide our next button, 
+            // unhide our next button, 
             nextButton.classList.remove('hidden');
         }
     }
