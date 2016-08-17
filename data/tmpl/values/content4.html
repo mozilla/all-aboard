@@ -32,7 +32,7 @@
             </label>
           </li>
         </ul>
-        <button id="show_answer" class="button">Show Answer</button>
+        <button id="show_answer" class="button" data-step="4">Show Answer</button>
 
         <!-- conditional messaging based on options selection -->
         <p id="response_a" class="options-response hidden" aria-hidden="true">Wait! It’s easier than you think.</p>
@@ -42,6 +42,8 @@
         <div id="secondary_content" class="secondary-content hide">
           <p><a href="https://www.mozilla.org/teach/smarton/security/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=security" id="secondary_cta" data-intent="smarton">Get security tips</a>.</p>
         </div>
+
+        <button class="next-button hidden">Next</button>
       </main>
       <footer>
         <ul class="tokens">
@@ -64,6 +66,7 @@
         <h2 class="token-awarded hidden" aria-hidden="true">Here’s your badge!</h2>
       </footer>
     </section>
+    <script src="/data/js/lib/common.js"></script>
     <script src="/data/js/lib/token-manager.js"></script>
     <script src="/data/js/values/values.js"></script>
   </body>

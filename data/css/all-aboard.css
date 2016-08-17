@@ -97,6 +97,12 @@ a:focus {
     padding: 0;
 }
 
+.next-button {
+    margin-top: 10px;
+    padding: 10px;
+    display: block;
+}
+
 .user-data {
     text-align: left;
 }

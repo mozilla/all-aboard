@@ -32,11 +32,13 @@
             </label>
           </li>
         </ul>
-        <button id="show_answer" class="button">Show Answer</button>
+        <button id="show_answer" class="button" data-step="2">Show Answer</button>
         <!-- conditional messaging based on options selection -->
         <p id="response_a" class="options-response hidden" aria-hidden="true">No way. We’d need a gigantic snooze bar.</p>
         <p id="response_b" class="options-response hidden" aria-hidden="true">No way. You’ve obviously never smelled fox morning breath.</p>
         <p id="response_c" class="options-response hidden" aria-hidden="true">Yes! It’s better than coffee!</p>
+
+        <button class="next-button hidden">Next</button>
       </main>
       <footer>
         <ul class="tokens">
@@ -59,6 +61,7 @@
         <h2 class="token-awarded hidden" aria-hidden="true">Here’s your badge!</h2>
       </footer>
     </section>
+    <script src="/data/js/lib/common.js"></script>
     <script src="/data/js/lib/token-manager.js"></script>
     <script src="/data/js/values/values.js"></script>
   </body>
