@@ -7,6 +7,15 @@ from pypom import Page
 
 class Sidebar(Page):
 
+    @property
+    def current_step(self):
+        return self.selenium.execute_script("""
+            var cta = document.querySelector('#sidebar').contentDocument
+                              .querySelector('#web-panels-browser').contentDocument
+                              .querySelector('main button');
+            return cta.dataset['step'];
+        """)
+
     def click_cta(self):
         return self.selenium.execute_script("""
             var cta = document.querySelector('#sidebar').contentDocument
