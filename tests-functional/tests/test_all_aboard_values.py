@@ -28,7 +28,7 @@ def complete_first_sidebar_interaction(selenium):
     selenium.set_context('chrome')
 
     # wait for the first sidebar to be shown
-    Wait(selenium, 10).until(
+    Wait(selenium, 3).until(
         expected.presence_of_element_located((
             By.CSS_SELECTOR,
             '#content-deck #sidebar-box[sidebarcommand="viewWebPanelsSidebar"]'
@@ -60,7 +60,7 @@ def test_automatically_show_first_sidebar(base_url,
     )
 
     # enure that the sidebar is automatically shown on first notification
-    Wait(selenium, 10).until(
+    Wait(selenium, 3).until(
         expected.presence_of_element_located((
             By.CSS_SELECTOR,
             '#content-deck #sidebar-box[sidebarcommand="viewWebPanelsSidebar"]'
