@@ -1,7 +1,6 @@
 'use strict';
 
 // built in SDK imports
-var tabs = require('sdk/tabs');
 var timers = require('sdk/timers');
 
 // All Aboard module imports
@@ -18,7 +17,6 @@ var { firstrun } = require('lib/content-scripts/firstrun.js');
 var { newtab } = require('lib/content-scripts/newtab.js');
 
 var timer;
-var aboutHomeReloaded = false;
 
 /**
  * This is called when the add-on is unloaded. If the reason is either disable,
@@ -38,8 +36,16 @@ exports.main = function() {
 
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
 
-    // the user has not seen the first sidebar, and has not received the first notification but,
-    // the user has completed firstrun.
+    // Call modifyFirstrun if the user has not opted out or, have not already
+    // answered the questions(as both questions need to be answered, checking
+    // for the first one is enough).
+    if (typeof storageManager.get('onboardingDismissed') === 'undefined'
+        && typeof storageManager.get('isOnBoarding') === 'undefined') {
+        firstrun.modifyFirstrun();
+    }
+
+    // The user has not seen the first sidebar, and has not received the first notification but,
+    // the user has completed firstrun, i.e. Closed the browser before the first notification
     if (typeof storageManager.get('step') === 'undefined'
         && typeof lastCTACompleteTime !== 'undefined'
         && storageManager.get('shownNotification') === false) {
@@ -80,24 +86,7 @@ exports.main = function() {
 
     // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
     // If so, we should refresh it so that our pagemod shows up
-    try {
-        if (tabs.activeTab.url === 'about:home' && !aboutHomeReloaded) {
-            aboutHomeReloaded = true;
-            tabs.activeTab.reload();
-        }
-    } catch (e) {
-        console.error('Could not reload snippet content: ', e);
-    }
-
-    // catch the anomaly where users aren't getting a notification because their
-    // lastSidebarCTACompleteTime isn't set, but they ARE onboarding
-    if(typeof storageManager.get('lastSidebarCTACompleteTime') === 'undefined' &&
-        typeof storageManager.get('isOnBoarding') !== 'undefined') {
-        // update the lastSidebarCTACompleteTime to 24 hours prior to when this line is hit
-        storageManager.set('lastSidebarCTACompleteTime', Date.now() - intervals.oneDay);
-        // note that we haven't sent our notification for this sidebar yet
-        storageManager.set('shownNotification', false);
-    }
+    utils.reloadAboutHome();
 
     // If more than 24 hours have elsapsed since the last time a sidebar was shown or there are less than
     // 60 seconds left until 24 hours has elapased, AND we have not shown the reward sidebar yet, set a 60
@@ -122,14 +111,6 @@ exports.main = function() {
             notificationsManager.showBadge();
         }, (utils.timeElapsedFormula * (intervals.defaultSidebarInterval -
             (utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime'))))));
-    }
-
-    // do not call modifyFirstrun again if the user has either opted out or,
-    // already answered a questions(as both questions need to be answered, checking
-    // for the first one is enough).
-    if (typeof storageManager.get('onboardingDismissed') === 'undefined'
-        && typeof storageManager.get('isOnBoarding') === 'undefined') {
-        firstrun.modifyFirstrun();
     }
 
     // do not call modifynewtab if we've already modified it once

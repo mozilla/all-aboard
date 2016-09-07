@@ -8,8 +8,8 @@ var searchIconAndTextContainer = document.querySelector('#searchIconAndTextConta
  * @param {string} snippetContent - The content to inject
  */
 function showSnippet(snippetContent) {
-    var button;
     var addonSnippet = document.querySelector('#allaboard_snippet');
+    var button;
 
     // if a previous snippet added by the addon exists, remove it.
     if (addonSnippet) {
@@ -17,18 +17,16 @@ function showSnippet(snippetContent) {
     }
 
     searchIconAndTextContainer.insertAdjacentHTML('afterend', snippetContent);
-
     button = document.querySelector('#allaboard_snippet_intent');
 
-    // not all snippets have buttons, so test before adding the event listener
-    if (button) {
-        button.addEventListener('click', function() {
-            if (typeof button.dataset !== 'undefined') {
-                // pass the button intent to the add-on
-                self.port.emit('intent', button.dataset['intent']);
-            }
+    button.addEventListener('click', function() {
+        // pass the button intent to the add-on
+        self.port.emit('showSidebar', {
+            step: button.dataset.step,
+            track: button.dataset.track,
+            aboutHome: true
         });
-    }
+    });
 }
 
 // listen for the modify event emitted from the add-on, and only then,
