@@ -21,20 +21,15 @@
     // listens for a tokens event from the add-on and enables tokens
     // that has been received by the user.
     addon.port.on('tokens', function(tokens) {
+        let activeImgPath = '/data/media/icons/progress/star_active.svg';
         for (var i = 0, l = tokens.length; i < l; i++) {
-            // set the token container to active and shows the token
-            document.querySelector('#' + tokens[i]).classList.add('active');
+            let currentToken = document.getElementById(tokens[i]);
+            // set the token container to active
+            currentToken.classList.add('active');
+            // update the source to the active state
+            currentToken.querySelector('input').src = activeImgPath;
         }
         // all active tokens shown, bind events
         bindClickListeners();
     });
-
-    // only show the token awarded message if the below event is received.
-    addon.port.on('showTokenMsg', function() {
-        var tokenAwarded = document.querySelector('.token-awarded');
-        // show the token awarded message
-        tokenAwarded.classList.remove('hidden');
-        tokenAwarded.setAttribute('aria-hidden', false);
-    });
-
 })();

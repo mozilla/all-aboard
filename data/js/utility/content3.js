@@ -6,7 +6,8 @@
     // set template names
     var templateNames = ['template1'];
     // retrieve our next button from the sidebar
-    var nextButton = document.querySelector('.next-button');
+    var nextButton = document.getElementById('next-button');
+    var selfPacedContent = document.getElementById('selfpaced');
 
     // attach click listener to next button
     nextButton = attachNextButtonListener(nextButton);
@@ -27,7 +28,9 @@
                 addon.port.emit('cta_complete');
 
                 // unhide our next button
-                nextButton.classList.remove('hidden');
+                selfPacedContent.classList.remove('hidden');
+                // update aria state
+                selfPacedContent.setAttribute('aria-hidden', false);
             });
         })(templateNames[x]);
     }
