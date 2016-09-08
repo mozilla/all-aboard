@@ -56,6 +56,7 @@ module.exports = {
         "require": true,
         "MigrationUtils": true,
         "Services": true,
-        "AutoMigrate": true
+        "AutoMigrate": true,
+        "attachNextButtonListener": true
     }
 };
