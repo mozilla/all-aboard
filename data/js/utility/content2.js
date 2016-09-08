@@ -2,7 +2,7 @@
     // retrieve button from the page
     var button = document.querySelector('button');
     var nextButton = document.getElementById('next-button');
-    var nextToken = document.querySelector('#token2');
+    var nextToken = document.getElementById('token2');
     var selfPacedContent = document.getElementById('selfpaced');
 
     // attach click listener to next button
