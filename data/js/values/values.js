@@ -9,10 +9,10 @@
     var nextToken;
 
     // if we're not on the final sidebar
-    if (parseInt(button.dataset.step) < 5) {
+    if (parseInt(button.dataset.step, 10) < 5) {
         // grab our next button and next token values
         nextButton = document.getElementById('next-button');
-        nextToken = document.querySelector('#token' + (parseInt(button.dataset.step) + 1));
+        nextToken = document.getElementById('token' + (parseInt(button.dataset.step, 10) + 1));
 
         // and attach an event listener to the button
         nextButton = attachNextButtonListener(nextButton);
