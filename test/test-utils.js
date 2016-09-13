@@ -36,7 +36,7 @@ exports.testTimeElapsed = function(assert) {
 
     assert.equal(utils.getTimeElapsed(twentyFourHoursAgo), 24, 'getTimeElapsed should return 24');
     assert.equal(utils.getTimeElapsed(twelveHoursAgo), 12, 'getTimeElapsed should return 12');
-    assert.equal(utils.getTimeElapsed(tenAndAHalfHoursAgo), 10.5, 'getTimeElapsed should return 10.5');
+    assert.equal(utils.getTimeElapsed(tenAndAHalfHoursAgo), 10, 'getTimeElapsed should return 10');
 };
 
 before(exports, function () {
