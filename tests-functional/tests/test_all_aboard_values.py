@@ -8,7 +8,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.ui import WebDriverWait as Wait
 
-from pages.all_aboard import AllAboard
 from pages.firstrun import Firstrun
 from pages.sidebar import Sidebar
 
@@ -55,7 +54,7 @@ def test_automatically_show_first_sidebar(base_url,
     # ensure that add-on action button is added as soon as we leave firstrun
     Wait(selenium, 2).until(
         expected.presence_of_element_located(
-            (By.ID, 'action-button--all-aboard-v1-all-aboard')
+            (By.ID, 'action-button--all-aboard-v12-all-aboard')
         )
     )
 
@@ -84,15 +83,15 @@ def test_second_sidebar_not_automatically_shown(
     Wait(selenium, 10).until(
         expected.presence_of_element_located((
             By.CSS_SELECTOR,
-            '#action-button--all-aboard-v1-all-aboard[badge="1"]'
+            '#action-button--all-aboard-v12-all-aboard[badge="1"]'
             )
         )
     )
 
-    all_aboard = AllAboard(selenium)
+    sidebar = Sidebar(selenium)
 
     # ensure the second sidebar is not automatically shown
-    assert all_aboard.sidebar.get_attribute('hidden') == 'true'
+    assert sidebar.sidebar.get_attribute('hidden') == 'true'
 
 
 def test_second_sidebar_opens_on_click(
@@ -108,18 +107,17 @@ def test_second_sidebar_opens_on_click(
     notification = Wait(selenium, 10).until(
         expected.presence_of_element_located((
             By.CSS_SELECTOR,
-            '#action-button--all-aboard-v1-all-aboard[badge="1"]'
+            '#action-button--all-aboard-v12-all-aboard[badge="1"]'
             )
         )
     )
 
-    all_aboard = AllAboard(selenium)
     sidebar = Sidebar(selenium)
 
     # once the second content notification happens, click the action button
     notification.click()
 
     # ensure that the sidebar is shown after click on ActionButton
-    assert all_aboard.sidebar.get_attribute('hidden') == 'false'
+    assert sidebar.sidebar.get_attribute('hidden') == 'false'
     # ensure that the correct sidebar is shown
     assert sidebar.current_step == '2'
