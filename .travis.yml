@@ -12,6 +12,8 @@ before_install:
 
 before_script:
   - npm install jpm -g
+  - npm install
 
 script:
+- npm run lint
 - npm run test-travis

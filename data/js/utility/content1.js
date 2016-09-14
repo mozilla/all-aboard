@@ -6,7 +6,7 @@
     var selfPacedContent = document.getElementById('selfpaced');
 
     // attach click listener to next button
-    nextButton = attachNextButtonListener(nextButton);
+    attachNextButtonListener(nextButton);
 
     // listen for a click on the search button
     button.addEventListener('click', function() {

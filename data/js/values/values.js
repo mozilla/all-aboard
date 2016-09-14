@@ -15,7 +15,7 @@
         nextToken = document.getElementById('token' + (parseInt(button.dataset.step, 10) + 1));
 
         // and attach an event listener to the button
-        nextButton = attachNextButtonListener(nextButton);
+        attachNextButtonListener(nextButton);
     }
 
 

@@ -9,7 +9,8 @@
   "scripts": {
     "test": "jpm test",
     "test-travis": "jpm --binary `which firefox` test -v",
-    "build-xpi": "jpm xpi"
+    "build-xpi": "jpm xpi",
+    "lint": "./node_modules/.bin/eslint index.js lib/** data/js/** test/**"
   },
   "author": "Mozilla Corporation",
   "engines": {
@@ -21,6 +22,7 @@
     "jetpack"
   ],
   "devDependencies": {
+    "eslint": "^3.5.0",
     "jpm": "^1.0.7"
   }
 }
