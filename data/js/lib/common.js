@@ -1,5 +1,7 @@
 'use strict';
 
+/* exported attachNextButtonListener */
+
 function attachNextButtonListener(nextButton) {
     nextButton.addEventListener('click', function() {
         // notify addon that we've clicked the next button
