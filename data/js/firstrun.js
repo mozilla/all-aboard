@@ -5,7 +5,7 @@ var choices = {};
 var dismiss;
 var heading;
 var mainContainer;
-var noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">No thanks</a>';
+var noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">No, thanks</a>';
 
 /**
  * Ammends the utm_campaign param passed when submitting the FxA form, to indicate
