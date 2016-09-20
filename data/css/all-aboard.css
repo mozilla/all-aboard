@@ -110,8 +110,10 @@ a:focus {
 .selfpaced-content button {
     background: none;
     color: #0073aa;
+    padding: 0;
     border: 0;
     font-size: .8rem;
+    font-weight: bold;
     cursor: pointer;
 }
 
