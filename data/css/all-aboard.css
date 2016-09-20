@@ -69,11 +69,12 @@ a:focus {
 
 .sidebar-content.values main,
 .sidebar-content.values footer {
-    padding: 10px 20px 0px 20px;
+    padding: 10px 20px 0 20px;
 }
 
-
-.sidebar-content footer {
+.sidebar-content footer,
+.sidebar-content.values footer {
+    padding-top: 20px;
     text-align: center;
 }
 
@@ -84,6 +85,7 @@ a:focus {
 
 .secondary-content {
     height: auto;
+    text-align: center;
     opacity: 1;
     transition: height 1s,
                 opacity 1s;
@@ -98,8 +100,7 @@ a:focus {
 }
 
 .selfpaced-content {
-    margin-top: 10px;
-    padding: 10px;
+    padding: 0 10px;
 }
 
 .selfpaced-content p {
@@ -250,7 +251,7 @@ main.reward-sidebar {
 
 /* tokens */
 .tokens {
-    margin: 0 0 20px;
+    margin: 0 0 10px;
     padding: 0;
     width: 240px;
     list-style: none;
@@ -281,7 +282,9 @@ main.reward-sidebar {
 }
 
 .options-response {
+    margin: 0;
     font-style: italic;
+    text-align: center;
 }
 
 /* buttons */
