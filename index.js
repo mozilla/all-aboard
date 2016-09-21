@@ -18,11 +18,19 @@ var { newtab } = require('lib/content-scripts/newtab.js');
 var timer;
 
 /**
- * This is called when the add-on is unloaded. If the reason is either disable,
- * or shutdown, we can do some cleanup.
+ * This is called when the add-on is unloaded. If the reason is either uninstall,
+ *  disable or shutdown, we can do some cleanup.
  */
-exports.onUnload = function() {
-    utils.destroy();
+exports.onUnload = function(reason) {
+    if (reason === 'uninstall' || reason === 'disable') {
+        utils.destroy();
+    } else if (reason === 'shutdown') {
+        // if the user closes the browser while a sidebar
+        // is open, on restart, the add-on will still think
+        // that the sidebar is open so, we explicitly set it
+        // to false here.
+        storageManager.set('isSidebarVisible', false);
+    }
 };
 
 /**
@@ -30,12 +38,21 @@ exports.onUnload = function() {
 * since a sidebar was last shown.
 */
 exports.main = function() {
+    let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
+
     // set's up the addon for dev mode.
     utils.overrideDefaults();
 
-    let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
+    // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
+    // If so, we should refresh it so that our pagemod shows up
+    utils.reloadAboutHome();
 
-    // Call modifyFirstrun if the user has not opted out or, have not already
+    // do not call modifynewtab if we've already modified it once
+    if (typeof storageManager.get('seenUserData') === 'undefined') {
+        newtab.modifyNewtab();
+    }
+
+    // Call modifyFirstrun if the user has not opted out and, have not already
     // answered the questions(as both questions need to be answered, checking
     // for the first one is enough).
     if (typeof storageManager.get('onboardingDismissed') === 'undefined'
@@ -48,7 +65,6 @@ exports.main = function() {
     if (typeof storageManager.get('step') === 'undefined'
         && typeof lastCTACompleteTime !== 'undefined'
         && storageManager.get('shownNotification') === false) {
-
         let timeSinceLastCTAInteraction = Date.now() - lastCTACompleteTime;
 
         // add the add-on ActionButton
@@ -64,42 +80,23 @@ exports.main = function() {
             // reschedule the first sidebar notification for two hours from now.
             scheduler.startNotificationTimer(12);
         }
-    }
+    } else if (typeof storageManager.get('step') !== 'undefined' && storageManager.get('step') < 5) {
+        // user has seen at least step 1, and we aren't at the final content sidebar
+        let isCtaComplete = storageManager.get('ctaComplete');
 
-    // if the user has seen at least step 1, and we aren't already to the reward sidebar
-    // OR if the user is onboarding and hasn't seen a step yet or they aren't to the 5th step,
-    // get the sidebar props for the current step, add the actionButton, and modify about:home
-    if ((typeof storageManager.get('step') !== 'undefined' && storageManager.get('step') < 5) ||
-        typeof storageManager.get('isOnBoarding') !== 'undefined' && storageManager.get('step') < 5) {
         toolbarButton.addAddOnButton();
+
+        // if the user did not complete the previous step before closing
+        // the browser, start a delayed notification.
+        if (typeof isCtaComplete !== 'undefined' && !isCtaComplete) {
+            scheduler.delayedNotification();
+        } else {
+            // simply start the notification timer
+            scheduler.startNotificationTimer(1);
+        }
+
         sidebarManager.setSidebarProps();
         aboutHome.modifyAboutHome(storageManager.get('sidebarProps'));
-    // else, if we've reached the reward sidebar, just add the all-aboard button to the page
-    } else if (storageManager.get('step') >= 5) {
-        //add the addon button
-        toolbarButton.addAddOnButton();
-        aboutHome.modifyAboutHome({
-            track: 'reward'
-        });
-    }
-
-    // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
-    // If so, we should refresh it so that our pagemod shows up
-    utils.reloadAboutHome();
-
-    // If more than 24 hours have elsapsed since the last time a sidebar was shown or there are less than
-    // 60 seconds left until 24 hours has elapased, AND we have not shown the reward sidebar yet, set a 60
-    // second timer to notify the user of their sidebar
-    if ((((utils.getTimeElapsed(storageManager.get(
-        'lastSidebarCTACompleteTime')) >= intervals.defaultSidebarInterval
-        || ((utils.timeElapsedFormula * (intervals.defaultSidebarInterval - (utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime'))))) < intervals.oneMinute))
-        && typeof storageManager.get('rewardSidebarShown') === 'undefined'))
-        && (!storageManager.get('shownNotification')))  {
-        // if all of the above is true, wait 60 seconds and then notify
-        scheduler.delayedNotification();
-
-    // If 24 hours hasn't yet elapsed and we haven't yet shown the reward sidebar, start a new timer as if
-    // the old timer never stopped counting
     } else if ((utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime')) <
         intervals.defaultSidebarInterval) && typeof storageManager.get('rewardSidebarShown') === 'undefined') {
         // clear any potential open timers (there shouldn't be any persisting, but doing it anyway in case
@@ -110,10 +107,12 @@ exports.main = function() {
             toolbarButton.showBadge();
         }, (utils.timeElapsedFormula * (intervals.defaultSidebarInterval -
             (utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime'))))));
-    }
-
-    // do not call modifynewtab if we've already modified it once
-    if(typeof storageManager.get('seenUserData') === 'undefined') {
-        newtab.modifyNewtab();
+    } else if (storageManager.get('step') >= 5) {
+        // else, if we've reached the reward sidebar, just add the all-aboard button to the page
+        //add the addon button
+        toolbarButton.addAddOnButton();
+        aboutHome.modifyAboutHome({
+            track: 'reward'
+        });
     }
 };
