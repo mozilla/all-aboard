@@ -67,8 +67,8 @@ exports.main = function() {
         && storageManager.get('shownNotification') === false) {
         let timeSinceLastCTAInteraction = Date.now() - lastCTACompleteTime;
 
-        // add the add-on ActionButton
-        toolbarButton.addAddOnButton();
+        // move the experience to step 1
+        sidebarManager.setSidebarProps();
 
         // it has been more than 2 hours since firstrun was completed.
         // Trigger the delayedNotification which will pop a notification
@@ -83,8 +83,6 @@ exports.main = function() {
     } else if (typeof storageManager.get('step') !== 'undefined' && storageManager.get('step') < 5) {
         // user has seen at least step 1, and we aren't at the final content sidebar
         let isCtaComplete = storageManager.get('ctaComplete');
-
-        toolbarButton.addAddOnButton();
 
         // if the user did not complete the previous step before closing
         // the browser, start a delayed notification.
@@ -108,9 +106,7 @@ exports.main = function() {
         }, (utils.timeElapsedFormula * (intervals.defaultSidebarInterval -
             (utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime'))))));
     } else if (storageManager.get('step') >= 5) {
-        // else, if we've reached the reward sidebar, just add the all-aboard button to the page
-        //add the addon button
-        toolbarButton.addAddOnButton();
+        // if we've reached the reward sidebar, just modify about:home
         aboutHome.modifyAboutHome({
             track: 'reward'
         });
