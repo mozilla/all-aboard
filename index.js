@@ -5,7 +5,6 @@ var timers = require('sdk/timers');
 
 // All Aboard module imports
 var { intervals } = require('lib/intervals.js');
-var { notificationsManager } = require('lib/notification-manager.js');
 var { scheduler } = require('lib/scheduler.js');
 var { sidebarManager } = require('lib/sidebar-manager.js');
 var { storageManager } = require('lib/storage-manager.js');
@@ -108,7 +107,7 @@ exports.main = function() {
         timers.clearTimeout(timer);
         // create a new timer with the time left in our timer that didn't persist between sessions
         timer = timers.setTimeout(function() {
-            notificationsManager.showBadge();
+            toolbarButton.showBadge();
         }, (utils.timeElapsedFormula * (intervals.defaultSidebarInterval -
             (utils.getTimeElapsed(storageManager.get('lastSidebarCTACompleteTime'))))));
     }
