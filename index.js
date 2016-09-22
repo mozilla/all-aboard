@@ -51,6 +51,7 @@ exports.main = function() {
 
     // do not call modifynewtab if we've already modified it once
     if (typeof storageManager.get('seenUserData') === 'undefined') {
+        console.error('modify newtab');
         newtab.modifyNewtab();
     }
 
@@ -59,6 +60,9 @@ exports.main = function() {
     // for the first one is enough).
     if (typeof storageManager.get('onboardingDismissed') === 'undefined'
         && typeof storageManager.get('isOnBoarding') === 'undefined') {
+
+        console.error('modify firstrun');
+
         firstrun.modifyFirstrun();
     }
 
@@ -67,6 +71,8 @@ exports.main = function() {
     if (typeof lastStep === 'undefined' && typeof lastCTACompleteTime !== 'undefined'
         && storageManager.get('shownNotification') === false) {
         let timeSinceLastCTAInteraction = Date.now() - lastCTACompleteTime;
+
+        console.error('only first run complete');
 
         // move the experience to step 1
         sidebarManager.setSidebarProps();
@@ -85,13 +91,20 @@ exports.main = function() {
         // user has seen at least step 1, and we aren't at the reward sidebar
         let isCTAComplete = storageManager.get('ctaComplete');
 
+        console.error('Seen at least step one and not to reward');
+
         // clear any potential running timers, mainly in
         // case exports.main is running due to an update
         timers.clearTimeout(timer);
 
+        console.error('isCTAComplete', isCTAComplete);
+
         // the user has completed the CTA of the last displayed sidebar,
         // before closing the browser.
         if (typeof isCTAComplete !== 'undefined' && isCTAComplete) {
+
+            console.error('less than 24 hrs?', timeSinceCTAComplete < intervals.defaultSidebarInterval);
+
             // less than 24hrs has passed since completion.
             if (timeSinceCTAComplete < intervals.defaultSidebarInterval) {
                 // create a new timer with the time left in our timer
@@ -100,20 +113,29 @@ exports.main = function() {
                     toolbarButton.showBadge();
                 }, utils.getRemainingWaitTime(timeSinceCTAComplete));
             } else if (timeSinceCTAComplete > intervals.defaultSidebarInterval) {
+
+                console.error('more than 24 hrs?', timeSinceCTAComplete < intervals.defaultSidebarInterval);
+
                 // more than 24hrs has passed since completion.
                 scheduler.delayedNotification();
             }
         } else if (typeof isCTAComplete === 'undefined' || !isCTAComplete) {
+            console.error('CTA not completed', isCTAComplete);
             // the user saw the last sidebar before closing the
             // browser but, did not interact with it.
             scheduler.delayedNotification();
         }
+
+        console.error('Setting props, add button and modify about:home');
 
         sidebarManager.setSidebarProps();
         toolbarButton.addAddOnButton();
         aboutHome.modifyAboutHome(storageManager.get('sidebarProps'));
 
     } else if (storageManager.get('step') === 'reward') {
+
+        console.error('At reward');
+
         // if we've reached the reward sidebar, just modify about:home
         aboutHome.modifyAboutHome({
             track: 'reward'
