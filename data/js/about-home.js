@@ -17,6 +17,13 @@ function showSnippet(snippetContent) {
     }
 
     searchIconAndTextContainer.insertAdjacentHTML('afterend', snippetContent);
+
+    // get the new snippet container
+    addonSnippet = document.querySelector('#allaboard_snippet');
+    // force redraw of the snippet container
+    addonSnippet.style.display = 'none';
+    addonSnippet.style.display = 'block';
+
     button = document.querySelector('#allaboard_snippet_intent');
 
     button.addEventListener('click', function() {
