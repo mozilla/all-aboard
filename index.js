@@ -105,7 +105,7 @@ exports.main = function() {
             console.error('less than 24 hrs?', timeSinceCTAComplete < intervals.defaultSidebarInterval);
 
             // less than 24hrs has passed since completion.
-            if (timeSinceCTAComplete < intervals.defaultSidebarInterval) {
+            if (timeSinceCTAComplete <= intervals.defaultSidebarInterval) {
                 // create a new timer with the time left in our timer
                 // that didn't persist between sessions
 
