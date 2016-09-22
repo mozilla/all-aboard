@@ -51,7 +51,6 @@ exports.main = function() {
 
     // do not call modifynewtab if we've already modified it once
     if (typeof storageManager.get('seenUserData') === 'undefined') {
-        console.error('modify newtab');
         newtab.modifyNewtab();
     }
 
@@ -60,9 +59,6 @@ exports.main = function() {
     // for the first one is enough).
     if (typeof storageManager.get('onboardingDismissed') === 'undefined'
         && typeof storageManager.get('isOnBoarding') === 'undefined') {
-
-        console.error('modify firstrun');
-
         firstrun.modifyFirstrun();
     }
 
@@ -98,6 +94,9 @@ exports.main = function() {
         timers.clearTimeout(timer);
 
         console.error('isCTAComplete', isCTAComplete);
+        console.error('lastCTACompleteTime', lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime'));
+        console.error('timeSinceCTAComplete', timeSinceCTAComplete = utils.getTimeElapsed(lastCTACompleteTime));
+        console.error('lastStep', lastStep = storageManager.get('step'));
 
         // the user has completed the CTA of the last displayed sidebar,
         // before closing the browser.
@@ -109,12 +108,15 @@ exports.main = function() {
             if (timeSinceCTAComplete < intervals.defaultSidebarInterval) {
                 // create a new timer with the time left in our timer
                 // that didn't persist between sessions
+
+                console.error('utils.getRemainingWaitTime(timeSinceCTAComplete)', utils.getRemainingWaitTime(timeSinceCTAComplete));
+
                 timer = timers.setTimeout(function() {
                     toolbarButton.showBadge();
                 }, utils.getRemainingWaitTime(timeSinceCTAComplete));
             } else if (timeSinceCTAComplete > intervals.defaultSidebarInterval) {
 
-                console.error('more than 24 hrs?', timeSinceCTAComplete < intervals.defaultSidebarInterval);
+                console.error('more than 24 hrs?, wait 60 sec', timeSinceCTAComplete < intervals.defaultSidebarInterval);
 
                 // more than 24hrs has passed since completion.
                 scheduler.delayedNotification();
