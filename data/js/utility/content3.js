@@ -26,7 +26,6 @@
                 // the add-on handles duplicates so, calling this multiple
                 // times is fine.
                 addon.port.emit('cta_complete');
-
                 // unhide our next button
                 selfPacedContent.classList.remove('hidden');
                 // update aria state
