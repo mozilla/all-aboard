@@ -14,7 +14,6 @@
         addon.port.emit('intent', 'highlightURL');
         // main cta action complete, notify add-on
         addon.port.emit('cta_complete');
-
         // unhide our next button
         selfPacedContent.classList.remove('hidden');
         // update aria state
