@@ -41,7 +41,9 @@ exports.main = function() {
     // set's up the addon for dev mode.
     utils.overrideDefaults();
 
+    let isCTAComplete = storageManager.get('ctaComplete');
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
+    let rewardSidebarShown = storageManager.set('rewardSidebarShown');
     let timeSinceCTAComplete = utils.getTimeElapsed(lastCTACompleteTime);
     let lastStep = storageManager.get('step');
 
@@ -81,7 +83,6 @@ exports.main = function() {
         }
     } else if (typeof lastStep !== 'undefined' && lastStep !== 'reward') {
         // user has seen at least step 1, and we aren't at the reward sidebar
-        let isCTAComplete = storageManager.get('ctaComplete');
         // clear any potential running timers, mainly in
         // case exports.main is running due to an update
         timers.clearTimeout(timer);
@@ -90,14 +91,14 @@ exports.main = function() {
         // before closing the browser.
         if (typeof isCTAComplete !== 'undefined' && isCTAComplete) {
             // less than 24hrs has passed since completion.
-            if (timeSinceCTAComplete <= intervals.defaultSidebarInterval) {
+            if (timeSinceCTAComplete < intervals.defaultSidebarInterval) {
                 // create a new timer with the time left in our timer
                 // that didn't persist between sessions
                 timer = timers.setTimeout(function() {
                     toolbarButton.showBadge();
                 }, utils.getRemainingWaitTime(timeSinceCTAComplete));
-            } else if (timeSinceCTAComplete > intervals.defaultSidebarInterval) {
-                // more than 24hrs has passed since completion.
+            } else if (timeSinceCTAComplete >= intervals.defaultSidebarInterval) {
+                // more than, or equal to 24hrs has passed since completion.
                 scheduler.delayedNotification();
             }
         } else if (typeof isCTAComplete === 'undefined' || !isCTAComplete) {
@@ -110,7 +111,13 @@ exports.main = function() {
         toolbarButton.addAddOnButton();
         aboutHome.modifyAboutHome(storageManager.get('sidebarProps'));
 
-    } else if (storageManager.get('step') === 'reward') {
+    } else if (lastStep === 5 && isCTAComplete
+        && typeof rewardSidebarShown === 'undefined') {
+        // we are on step 5 and the user completed the CTA but,
+        // they have not claimed their reward.
+        scheduler.delayedNotification();
+    }
+    else if (lastStep === 'reward') {
         // if we've reached the reward sidebar, just modify about:home
         aboutHome.modifyAboutHome({
             track: 'reward'
