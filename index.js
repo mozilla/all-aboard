@@ -49,6 +49,7 @@ exports.main = function() {
 
     // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
     // If so, we should refresh it so that our pagemod shows up
+    console.error('calling utils.reloadAboutHome() from exports.main');
     utils.reloadAboutHome();
 
     // do not call modifynewtab if we've already modified it once
