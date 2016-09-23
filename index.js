@@ -47,11 +47,6 @@ exports.main = function() {
     let timeSinceCTAComplete = utils.getTimeElapsed(lastCTACompleteTime);
     let lastStep = storageManager.get('step');
 
-    // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
-    // If so, we should refresh it so that our pagemod shows up
-    console.error('calling utils.reloadAboutHome() from exports.main');
-    utils.reloadAboutHome();
-
     // do not call modifynewtab if we've already modified it once
     if (typeof storageManager.get('seenUserData') === 'undefined') {
         newtab.modifyNewtab();
@@ -128,4 +123,9 @@ exports.main = function() {
             track: 'reward'
         });
     }
+
+    // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
+    // If so, we should refresh it so that our pagemod shows up
+    console.error('calling utils.reloadAboutHome() from exports.main');
+    utils.reloadAboutHome();
 };
