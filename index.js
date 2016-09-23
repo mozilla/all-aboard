@@ -43,7 +43,7 @@ exports.main = function() {
 
     let isCTAComplete = storageManager.get('ctaComplete');
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
-    let rewardSidebarShown = storageManager.set('rewardSidebarShown');
+    let rewardSidebarShown = storageManager.get('rewardSidebarShown');
     let timeSinceCTAComplete = utils.getTimeElapsed(lastCTACompleteTime);
     let lastStep = storageManager.get('step');
 
@@ -62,6 +62,12 @@ exports.main = function() {
     if (typeof storageManager.get('onboardingDismissed') === 'undefined'
         && typeof storageManager.get('isOnBoarding') === 'undefined') {
         firstrun.modifyFirstrun();
+    }
+
+    // if the user has seen the first sidebar, always add the action button
+    // to the chrome on startup
+    if (typeof lastStep !== 'undefined') {
+        toolbarButton.addAddOnButton();
     }
 
     // The user has not seen the first sidebar, and has not received the first notification but,
@@ -108,13 +114,11 @@ exports.main = function() {
         }
 
         sidebarManager.setSidebarProps();
-        toolbarButton.addAddOnButton();
         aboutHome.modifyAboutHome(storageManager.get('sidebarProps'));
 
-    } else if (lastStep === 5 && isCTAComplete
-        && typeof rewardSidebarShown === 'undefined') {
-        // we are on step 5 and the user completed the CTA but,
-        // they have not claimed their reward.
+    } else if (lastStep === 'reward' && typeof rewardSidebarShown === 'undefined') {
+        // the user completed step 5 but, has not
+        // claimed their reward.
         scheduler.delayedNotification();
     }
     else if (lastStep === 'reward') {
