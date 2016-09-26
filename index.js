@@ -110,7 +110,10 @@ exports.main = function() {
                 // more than, or equal to 24hrs has passed since completion.
                 scheduler.conditionalDelayedNotification();
             }
-        } else if (typeof isCTAComplete === 'undefined' || !isCTAComplete) {
+        } else if ((typeof isCTAComplete === 'undefined' || !isCTAComplete)
+            && timeSinceCTAComplete >= intervals.defaultSidebarInterval) {
+            // cta has not been completed and it has been 24 hours or more since
+            // lastCTA complete, notify
             scheduler.conditionalDelayedNotification();
         }
 
