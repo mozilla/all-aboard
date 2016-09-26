@@ -41,6 +41,7 @@ exports.main = function() {
     // set's up the addon for dev mode.
     utils.overrideDefaults();
 
+    let destroyTimerStartTime = storageManager.get('destroyTimerStartTime');
     let isCTAComplete = storageManager.get('ctaComplete');
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
     let rewardSidebarShown = storageManager.get('rewardSidebarShown');
@@ -64,6 +65,12 @@ exports.main = function() {
     // to the chrome on startup
     if (typeof lastStep !== 'undefined') {
         toolbarButton.addAddOnButton();
+    }
+
+    // if destroyTimerStartTime is not undefined, we did start a destroy timer,
+    // we therefore need to restart it for the time that remains
+    if (typeof destroyTimerStartTime !== 'undefined') {
+        scheduler.restartDestroyTimer(utils.getRemainingTTL(destroyTimerStartTime));
     }
 
     // The user has not seen the first sidebar, and has not received the first notification but,
