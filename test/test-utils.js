@@ -5,11 +5,11 @@ var { intervals } = require('../lib/intervals.js');
 var { utils } = require('../lib/utils.js');
 
 exports.testupdatePref = function(assert) {
-    let testString = 'mozilla86-value-new-1';
-    let stepTwoTestString = 'mozilla86-value-new-2';
+    let testString = 'mozilla88-value-new-1';
+    let stepTwoTestString = 'mozilla88-value-new-2';
 
     // ensure that the before function set the initial value
-    assert.equal(prefService.get('distribution.id'), 'mozilla86', 'Initial value should be mozilla86');
+    assert.equal(prefService.get('distribution.id'), 'mozilla88', 'Initial value should be mozilla88');
 
     //update the above pref
     utils.updatePref('-value-new-1');
@@ -40,11 +40,11 @@ exports.testTimeElapsed = function(assert) {
 };
 
 before(exports, function () {
-    prefService.set('distribution.id', 'mozilla86');
+    prefService.set('distribution.id', 'mozilla88');
 });
 
 after(exports, function () {
-    prefService.set('distribution.id', 'mozilla86');
+    prefService.set('distribution.id', 'mozilla88');
 });
 
 require('sdk/test').run(exports);
