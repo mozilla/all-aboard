@@ -8,20 +8,50 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.ui import WebDriverWait as Wait
 
-from pages.firstrun import Firstrun
 from pages.all_aboard import AllAboard
+from pages.firstrun import Firstrun
+from pages.sidebar import Sidebar
+
+
+@pytest.fixture
+def complete_firstrun(base_url, selenium):
+    """ Completes /firstrun interactions to start on-boarding"""
+    page = Firstrun(selenium, base_url).open()
+    page.complete_firstrun_values_flow()
+    return page
+
+
+@pytest.fixture
+def complete_first_sidebar_interaction(selenium):
+    """ Completes interaction on first sidebar to move experience forward"""
+    # switch to browser chrome
+    selenium.set_context('chrome')
+
+    # wait for the first sidebar to be shown
+    Wait(selenium, 3).until(
+        expected.presence_of_element_located((
+            By.CSS_SELECTOR,
+            '#content-deck #sidebar-box[sidebarcommand="viewWebPanelsSidebar"]'
+            )
+        )
+    )
+
+    sidebar = Sidebar(selenium)
+    # click the main cta
+    sidebar.click_cta()
+
+    return sidebar
 
 
 @pytest.mark.nondestructive
 @pytest.mark.capabilities(firefox_args=['-foreground'])
-def test_first_sidebar_loads(base_url, selenium):
-    """ Tests that the sidebar opens after clicking the ActionButton"""
-    page = Firstrun(selenium, base_url).open()
-    page.complete_firstrun_values_flow()
+def test_automatically_show_first_sidebar(base_url,
+                                          selenium,
+                                          complete_firstrun):
+    """ Tests that the first sidebar opens automatically"""
     # switch to browser chrome
     selenium.set_context('chrome')
 
-    all_aboard = AllAboard(selenium)
     # ensure that add-on action button is added as soon as we leave firstrun
     Wait(selenium, 2).until(
         expected.presence_of_element_located(
@@ -29,13 +59,67 @@ def test_first_sidebar_loads(base_url, selenium):
         )
     )
 
-    notification = Wait(selenium, 10).until(
-        expected.presence_of_element_located(
-            (By.CSS_SELECTOR, '#action-button--all-aboard-v1-all-aboard[badge="1"]')  # noqa E501
+    # enure that the sidebar is automatically shown on first notification
+    Wait(selenium, 3).until(
+        expected.presence_of_element_located((
+            By.CSS_SELECTOR,
+            '#content-deck #sidebar-box[sidebarcommand="viewWebPanelsSidebar"]'
+            )
         )
     )
 
-    # once the first content notification happens, click the action button
+
+@pytest.mark.nondestructive
+@pytest.mark.capabilities(firefox_args=['-foreground'])
+def test_second_sidebar_not_automatically_shown(
+        base_url,
+        selenium,
+        complete_firstrun,
+        complete_first_sidebar_interaction):
+    """ Tests that the second sidebar does not open automatically"""
+    # switch to browser chrome
+    selenium.set_context('chrome')
+
+    # wait for the second notification to happen
+    Wait(selenium, 10).until(
+        expected.presence_of_element_located((
+            By.CSS_SELECTOR,
+            '#action-button--all-aboard-v1-all-aboard[badge="1"]'
+            )
+        )
+    )
+
+    all_aboard = AllAboard(selenium)
+
+    # ensure the second sidebar is not automatically shown
+    assert all_aboard.sidebar.get_attribute('hidden') == 'true'
+
+
+def test_second_sidebar_opens_on_click(
+        base_url,
+        selenium,
+        complete_firstrun,
+        complete_first_sidebar_interaction):
+    """ Tests that the sidebar opens when the ActionButton is clicked"""
+    # switch to browser chrome
+    selenium.set_context('chrome')
+
+    # wait for the second notification to happen
+    notification = Wait(selenium, 10).until(
+        expected.presence_of_element_located((
+            By.CSS_SELECTOR,
+            '#action-button--all-aboard-v1-all-aboard[badge="1"]'
+            )
+        )
+    )
+
+    all_aboard = AllAboard(selenium)
+    sidebar = Sidebar(selenium)
+
+    # once the second content notification happens, click the action button
     notification.click()
 
+    # ensure that the sidebar is shown after click on ActionButton
     assert all_aboard.sidebar.get_attribute('hidden') == 'false'
+    # ensure that the correct sidebar is shown
+    assert sidebar.current_step == '2'

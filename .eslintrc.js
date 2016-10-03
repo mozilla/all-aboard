@@ -52,9 +52,11 @@ module.exports = {
     "globals": {
         "addon": true,
         "exports": true,
+        "module": true,
         "require": true,
         "MigrationUtils": true,
         "Services": true,
-        "AutoMigrate": true
+        "AutoMigrate": true,
+        "attachNextButtonListener": true
     }
 };

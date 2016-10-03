@@ -52,7 +52,7 @@ a:focus {
 
 .sidebar-content main,
 .sidebar-content footer {
-    padding: 20px 40px 0px 40px;
+    padding: 10px 40px 0 40px;
 }
 
 /* styleing for search providers image */
@@ -69,11 +69,12 @@ a:focus {
 
 .sidebar-content.values main,
 .sidebar-content.values footer {
-    padding: 20px 20px 0px 20px;
+    padding: 10px 20px 0 20px;
 }
 
-
-.sidebar-content footer {
+.sidebar-content footer,
+.sidebar-content.values footer {
+    padding-top: 20px;
     text-align: center;
 }
 
@@ -84,6 +85,7 @@ a:focus {
 
 .secondary-content {
     height: auto;
+    text-align: center;
     opacity: 1;
     transition: height 1s,
                 opacity 1s;
@@ -95,6 +97,25 @@ a:focus {
 .secondary-content.hide p {
     display: none;
     padding: 0;
+}
+
+.selfpaced-content {
+    padding: 0 10px;
+}
+
+.selfpaced-content p {
+    margin: 0;
+    font-size: .8rem;
+}
+
+.selfpaced-content button {
+    background: none;
+    color: #0073aa;
+    padding: 0;
+    border: 0;
+    font-size: .8rem;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .user-data {
@@ -230,7 +251,7 @@ main.reward-sidebar {
 
 /* tokens */
 .tokens {
-    margin: 0;
+    margin: 0 0 10px;
     padding: 0;
     width: 240px;
     list-style: none;
@@ -239,27 +260,20 @@ main.reward-sidebar {
 .tokens li {
     display: inline-block;
     margin-left: 3px;
-    border: 2px dotted #55565A;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
 }
 
 .tokens li:first-child {
     margin: 0;
 }
 
-.tokens li .token-trigger {
-    display: none;
+.tokens li input[type="image"] {
+    cursor: default;
 }
 
-.tokens li.active {
-    border: 0;
-}
-
-.tokens li.active .token-trigger {
-    display: inline-block;
-    margin: -3px 0 0 -3px;
+.tokens li.active input[type="image"] {
+    cursor: pointer;
 }
 
 .token-awarded {
@@ -268,7 +282,9 @@ main.reward-sidebar {
 }
 
 .options-response {
+    margin: 0;
     font-style: italic;
+    text-align: center;
 }
 
 /* buttons */
@@ -289,7 +305,7 @@ main.reward-sidebar {
 
 .button.small {
     padding: 5px 18px;
-    width: 170px;
+    width: 200px;
     font-size: .9rem;
 }
 

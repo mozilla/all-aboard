@@ -32,7 +32,7 @@
             </label>
           </li>
         </ul>
-        <button id="show_answer" class="button">Show Answer</button>
+        <button type="button" id="show_answer" class="button" data-step="4">Show Answer</button>
 
         <!-- conditional messaging based on options selection -->
         <p id="response_a" class="options-response hidden" aria-hidden="true">Wait! It’s easier than you think.</p>
@@ -46,24 +46,31 @@
       <footer>
         <ul class="tokens">
           <li id="token1">
-            <input type="image" src="/data/media/tokens/values/token1.svg" width="42" height="42" alt="Token for completing step 1" class="token-trigger" data-step="1" data-track="values" />
+            <input type="image" src="/data/media/icons/progress/star1.svg" width="30" height="30" alt="Token for completing step 1" class="token-trigger" data-step="1" data-track="values" />
           </li>
           <li id="token2">
-            <input type="image" src="/data/media/tokens/values/token2.svg" width="42" height="42" alt="Token for completing step 2" class="token-trigger" data-step="2" data-track="values" />
+            <input type="image" src="/data/media/icons/progress/star2.svg" width="30" height="30" alt="Token for completing step 2" class="token-trigger" data-step="2" data-track="values" />
           </li>
           <li id="token3">
-            <input type="image" src="/data/media/tokens/values/token3.svg" width="42" height="42" alt="Token for completing step 3" class="token-trigger" data-step="3" data-track="values" />
+            <input type="image" src="/data/media/icons/progress/star3.svg" width="30" height="30" alt="Token for completing step 3" class="token-trigger" data-step="3" data-track="values" />
           </li>
           <li id="token4">
-            <input type="image" src="/data/media/tokens/values/token4.svg" width="42" height="42" alt="Token for completing step 4" class="token-trigger" data-step="4" data-track="values" />
+            <input type="image" src="/data/media/icons/progress/star4.svg" width="30" height="30" alt="Token for completing step 4" class="token-trigger" data-step="4" data-track="values" />
           </li>
           <li id="token5">
-            <input type="image" src="/data/media/tokens/values/token5.svg" width="42" height="42" alt="Token for completing step 5" class="token-trigger" data-step="5" data-track="values" />
+            <input type="image" src="/data/media/icons/progress/star5.svg" width="30" height="30" alt="Token for completing step 5" class="token-trigger" data-step="5" data-track="values" />
+          </li>
+          <li id="trophy">
+            <img src="/data/media/icons/progress/trophy.svg" width="30" height="30" alt="Trophy image" />
           </li>
         </ul>
-        <h2 class="token-awarded hidden" aria-hidden="true">Here’s your badge!</h2>
+        <div id="selfpaced" class="selfpaced-content hidden" aria-hidden="true">
+          <p>You earned a star!</p>
+          <p><button type="button" id="next-button" type="button">Next question</button></p>
+        </div>
       </footer>
     </section>
+    <script src="/data/js/lib/common.js"></script>
     <script src="/data/js/lib/token-manager.js"></script>
     <script src="/data/js/values/values.js"></script>
   </body>

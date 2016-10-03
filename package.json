@@ -1,7 +1,7 @@
 {
   "title": "All Aboard",
-  "name": "all-aboard-v1",
-  "version": "1.1.0",
+  "name": "all-aboard-v1-2",
+  "version": "1.2.9-rc5",
   "description": "The Mozilla Firefox Educational Tool",
   "homepage": "https://github.com/mozilla/all-aboard",
   "repository": "https://github.com/mozilla/all-aboard",
@@ -9,18 +9,19 @@
   "scripts": {
     "test": "jpm test",
     "test-travis": "jpm --binary `which firefox` test -v",
-    "build-xpi": "jpm xpi"
+    "build-xpi": "jpm xpi",
+    "lint": "./node_modules/.bin/eslint index.js lib/** data/js/** test/**"
   },
   "author": "Mozilla Corporation",
   "engines": {
-    "firefox": ">=38.0a1",
-    "fennec": ">=38.0a1"
+    "firefox": ">=47.0"
   },
   "license": "MPL-2.0",
   "keywords": [
     "jetpack"
   ],
   "devDependencies": {
+    "eslint": "^3.5.0",
     "jpm": "^1.0.7"
   }
 }
