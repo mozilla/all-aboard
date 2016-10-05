@@ -117,6 +117,7 @@ var windowUtils = require('sdk/window/utils');
 var configPrefs = require('sdk/preferences/service');
 
 var { Cu } = require('chrome');
+var { AddonManager } = Cu.import('resource://gre/modules/AddonManager.jsm');
 var { XMLHttpRequest } = require('sdk/net/xhr');
 var UITour = Cu.import('resource:///modules/UITour.jsm').UITour;
 var LightweightThemeManager = Cu.import('resource://gre/modules/LightweightThemeManager.jsm').LightweightThemeManager;
@@ -152,7 +153,6 @@ var destroyTimer = -1;
 var waitInterval = 86400000;
 // 3 weeks in milliseconds
 var nonuseDestroyTime = 1814400000;
-var resetPreloadTime = 86400000;
 var aboutHomeReloaded = false;
 var awesomeBarListen = false;
 var bookmarkListen = false;
@@ -1146,6 +1146,23 @@ function resetPreload() {
     }
 }
 
+function uninstallAddOn() {
+    AddonManager.getAddonByID('@all-aboard-v1-1', function(addon) {
+        // if the add-on is not installed,
+        // just return
+        if (!addon) {
+            return;
+        }
+
+        // If we do not have the permission to unistall, just return
+        if (!(addon.permissions & AddonManager.PERM_CAN_UNINSTALL)) {
+            return;
+        }
+        addon.uninstall();
+        return;
+    });
+}
+
 /**
  * This is called when the add-on is unloaded. If the reason is either disable,
  * or shutdown, we can do some cleanup.
@@ -1167,6 +1184,9 @@ exports.onUnload = function() {
 exports.main = function() {
     // set's up the addon for dev mode.
     overrideDefaults();
+
+    // uninstall the add-on
+    uninstallAddOn();
 
     // if the user has seen at least step 1, and we aren't already to the reward sidebar
     // OR if the user is onboarding and hasn't seen a step yet or they aren't to the 5th step,
@@ -1192,7 +1212,7 @@ exports.main = function() {
         }
     }
     catch (e) {
-        console.error("Could not reload snippet content: " + e);
+        console.error('Could not reload snippet content: ', e);
     }
 
     // catch the anomaly where users aren't getting a notification because their lastSidebarCTACompleteTime isn't set, but they ARE onboarding
