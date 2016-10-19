@@ -1,0 +1,70 @@
+:root {
+    --gradient-purple-color-stop-0: #2b2e5a;
+    --gradient-purple-color-stop-50: #61508e;
+    --gradient-dark-blue-color-stop-0: #0c3b71;
+    --gradient-dark-blue-color-stop-50: #1a8bcc;
+    --gradient-green-color-stop-0: #008786;
+    --gradient-green-color-stop-100: #fffedb;
+    --gradient-sunset-color-stop-0: #ea587c;
+    --gradient-sunset-color-stop-50: #fcb08b;
+    --gradient-light-blue-color-stop-0: #0ab1cd;
+    --gradient-light-blue-color-stop-70: #f9e9b9;
+    --gradient-light-blue-color-stop-100: #fffcd9;
+    --gradient-color-stop-100: #fff;
+}
+
+/* sidebar background gradients */
+.gradient-dark-blue {
+    background-color: var(--gradient-dark-blue-color-stop-0);
+    background-image: url('../media/sidebar/stars.svg'),
+        linear-gradient(
+            var(--gradient-dark-blue-color-stop-0) 0%,
+            var(--gradient-dark-blue-color-stop-50) 50%,
+            var(--gradient-color-stop-100) 100%
+        );
+    background-repeat: no-repeat;
+}
+
+.gradient-green {
+    background-color: var(--gradient-green-color-stop-0);
+    background-image: url('../media/sidebar/stars.svg'),
+        linear-gradient(
+            var(--gradient-green-color-stop-0) 0%,
+            var(--gradient-green-color-stop-100) 100%
+        );
+    background-repeat: no-repeat;
+}
+
+.gradient-light-blue {
+    background-color: var(--gradient-light-blue-color-stop-0);
+    background-image: url('../media/sidebar/backdrop-reward.svg'),
+        linear-gradient(
+            var(--gradient-light-blue-color-stop-0) 0%,
+            var(--gradient-light-blue-color-stop-70) 70%,
+            var(--gradient-light-blue-color-stop-100) 100%
+        );
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+}
+
+.gradient-purple {
+    background-color: var(--gradient-purple-color-stop-0);
+    background-image: url('../media/sidebar/stars.svg'),
+        linear-gradient(
+            var(--gradient-purple-color-stop-0) 0%,
+            var(--gradient-purple-color-stop-50) 50%,
+            var(--gradient-color-stop-100) 100%
+        );
+    background-repeat: no-repeat;
+}
+
+.gradient-sunset {
+    background-color: var(--gradient-sunset-color-stop-0);
+    background-image: url('../media/sidebar/stars.svg'),
+        linear-gradient(
+            var(--gradient-sunset-color-stop-0) 0%,
+            var(--gradient-sunset-color-stop-50) 50%,
+            var(--gradient-color-stop-100) 100%
+        );
+    background-repeat: no-repeat;
+}

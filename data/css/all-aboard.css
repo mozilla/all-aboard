@@ -1,3 +1,8 @@
+@import 'fonts.css';
+@import 'gradients.css';
+@import 'buttons.css';
+@import 'footer.css';
+
 html {
     box-sizing: border-box;
 }
@@ -10,15 +15,11 @@ html {
 
 body {
     background-color: #f6f6f6;
-    color: #4a5160;
+    color: #fff;
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 16px;
-}
-
-header {
-    padding-top: 10px;
 }
 
 a:link,
@@ -32,55 +33,40 @@ a:focus {
 }
 
 .sidebar-content {
+    padding: 120px 0 0;
     width: 320px;
-    height: auto;
+    height: 100vh;
     text-align: center;
 }
 
 .sidebar-content h1 {
     margin: 0;
-    font-size: 1.5rem;
-}
-
-.sidebar-content.utility h1 {
-    padding-bottom: 0;
+    font-size: 2rem;
 }
 
 .sidebar-content p {
+    font-size: 1.1rem;
+    font-weight: 300;
     line-height: 1.5;
 }
 
-.sidebar-content main,
-.sidebar-content footer {
+.sidebar-content main {
+    position: relative;
     padding: 10px 40px 0 40px;
 }
 
-/* styleing for search providers image */
-.search-providers {
+/* mobile download buttons */
+.app-store,
+.play-store {
     display: block;
-    margin: 20px 0;
 }
 
-/* specific sidebar styling for the values track */
-.sidebar-content.values {
-    padding: 0 20px 20px 20px;
-    text-align: left;
+.app-store {
+    margin-top: 50px;
 }
 
-.sidebar-content.values main,
-.sidebar-content.values footer {
-    padding: 10px 20px 0 20px;
-}
-
-.sidebar-content footer,
-.sidebar-content.values footer {
-    padding-top: 20px;
-    text-align: center;
-}
-
-.sidebar-content.values header img {
-    display: block;
-    margin: 0 auto;
+.play-store {
+    margin-top: 20px;
 }
 
 .secondary-content {
@@ -103,18 +89,30 @@ a:focus {
     padding: 0 10px;
 }
 
+.selfpaced-content h2:before {
+    display: block;
+    content: '';
+    background: transparent url('../media/progress/star-active.svg') 0 0 no-repeat;
+    margin: 0 auto 20px;
+    width: 35px;
+    height: 35px;
+}
+
+.selfpaced-content h2 {
+    margin-bottom: 30px;
+}
+
 .selfpaced-content p {
-    margin: 0;
-    font-size: .8rem;
+    font-size: 1rem;
 }
 
 .selfpaced-content button {
     background: none;
-    color: #0073aa;
+    color: #fff;
+    margin-top: 40px;
     padding: 0;
     border: 0;
-    font-size: .8rem;
-    font-weight: bold;
+    font-size: 100%;
     cursor: pointer;
 }
 
@@ -136,106 +134,14 @@ a:focus {
     padding: 10px;
 }
 
-.hostname {
-    font-size: .9rem;
-}
-
-/* styles for multiple choice sidebars */
-.options {
-    padding: 0;
-    list-style: none;
-}
-
-.options label {
+.reward h1:before {
     display: block;
-    margin-bottom: 20px;
-}
-
-.options label span {
-    display: inline-block;
-    margin-left: 10px;
-    max-width: 200px;
-    vertical-align: middle;
-    line-height: 1.2;
-}
-
-.options .answer {
-    font-weight: bold;
-}
-
-/* import data sidebar */
-.import-data {
-    margin: 40px auto;
-    padding: 0;
-    width: 130px;
-    list-style-type: none;
-    text-align: left;
-}
-
-.import-data li {
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.import-data li:before {
-    display: inline-block;
     content: '';
-    padding: 3px 25px 0 5px;
-    width: 20px;
-    height: 20px;
-    vertical-align: bottom;
-}
-
-.import-data .preferences:before {
-    background: transparent url(../media/icons/preferences.png) 0 0 / 20px no-repeat;
-}
-
-.import-data .bookmarks:before {
-    background: transparent url(../media/icons/bookmarks.png) 0 0 / 20px no-repeat;
-}
-
-.import-data .passwords:before {
-    background: transparent url(../media/icons/passwords.png) 0 0 / 20px no-repeat;
-}
-
-.import-data .history:before {
-    background: transparent url(../media/icons/history.png) 0 0 / 20px no-repeat;
-}
-
-.moving-truck {
-    margin-top: 20px;
-}
-
-main.reward-sidebar {
-    padding: 20px 20px;
-    text-align: left;
-}
-
-.reward-sidebar h1 {
-    padding-bottom: 0;
-}
-
-.reward-sidebar label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.reward-sidebar input[type="text"] {
-    margin-bottom: 20px;
-    padding: 5px 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    min-width: 240px;
+    background: transparent url('../media/sidebar/reward-header.svg') 0 0 no-repeat;
+    background-size: 100%;
+    margin: 0 auto 20px;
+    width: 140px;
     height: 35px;
-    font-size: 1rem;
-}
-
-.reward-sidebar input[type="text"]:focus {
-    border-color: #37A3CC;
-}
-
-.reward-sidebar input[type="submit"] {
-    margin-top: 10px;
 }
 
 .reward-form {
@@ -251,7 +157,7 @@ main.reward-sidebar {
 
 /* tokens */
 .tokens {
-    margin: 0 0 10px;
+    margin: 200px 40px 0;
     padding: 0;
     width: 240px;
     list-style: none;
@@ -278,86 +184,16 @@ main.reward-sidebar {
 
 .token-awarded {
     font-size: .825rem;
-    text-align: center;
-}
-
-.options-response {
-    margin: 0;
-    font-style: italic;
-    text-align: center;
-}
-
-/* buttons */
-.button {
-    position: relative;
-    display: inline-block;
-    background-color: #0095dd;
-    color: #fff;
-    padding: 10px 36px;
-    border: 2px solid #0092cc;
-    border-radius: 4px;
-    font-size: 1rem;
-    text-align: center;
-    width: 100%;
-    cursor: pointer;
-    transition: background-color .1s ease-in-out;
-}
-
-.button.small {
-    padding: 5px 18px;
-    width: 200px;
-    font-size: .9rem;
-}
-
-.button.reset {
-    margin-bottom: 10px;
-}
-
-.mobile img {
-    margin: 5px;
-}
-
-.reset {
-    background: none;
-    color: #333;
-    border: 0;
-}
-
-/* customization sidebar styles */
-.button-container button {
-    margin-bottom: 20px;
-}
-
-.button-container button:last-child {
-    margin: 0;
-}
-
-.button:hover,
-.button:focus {
-    background-color: #33aae4;
-    border-color: #0092cc;
-}
-
-.reset:hover,
-.reset:focus {
-    background: none;
-    border: 0;
-}
-
-.button:active {
-    position: relative;
-    top: 1px;
-}
-
-/* utility */
-.hidden {
-    display: none;
 }
 
 /* Utility class for hiding elements that should fade in */
 .hide {
     height: 0;
     opacity: 0;
+}
+
+.hidden {
+    display: none;
 }
 
 /* Hide visually, but not to screen readers */
