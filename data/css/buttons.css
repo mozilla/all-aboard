@@ -2,11 +2,11 @@
 .button {
     position: relative;
     display: inline-block;
-    background-color: #0095dd;
+    background-color: transparent;;
     color: #fff;
     margin-top: 50px;
     padding: 15px 26px;
-    border: 2px solid #0092cc;
+    border: 2px solid #fff;
     border-radius: 4px;
     font-size: 1.1rem;
     font-weight: 300;
@@ -28,8 +28,8 @@
 
 .button:hover,
 .button:focus {
-    background-color: #33aae4;
-    border-color: #0092cc;
+    background-color: #fff;
+    color: #333;
 }
 
 .button:active {

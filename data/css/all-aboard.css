@@ -157,7 +157,7 @@ a:focus {
 
 /* tokens */
 .tokens {
-    margin: 200px 40px 0;
+    margin: 210px 40px 0;
     padding: 0;
     width: 240px;
     list-style: none;
@@ -165,7 +165,7 @@ a:focus {
 
 .tokens li {
     display: inline-block;
-    margin-left: 3px;
+    margin-left: 5px;
     width: 30px;
     height: 30px;
 }
