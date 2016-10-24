@@ -32,7 +32,7 @@ def test_three_notifications_shown(base_url,
     # ensure that add-on action button is added as soon as we leave firstrun
     action = Wait(selenium, 2).until(
         expected.presence_of_element_located(
-            (By.ID, 'action-button--all-aboard-v1-all-aboard')))
+            (By.ID, 'action-button--all-aboard-v12-all-aboard')))
 
     # first sidebar is automatically shown on first notification so,
     # we use this as out indicator that the first notifications happened.

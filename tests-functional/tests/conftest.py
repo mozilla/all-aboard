@@ -18,5 +18,5 @@ def firefox_profile(firefox_profile):
     firefox_profile.set_preference('xpinstall.signatures.required', False)
     # install extension, get path relative the cwd in which tox is run so,
     # tests-functional in this case.
-    firefox_profile.add_extension(extension=os.path.abspath('../@all-aboard-v1-1.1.0.xpi'))  # noqa: E501
+    firefox_profile.add_extension(extension=os.path.abspath('../@all-aboard-v1.2-1.2.0.xpi'))  # noqa: E501
     return firefox_profile

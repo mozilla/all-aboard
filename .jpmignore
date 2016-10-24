@@ -7,3 +7,5 @@ test/
 tests-functional/
 .gitignore
 .eslintrc.js
+.travis.yml
+*.xpi
