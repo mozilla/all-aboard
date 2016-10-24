@@ -1,0 +1,53 @@
+.sidebar-content footer {
+    position: fixed;
+    bottom: 0;
+    background: transparent url('../media/sidebar/backdrop-content1.svg') 0 100% no-repeat;
+    background-size: 100%;
+    padding: 10px 0 0;
+    width: 320px;
+    height: 320px;
+}
+
+.sidebar-content.sidebar2 footer {
+    background-image: url('../media/sidebar/backdrop-content2.svg');
+}
+
+.sidebar-content.sidebar3 footer {
+    background-image: url('../media/sidebar/backdrop-content3.svg');
+}
+
+.sidebar-content.sidebar4 footer {
+    background-image: url('../media/sidebar/backdrop-content4.svg');
+}
+
+.sidebar-content .fox {
+    position: absolute;
+    bottom: 120px;
+    left: 50px;
+    background: transparent url('../media/fox/fox-content1.svg') 0 0 no-repeat;
+    background-size: 100%;
+    width: 211px;
+    height: 106px;
+}
+
+.sidebar-content.sidebar2 .fox {
+    background-image: url('../media/fox/fox-content2.svg');
+}
+
+.sidebar-content.sidebar3 .fox {
+    bottom: 110px;
+    left: 40px;
+    background-image: url('../media/fox/fox-content3.svg');
+}
+
+.sidebar-content.sidebar4 .fox {
+    left: 40px;
+    background-image: url('../media/fox/fox-content4.svg');
+}
+
+.sidebar-content.reward .fox {
+    bottom: 60px;
+    left: 10px;
+    background-image: url('../media/fox/fox-reward.svg');
+    height: 186px;
+}

@@ -21,8 +21,8 @@
     // listens for a tokens event from the add-on and enables tokens
     // that has been received by the user.
     addon.port.on('tokens', function(tokens) {
-        const activeImgPath = '/data/media/icons/progress/star_active.svg';
-        const activeTrophyPath = '/data/media/icons/progress/trophy_active.svg';
+        const activeImgPath = '/data/media/progress/star-active.svg';
+        const activeTrophyPath = '/data/media/progress/trophy-active.svg';
 
         let tokensLength = tokens.length;
         let trophy = document.querySelector('#trophy img');
@@ -37,7 +37,7 @@
 
         // if the user has received all tokens, also update
         // the trophy image to the active state.
-        if (tokensLength === 5) {
+        if (tokensLength === 4) {
             trophy.src = activeTrophyPath;
         }
 

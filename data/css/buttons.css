@@ -1,0 +1,38 @@
+/* buttons */
+.button {
+    position: relative;
+    display: inline-block;
+    background-color: #0095dd;
+    color: #fff;
+    margin-top: 50px;
+    padding: 15px 26px;
+    border: 2px solid #0092cc;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    text-align: center;
+    width: 85%;
+    cursor: pointer;
+    transition: background-color .1s ease-in-out;
+}
+
+.button.small {
+    padding: 5px 18px;
+    width: 200px;
+    font-size: .9rem;
+}
+
+.button.reset {
+    margin-bottom: 10px;
+}
+
+.button:hover,
+.button:focus {
+    background-color: #33aae4;
+    border-color: #0092cc;
+}
+
+.button:active {
+    position: relative;
+    top: 1px;
+}
