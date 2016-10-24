@@ -1147,7 +1147,7 @@ function resetPreload() {
 }
 
 function uninstallAddOn() {
-    AddonManager.getAddonByID('@all-aboard-v1-1', function(addon) {
+    AddonManager.getAddonByID('@all-aboard-v1', function(addon) {
         // if the add-on is not installed,
         // just return
         if (!addon) {
@@ -1156,6 +1156,8 @@ function uninstallAddOn() {
 
         // If we do not have the permission to unistall, just return
         if (!(addon.permissions & AddonManager.PERM_CAN_UNINSTALL)) {
+            console.error('we do not have permission', addon.permissions);
+            console.error('we do not have permission', AddonManager.PERM_CAN_UNINSTALL);
             return;
         }
         addon.uninstall();
