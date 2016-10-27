@@ -1,4 +1,5 @@
 (function() {
+    let claimReward = document.querySelector('.claim-reward');
     let mainCTA = document.getElementById('main_cta');
     let mainCopy = document.getElementById('main_copy');
     let selfPacedContent = document.getElementById('selfpaced');
@@ -52,10 +53,12 @@
      * to the reward and self paced content.
      */
     function swapContent() {
-        // hide the main copy
-        mainCopy.classList.add('hidden');
-        // update aria state
-        mainCopy.setAttribute('aria-hidden', true);
+        if (!claimReward) {
+            // hide the main copy
+            mainCopy.classList.add('hidden');
+            // update aria state
+            mainCopy.setAttribute('aria-hidden', true);
+        }
         // show the reward and self paced content,
         selfPacedContent.classList.remove('hide');
         // update aria state
