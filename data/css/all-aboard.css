@@ -52,7 +52,7 @@ a:focus {
 
 .sidebar-content main {
     position: relative;
-    padding: 10px 40px 0 40px;
+    padding: 10px 20px 0;
 }
 
 /* mobile download buttons */
@@ -104,16 +104,6 @@ a:focus {
 
 .selfpaced-content p {
     font-size: 1rem;
-}
-
-.selfpaced-content button {
-    background: none;
-    color: #fff;
-    margin-top: 40px;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    cursor: pointer;
 }
 
 .user-data {

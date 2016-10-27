@@ -36,3 +36,34 @@
     position: relative;
     top: 1px;
 }
+
+.start-experience {
+    padding: 15px 10px;
+    font-size: 1rem;
+}
+
+.start-experience:after,
+.selfpaced-content button:after {
+    display: inline-block;
+    content: '';
+    background: transparent url('../media/progress/arrow.svg') 0 5px no-repeat;
+    background-size: 12px 12px;
+    margin-left: 5px;
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+}
+
+.start-experience:hover:after {
+    background-image: url('../media/progress/arrow-black.svg');
+}
+
+.selfpaced-content button {
+    background: none;
+    color: #fff;
+    margin-top: 40px;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    cursor: pointer;
+}
