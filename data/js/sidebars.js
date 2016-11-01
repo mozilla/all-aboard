@@ -1,5 +1,4 @@
 (function() {
-    let claimReward = document.querySelector('.claim-reward');
     let mainCTA = document.getElementById('main_cta');
     let mainCopy = document.getElementById('main_copy');
     let selfPacedContent = document.getElementById('selfpaced');
@@ -53,21 +52,27 @@
      * to the reward and self paced content.
      */
     function swapContent() {
-        if (!claimReward) {
-            // hide the main copy
-            mainCopy.classList.add('hidden');
-            // update aria state
-            mainCopy.setAttribute('aria-hidden', true);
-        }
+        // hide the main copy
+        mainCopy.classList.add('hidden');
+        // update aria state
+        mainCopy.setAttribute('aria-hidden', true);
         // show the reward and self paced content,
         selfPacedContent.classList.remove('hide');
         // update aria state
         selfPacedContent.setAttribute('aria-hidden', false);
     }
 
-    // if we are on step 4, the normal main CTA button will not
-    // be present, instead we have the two app store buttons
-    if (step === 4) {
+    /* if we are not on step 4, the user needs to complete the
+     * main CTA before being awarded a star and showing the
+     * self paced progression link.
+     */
+    if (step !== 4) {
+        mainCTA.addEventListener('click', function() {
+            mainCTAComplete();
+        });
+    } else {
+        // main cta auto completes, notify add-on
+        addon.port.emit('cta_complete');
         mainCTA = document.querySelectorAll('.main-cta');
         /* because event is overriden in content, we cannot use
          * a delegate on the parent container. We therefore loop
@@ -76,13 +81,9 @@
         for (let button of mainCTA) {
             button.addEventListener('click', function(event) {
                 event.preventDefault();
-                mainCTAComplete(button.getAttribute('id'));
+                emitIntent(button.getAttribute('id'));
             });
         }
-    } else {
-        mainCTA.addEventListener('click', function() {
-            mainCTAComplete();
-        });
     }
 
 })();
