@@ -55,6 +55,10 @@ a:focus {
     padding: 10px 20px 0;
 }
 
+.reward-sidebar {
+    z-index: 2;
+}
+
 /* mobile download buttons */
 .app-store,
 .play-store {
@@ -67,22 +71,6 @@ a:focus {
 
 .play-store {
     margin-top: 20px;
-}
-
-.secondary-content {
-    height: auto;
-    text-align: center;
-    opacity: 1;
-    transition: height 1s,
-                opacity 1s;
-}
-
-/* when using .hide the container is collapsed but, the content
-   inside it still occupies it's physical space, though hidden.
-   We therefore need to explicitly set the content to display:none */
-.secondary-content.hide p {
-    display: none;
-    padding: 0;
 }
 
 .selfpaced-content {
