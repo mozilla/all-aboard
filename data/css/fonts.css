@@ -15,6 +15,13 @@
 }
 
 @font-face{
+    font-family: 'Fira Sans SemiBold'),
+         url('../media/fonts/FiraSans-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face{
     font-family: 'Fira Sans';
     src: local('Fira Sans Bold'),
          url('../media/fonts/FiraSans-Bold.woff2') format('woff2');
