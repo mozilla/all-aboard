@@ -53,9 +53,6 @@ a:focus {
 .sidebar-content main {
     position: relative;
     padding: 10px 20px 0;
-}
-
-.reward-sidebar {
     z-index: 2;
 }
 
