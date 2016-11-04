@@ -32,6 +32,27 @@ a:focus {
     text-decoration: none;
 }
 
+svg {
+    position: absolute;
+    width: 320px;
+}
+
+svg .star-color-white {
+    fill: #fff;
+}
+
+svg .star-color-lavendar {
+    fill: #9a98fe;
+}
+
+svg .star-opacity-50 {
+    opacity: .5;
+}
+
+svg .star-opacity-20 {
+    opacity: .2;
+}
+
 .sidebar-content {
     padding: 80px 0 0;
     width: 320px;

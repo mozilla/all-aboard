@@ -16,8 +16,7 @@
 /* sidebar background gradients */
 .gradient-dark-blue {
     background-color: var(--gradient-dark-blue-color-stop-0);
-    background-image: url('../media/sidebar/stars.svg'),
-        linear-gradient(
+    background-image: linear-gradient(
             var(--gradient-dark-blue-color-stop-0) 0%,
             var(--gradient-dark-blue-color-stop-50) 50%,
             var(--gradient-color-stop-100) 100%
@@ -27,8 +26,7 @@
 
 .gradient-green {
     background-color: var(--gradient-green-color-stop-0);
-    background-image: url('../media/sidebar/stars.svg'),
-        linear-gradient(
+    background-image: linear-gradient(
             var(--gradient-green-color-stop-0) 0%,
             var(--gradient-green-color-stop-100) 100%
         );
@@ -49,8 +47,7 @@
 
 .gradient-purple {
     background-color: var(--gradient-purple-color-stop-0);
-    background-image: url('../media/sidebar/stars.svg'),
-        linear-gradient(
+    background-image: linear-gradient(
             var(--gradient-purple-color-stop-0) 0%,
             var(--gradient-purple-color-stop-50) 50%,
             var(--gradient-color-stop-100) 100%
@@ -60,8 +57,7 @@
 
 .gradient-sunset {
     background-color: var(--gradient-sunset-color-stop-0);
-    background-image: url('../media/sidebar/stars.svg'),
-        linear-gradient(
+    background-image: linear-gradient(
             var(--gradient-sunset-color-stop-0) 0%,
             var(--gradient-sunset-color-stop-50) 50%,
             var(--gradient-color-stop-100) 100%
