@@ -51,3 +51,22 @@
     background-image: url('../media/fox/fox-reward.svg');
     height: 186px;
 }
+
+.sidebar-content p.small-print {
+    position: absolute;
+    bottom: 20px;
+    left: 4%;
+    width: 220px;
+    font-size: .7rem;
+    text-align: center;
+    z-index: 2;
+}
+
+.sidebar-content p.small-print a:link,
+.sidebar-content p.small-print a:visited {
+    color: #fff;
+}
+
+.sidebar-content p.small-print a:hover {
+    text-decoration: none;
+}

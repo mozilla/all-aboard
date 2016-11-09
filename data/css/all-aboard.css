@@ -53,6 +53,21 @@ svg .star-opacity-20 {
     opacity: .2;
 }
 
+.overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #333;
+    width: 320px;
+    height: 100vh;
+    opacity: 0.5;
+}
+
+header {
+    position: relative;
+    z-index: 2;
+}
+
 .sidebar-content {
     padding: 80px 0 0;
     width: 320px;
