@@ -38,7 +38,9 @@
 }
 
 .start-experience {
-    padding: 15px 10px;
+    padding: 10px;
+    border-radius: 50%;
+    width: 24%;
     font-size: 1rem;
 }
 
@@ -52,6 +54,12 @@
     width: 20px;
     height: 20px;
     vertical-align: bottom;
+}
+
+.start-experience:after {
+    background-size: 32px 32px;
+    width: 40px;
+    height: 40px;
 }
 
 .start-experience:hover:after {
