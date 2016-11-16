@@ -57,13 +57,14 @@
 }
 
 .start-experience:after {
+    background: transparent url('../media/sidebar/get-started-arrow.svg') 0 5px no-repeat;
     background-size: 32px 32px;
     width: 40px;
     height: 40px;
 }
 
 .start-experience:hover:after {
-    background-image: url('../media/progress/arrow-black.svg');
+    background-image: url('../media/sidebar/get-started-arrow-over.svg');
 }
 
 .selfpaced-content button {
