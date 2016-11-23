@@ -70,10 +70,14 @@
 
 .selfpaced-content button {
     background: none;
-    color: #fff;
-    margin-top: 40px;
+    color: #333;
+    margin-top: 20px;
     padding: 0;
     border: 0;
     font-size: 100%;
     cursor: pointer;
+}
+
+.selfpaced-content button:after {
+    background-image: url('../media/progress/arrow-black.svg');
 }
