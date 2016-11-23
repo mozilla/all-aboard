@@ -100,13 +100,6 @@ header {
 .app-store,
 .play-store {
     display: block;
-}
-
-.app-store {
-    margin-top: 50px;
-}
-
-.play-store {
     margin-top: 20px;
 }
 
@@ -124,7 +117,7 @@ header {
 }
 
 .selfpaced-content h2 {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .selfpaced-content p {
