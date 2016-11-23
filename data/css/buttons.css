@@ -4,7 +4,7 @@
     display: inline-block;
     background-color: transparent;;
     color: #fff;
-    margin-top: 50px;
+    margin-top: 15px;
     padding: 15px 26px;
     border: 2px solid #fff;
     border-radius: 4px;
@@ -38,7 +38,7 @@
 }
 
 .start-experience {
-    margin-top: 20px;
+    margin-top: 10px;
     padding: 10px;
     border-radius: 50%;
     width: 24%;
@@ -70,14 +70,18 @@
 
 .selfpaced-content button {
     background: none;
-    color: #333;
-    margin-top: 20px;
+    color: #fff;
+    margin-top: 0;
     padding: 0;
     border: 0;
     font-size: 100%;
     cursor: pointer;
 }
 
-.selfpaced-content button:after {
+.sidebar4 .selfpaced-content button {
+    color: #333;
+}
+
+.sidebar4 .selfpaced-content button:after {
     background-image: url('../media/progress/arrow-black.svg');
 }
