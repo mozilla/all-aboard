@@ -1,10 +1,15 @@
 {
   "title": "All Aboard",
-  "name": "all-aboard-v1-2",
-  "version": "1.2.9-rc5",
+  "name": "all-aboard-v1-6",
+  "version": "1.6.0",
   "description": "The Mozilla Firefox Educational Tool",
   "homepage": "https://github.com/mozilla/all-aboard",
   "repository": "https://github.com/mozilla/all-aboard",
+  "locales": {
+      "de": {
+          "description": "TBD"
+      }
+  },
   "main": "index.js",
   "scripts": {
     "test": "jpm test",
@@ -18,7 +23,11 @@
   },
   "license": "MPL-2.0",
   "keywords": [
-    "jetpack"
+    "jetpack",
+    "javascript",
+    "css",
+    "html",
+    "l10n"
   ],
   "devDependencies": {
     "eslint": "^3.5.0",
