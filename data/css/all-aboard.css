@@ -1,3 +1,5 @@
+@import 'fonts.css';
+
 html {
     box-sizing: border-box;
 }
@@ -13,7 +15,7 @@ body {
     color: #4a5160;
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 16px;
 }
 
@@ -33,38 +35,84 @@ a:focus {
 
 .sidebar-content {
     width: 320px;
-    height: auto;
+    height: 100vh;
     text-align: center;
+}
+
+/* sidebar background colors per track */
+.utility.content1 {
+    background-color: #0E4B70;
+    color: #fff;
+}
+
+.utility.content2 {
+    background-color: #592470;
+    color: #fff;
+}
+
+.utility.content3 {
+    background-color: #368382;
+    color: #fff;
+}
+
+.utility.content4 {
+    background-color: #CE4A5D;
+    color: #fff;
+}
+
+.utility.content5 {
+    background-color: #008BD0;
+    color: #fff;
+}
+
+.values.content1 {
+    background-color: #40C2FF;
+    color: #fff;
+}
+
+.values.content2 {
+    background-color: #7059A1;
+    color: #fff;
+}
+
+.values.content3 {
+    background-color: #1067C3;
+    color: #fff;
+}
+
+.values.content4 {
+    background-color: #4AC0A7;
+    color: #fff;
+}
+
+.values.content5 {
+    background-color: #FF6B00;
+    color: #fff;
 }
 
 .sidebar-content h1 {
     margin: 0;
-    font-size: 1.5rem;
-}
-
-.sidebar-content.utility h1 {
-    padding-bottom: 0;
+    font-size: 2rem;
 }
 
 .sidebar-content p {
     line-height: 1.5;
 }
 
+.sidebar-content header,
 .sidebar-content main,
 .sidebar-content footer {
     padding: 10px 40px 0 40px;
 }
 
-/* styleing for search providers image */
-.search-providers {
+.sidebar-content header img {
     display: block;
-    margin: 20px 0;
+    margin: 0 auto 80px;
 }
 
 /* specific sidebar styling for the values track */
 .sidebar-content.values {
     padding: 0 20px 20px 20px;
-    text-align: left;
 }
 
 .sidebar-content.values main,
@@ -76,11 +124,6 @@ a:focus {
 .sidebar-content.values footer {
     padding-top: 20px;
     text-align: center;
-}
-
-.sidebar-content.values header img {
-    display: block;
-    margin: 0 auto;
 }
 
 .secondary-content {
@@ -144,6 +187,7 @@ a:focus {
 .options {
     padding: 0;
     list-style: none;
+    text-align: left;
 }
 
 .options label {
@@ -251,7 +295,7 @@ main.reward-sidebar {
 
 /* tokens */
 .tokens {
-    margin: 0 0 10px;
+    margin: 40px 0 10px;
     padding: 0;
     width: 240px;
     list-style: none;
@@ -291,14 +335,16 @@ main.reward-sidebar {
 .button {
     position: relative;
     display: inline-block;
-    background-color: #0095dd;
+    background-color: transparent;;
     color: #fff;
-    padding: 10px 36px;
-    border: 2px solid #0092cc;
+    margin-top: 15px;
+    padding: 15px 26px;
+    border: 2px solid #fff;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-weight: 300;
     text-align: center;
-    width: 100%;
+    width: 85%;
     cursor: pointer;
     transition: background-color .1s ease-in-out;
 }
@@ -334,19 +380,19 @@ main.reward-sidebar {
 
 .button:hover,
 .button:focus {
-    background-color: #33aae4;
-    border-color: #0092cc;
+    background-color: #fff;
+    color: #333;
+}
+
+.button:active {
+    position: relative;
+    top: 1px;
 }
 
 .reset:hover,
 .reset:focus {
     background: none;
     border: 0;
-}
-
-.button:active {
-    position: relative;
-    top: 1px;
 }
 
 /* utility */

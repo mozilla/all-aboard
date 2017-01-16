@@ -2,46 +2,42 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Mozilla community</title>
+    <title data-l10n-id="content5_values_title"></title>
     <link rel="stylesheet" href="/data/css/all-aboard.css" media="screen" />
   </head>
   <body>
-    <section class="sidebar-content values">
+    <section class="sidebar-content values content5">
       <header>
-        <img src="/data/media/headers/values/content5.gif" width="120" height="120" alt="Animated image of the earth slowly rotating" />
+        <img src="/data/media/firefox-logo.png" width="150" alt="Firefox" />
+        <h1 data-l10n-id="content5_values_title"></h1>
       </header>
       <main>
-        <h1>10,000+ is..</h1>
         <ul class="options">
           <li>
             <label for="option-a">
               <input type="radio" name="options" id="option-a" data-response="response_a" />
-              <span>The hours you've spent watching cat videos.</span>
+              <span data-l10n-id="content5_values_option1"></span>
             </label>
           </li>
           <li>
             <label for="option-b">
               <input type="radio" name="options" id="option-b" data-response="response_b" />
-              <span>Number of unread emails you have.</span>
+              <span data-l10n-id="content5_values_option2"></span>
             </label>
           </li>
           <li>
             <label for="option-c" id="answer">
               <input type="radio" name="options" value="answer" id="option-c" data-response="response_c" />
-              <span>Number of volunteers who keep Mozilla rolling.</span>
+              <span data-l10n-id="content5_values_option3"></span>
             </label>
           </li>
         </ul>
-        <button type="button" id="show_answer" class="button" data-step="5">Show Answer</button>
+        <button type="button" id="show_answer" class="button" data-step="5" data-l10n-id="show_answer_button"></button>
 
         <!-- conditional messaging based on options selection -->
-        <p id="response_a" class="options-response hidden" aria-hidden="true">Us too. You see the one where the cat gets surprised by the cucumber?</p>
-        <p id="response_b" class="options-response hidden" aria-hidden="true">Us too. But don’t let that stop you from signing up below.</p>
-        <p id="response_c" class="options-response hidden" aria-hidden="true">Really! It’s getting harder to organize a potluck around here.</p>
-
-        <div id="secondary_content" class="secondary-content hide">
-          <p>Get the <a href="https://www.mozilla.org/newsletter/mozilla/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=community" id="secondary_cta" data-intent="newsletter">Mozilla newsletter</a>.</p>
-        </div>
+        <p id="response_a" class="options-response hidden" aria-hidden="true" data-l10n-id="content5_values_answer1"></p>
+        <p id="response_b" class="options-response hidden" aria-hidden="true" data-l10n-id="content5_values_answer2"></p>
+        <p id="response_c" class="options-response hidden" aria-hidden="true" data-l10n-id="content5_values_answer3"></p>
       </main>
       <footer>
         <ul class="tokens">
@@ -64,7 +60,7 @@
             <img src="/data/media/icons/progress/trophy.svg" width="30" height="30" alt="Trophy image" />
           </li>
         </ul>
-        <h2 class="token-awarded hidden" aria-hidden="true">You’ve got 5 stars!</h2>
+        <h2 class="token-awarded hidden" aria-hidden="true" data-l10n-id="five_stars"></h2>
         <button type="button" id="prize" class="button small hidden" aria-hidden="true">Claim your prize now!</button>
       </footer>
     </section>

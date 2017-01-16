@@ -2,45 +2,48 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Encryption and online security</title>
+    <title data-l10n-id="content4_values_title"></title>
     <link rel="stylesheet" href="/data/css/all-aboard.css" media="screen" />
   </head>
   <body>
-    <section class="sidebar-content values">
+    <section class="sidebar-content values content4">
       <header>
-        <img src="/data/media/headers/values/content4.gif" width="120" height="120" alt="Animated image of a padlock closing" />
+        <img src="/data/media/firefox-logo.png" width="150" alt="Firefox" />
+        <h1 data-l10n-id="content4_values_title"></h1>
       </header>
       <main>
-        <h1>You’d love to learn about staying secure online, but...</h1>
         <ul class="options">
           <li>
             <label for="option-a">
               <input type="radio" name="options" id="option-a" data-response="response_a" />
-              <span>Just look at the time!</span>
+              <span data-l10n-id="content4_values_option1"></span>
             </label>
           </li>
           <li>
             <label for="option-b">
               <input type="radio" name="options" id="option-b" data-response="response_b" />
-              <span>You need to schedule that root canal.</span>
+              <span data-l10n-id="content4_values_option2"></span>
             </label>
           </li>
           <li>
             <label for="option-c" id="answer">
               <input type="radio" name="options" value="answer" id="option-c" data-response="response_c" />
-              <span>You haven’t found how easy Mozilla makes it.</span>
+              <span data-l10n-id="content4_values_option3"></span>
             </label>
           </li>
         </ul>
-        <button type="button" id="show_answer" class="button" data-step="4">Show Answer</button>
+        <button type="button" id="show_answer" class="button" data-step="4" data-l10n-id="show_answer_button"></button>
 
         <!-- conditional messaging based on options selection -->
-        <p id="response_a" class="options-response hidden" aria-hidden="true">Wait! It’s easier than you think.</p>
-        <p id="response_b" class="options-response hidden" aria-hidden="true">Wait! Dental health is important, but so is this.</p>
-        <p id="response_c" class="options-response hidden" aria-hidden="true">Correct. But now you can.</p>
+        <p id="response_a" class="options-response hidden" aria-hidden="true" data-l10n-id="content4_values_answer1"></p>
+        <p id="response_b" class="options-response hidden" aria-hidden="true" data-l10n-id="content4_values_answer2"></p>
+        <p id="response_c" class="options-response hidden" aria-hidden="true" data-l10n-id="content4_values_answer3"></p>
 
         <div id="secondary_content" class="secondary-content hide">
-          <p><a href="https://www.mozilla.org/teach/smarton/security/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=security" id="secondary_cta" data-intent="smarton">Get security tips</a>.</p>
+          <p>
+            <span data-l10n-id="content4_values_secondary"></span>
+            <a href="https://www.mozilla.org/teach/smarton/security/?utm_source=fxonboarding&amp;utm_medium=firefox-browser&amp;utm_campaign=onboardingv1&amp;utm_content=security" id="secondary_cta" data-intent="smarton" data-l10n-id="content4_values_secondary_link_txt"></a>.
+          </p>
         </div>
       </main>
       <footer>
@@ -65,7 +68,7 @@
           </li>
         </ul>
         <div id="selfpaced" class="selfpaced-content hidden" aria-hidden="true">
-          <p>You earned a star!</p>
+          <p data-l10n-id="earned_star"></p>
           <p><button type="button" id="next-button" type="button">Next question</button></p>
         </div>
       </footer>

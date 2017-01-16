@@ -2,41 +2,41 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Who stands behind Firefox?</title>
+    <title data-l10n-id="content1_values_title"></title>
     <link rel="stylesheet" href="/data/css/all-aboard.css" media="screen" />
   </head>
   <body>
-    <section class="sidebar-content values">
+    <section class="sidebar-content values content1">
       <header>
-        <img src="/data/media/headers/values/content1.gif" width="120" height="120" alt="Animated image of Firefox logo inside a circle of people" />
+        <img src="/data/media/firefox-logo.png" width="150" alt="Firefox" />
+        <h1 data-l10n-id="content1_values_title"></h1>
       </header>
       <main>
-        <h1>Who stands behind Firefox?</h1>
         <ul class="options">
           <li>
             <label for="option-a">
               <input type="radio" name="options" id="option-a" data-response="response_a" />
-              <span>Backup singers Earthfox and Windfox.</span>
+              <span data-l10n-id="content1_values_option1"></span>
             </label>
           </li>
           <li>
             <label for="option-b">
               <input type="radio" name="options" id="option-b" data-response="response_b" />
-              <span>A kid with a marshmallow on a stick.</span>
+              <span data-l10n-id="content1_values_option2"></span>
             </label>
           </li>
           <li>
             <label for="option-c" id="answer">
               <input type="radio" name="options" value="answer" id="option-c" data-response="response_c" />
-              <span>Mozilla, the non-profit fighting for a free and open Internet.</span>
+              <span data-l10n-id="content1_values_option3"></span>
             </label>
           </li>
         </ul>
-        <button type="button" id="show_answer" class="button" data-step="1">Show Answer</button>
+        <button type="button" id="show_answer" class="button" data-step="1" data-l10n-id="show_answer_button"></button>
         <!-- conditional messaging based on options selection -->
-        <p id="response_a" class="options-response hidden" aria-hidden="true">We wish. Then we’d call it 'Boogie Wonderland-fox'</p>
-        <p id="response_b" class="options-response hidden" aria-hidden="true">We wish. There’s nothing like flaming desserts.</p>
-        <p id="response_c" class="options-response hidden" aria-hidden="true">Yup. True story.</p>
+        <p id="response_a" class="options-response hidden" aria-hidden="true" data-l10n-id="content1_values_answer1"></p>
+        <p id="response_b" class="options-response hidden" aria-hidden="true" data-l10n-id="content1_values_answer2"></p>
+        <p id="response_c" class="options-response hidden" aria-hidden="true" data-l10n-id="content1_values_answer3"></p>
       </main>
       <footer>
         <ul class="tokens">
@@ -60,7 +60,7 @@
           </li>
         </ul>
         <div id="selfpaced" class="selfpaced-content hidden" aria-hidden="true">
-          <p>You earned a star!</p>
+          <p data-l10n-id="earned_star"></p>
           <p><button type="button" id="next-button" type="button">Next question</button></p>
         </div>
       </footer>
