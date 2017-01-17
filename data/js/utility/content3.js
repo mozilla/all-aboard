@@ -5,12 +5,7 @@
     var exploreThemes = document.querySelector('#exploreThemes');
     // set template names
     var templateNames = ['template1'];
-    // retrieve our next button from the sidebar
-    var nextButton = document.getElementById('next-button');
     var selfPacedContent = document.getElementById('selfpaced');
-
-    // attach click listener to next button
-    attachNextButtonListener(nextButton);
 
     // add listeners to all of our buttons for clicking
     for(var x=0, l=templateNames.length; x<l; x++) {

@@ -1,12 +1,7 @@
 (function() {
     // retrieve our button from the page
     var button = document.querySelector('button');
-    // retrieve our next button from the sidebar
-    var nextButton = document.getElementById('next-button');
     var selfPacedContent = document.getElementById('selfpaced');
-
-    // attach click listener to next button
-    attachNextButtonListener(nextButton);
 
     // add event listener for a button click on search button
     button.addEventListener('click', function() {

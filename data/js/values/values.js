@@ -5,15 +5,6 @@
     var options = mainContainer.querySelectorAll('input[type="radio"]');
     var secondaryContent = mainContainer.querySelector('#secondary_content');
     var selfPacedContent = document.getElementById('selfpaced');
-    var nextButton;
-
-    // if we're not on the final sidebar
-    if (parseInt(button.dataset.step, 10) < 5) {
-        // grab our next button and next token values
-        nextButton = document.getElementById('next-button');
-        // and attach an event listener to the button
-        attachNextButtonListener(nextButton);
-    }
 
     /**
      * Emits a cta_complete message to the add-on which will then assign
