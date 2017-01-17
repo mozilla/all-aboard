@@ -7,24 +7,6 @@ var heading;
 var mainContainer;
 var noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">No, thanks</a>';
 
-/**
- * Ammends the utm_campaign param passed when submitting the FxA form, to indicate
- * whether it was submitted by a self identified utility or values user.
- */
-function ammendUtmCampaign() {
-    var baseUtmString = 'utm_campaign=fxa-embedded-form';
-    var track = choices.whatMatters === 'utility' ? '-fx' : '-moz';
-    var fxaIframe = fxAccountsContainer.querySelector('#fxa');
-    var originFormSrc = fxaIframe.dataset['src'];
-    var originIframeSrc = fxaIframe.src;
-    // http://regexr.com/3dkso
-    var utmRegex = /utm_campaign=[\w+-{1}]+/g;
-
-    // update the utm_campaign parameter
-    fxaIframe.dataset['src'] = originFormSrc.replace(utmRegex, baseUtmString + track);
-    fxaIframe.src = originIframeSrc.replace(utmRegex, baseUtmString + track);
-}
-
 // shows the default heading and the Fx accounts widget
 function showFxAccountWidget() {
     var innerContainer = document.querySelector('#intro .inner-container');
@@ -34,9 +16,6 @@ function showFxAccountWidget() {
     mainContainer.style.display = 'block';
 
     fxAccountsContainer.insertAdjacentHTML('afterend', noThanks);
-
-    // ammend utm param
-    ammendUtmCampaign();
 
     dismiss = document.querySelector('#dismiss_fxa');
     // listen for a click event on the 'No Thanks' link and send preference
