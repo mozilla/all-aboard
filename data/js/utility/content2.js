@@ -1,11 +1,7 @@
 (function() {
     // retrieve button from the page
     var button = document.querySelector('button');
-    var nextButton = document.getElementById('next-button');
     var selfPacedContent = document.getElementById('selfpaced');
-
-    // attach click listener to next button
-    attachNextButtonListener(nextButton);
 
     // add event listeners for a button click on the button
     button.addEventListener('click', function() {
