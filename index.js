@@ -44,7 +44,6 @@ exports.main = function() {
     let destroyTimerStartTime = storageManager.get('destroyTimerStartTime');
     let isCTAComplete = storageManager.get('ctaComplete');
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
-    let rewardSidebarShown = storageManager.get('rewardSidebarShown');
     let timeSinceCTAComplete = utils.getTimeElapsed(lastCTACompleteTime);
     let lastStep = storageManager.get('step');
 
@@ -90,9 +89,8 @@ exports.main = function() {
             // reschedule the first sidebar notification for two hours from now.
             scheduler.startNotificationTimer(12);
         }
-    } else if (typeof lastStep !== 'undefined' && lastStep !== 'reward') {
-        // user has seen at least step 1, and we aren't at the reward sidebar
-        // clear any potential running timers, mainly in
+    } else if (typeof lastStep !== 'undefined') {
+        // user has seen at least step 1, clear any potential running timers, mainly in
         // case exports.main is running due to an update
         timers.clearTimeout(timer);
 
@@ -120,16 +118,6 @@ exports.main = function() {
         sidebarManager.setSidebarProps();
         aboutHome.modifyAboutHome(storageManager.get('sidebarProps'));
 
-    } else if (lastStep === 'reward' && typeof rewardSidebarShown === 'undefined') {
-        // the user completed step 5 but, has not
-        // claimed their reward.
-        scheduler.conditionalDelayedNotification();
-    }
-    else if (lastStep === 'reward') {
-        // if we've reached the reward sidebar, just modify about:home
-        aboutHome.modifyAboutHome({
-            track: 'reward'
-        });
     }
 
     // When Firefox opens, we should check and see if about:home is loaded as the active homepage.
