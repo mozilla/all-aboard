@@ -102,7 +102,7 @@ a:focus {
 .sidebar-content header,
 .sidebar-content main,
 .sidebar-content footer {
-    padding: 10px 40px 0 40px;
+    padding: 10px 20px 0 20px;
 }
 
 .sidebar-content header img {
@@ -110,18 +110,7 @@ a:focus {
     margin: 0 auto 80px;
 }
 
-/* specific sidebar styling for the values track */
-.sidebar-content.values {
-    padding: 0 20px 20px 20px;
-}
-
-.sidebar-content.values main,
-.sidebar-content.values footer {
-    padding: 10px 20px 0 20px;
-}
-
-.sidebar-content footer,
-.sidebar-content.values footer {
+.sidebar-content footer {
     padding-top: 20px;
     text-align: center;
 }
@@ -284,12 +273,6 @@ a:focus {
 
 .token-awarded {
     font-size: .825rem;
-    text-align: center;
-}
-
-.options-response {
-    margin: 0;
-    font-style: italic;
     text-align: center;
 }
 
