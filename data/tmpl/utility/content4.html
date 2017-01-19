@@ -13,7 +13,12 @@
       </header>
       <main>
         <p data-l10n-id="content4_utility_copy"></p>
-        <button type="button" class="button" data-l10n-id="try_now_cta"></button>
+        <a class="mobile" id="appleStore" href="https://mzl.la/1YtDCxH">
+          <img width="130" height="38" src="/data/media/appleStore.svg" data-l10n-id="apple_store_button" alt="" />
+        </a>
+        <a class="mobile" id="playStore" href="http://mzl.la/1HKLL5H">
+          <img width="130" height="38" src="/data/media/playStore.png" data-l10n-id="play_store_button" alt="" />
+        </a>
       </main>
       <footer>
         <ul class="tokens">
@@ -29,16 +34,11 @@
           <li id="token4">
             <input type="image" src="/data/media/icons/progress/star4.svg" width="30" height="30" alt="Token for completing step 4" class="token-trigger" data-step="4" data-track="utility" />
           </li>
-          <li id="token5">
-            <input type="image" src="/data/media/icons/progress/star5.svg" width="30" height="30" alt="Token for completing step 5" class="token-trigger" data-step="5" data-track="utility" />
-          </li>
           <li id="trophy">
             <img src="/data/media/icons/progress/trophy.svg" width="30" height="30" alt="Trophy image" />
           </li>
         </ul>
-        <div id="selfpaced" class="selfpaced-content hidden" aria-hidden="true">
-          <p data-l10n-id="earned_star"></p>
-        </div>
+        <h2 class="token-awarded hidden" aria-hidden="true" data-l10n-id="five_stars"></h2>
       </footer>
     </section>
     <script src="/data/js/lib/token-manager.js"></script>
