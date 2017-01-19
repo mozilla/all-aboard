@@ -37,7 +37,7 @@
 
         // if the user has received all tokens, also update
         // the trophy image to the active state.
-        if (tokensLength === 5) {
+        if (tokensLength === 4) {
             trophy.src = activeTrophyPath;
         }
 
