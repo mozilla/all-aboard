@@ -1,17 +1,24 @@
 (function() {
-    // retrieve our button from the page
-    var button = document.querySelector('button');
-    var selfPacedContent = document.getElementById('selfpaced');
+    // retrieve our apple store button
+    var appleStore = document.querySelector('#appleStore');
+    // retrieve our play store button
+    var playStore = document.querySelector('#playStore');
 
-    // add event listener for a button click on search button
-    button.addEventListener('click', function() {
-        // alert the back-end that we've clicked the button
-        addon.port.emit('intent', 'highlightURL');
-        // main cta action complete, notify add-on
-        addon.port.emit('cta_complete');
-        // unhide our next button
-        selfPacedContent.classList.remove('hidden');
-        // update aria state
-        selfPacedContent.setAttribute('aria-hidden', false);
+    // by opening this sidebar hte main cta action is
+    // complete, notify add-on
+    addon.port.emit('cta_complete');
+
+    // add click listener on default theme text option
+    appleStore.addEventListener('click', function(event) {
+        event.preventDefault();
+        // notify addon that we've clicked the button
+        addon.port.emit('intent', 'appleStore');
+    });
+
+    // add click listener on default theme text option
+    playStore.addEventListener('click', function(event) {
+        event.preventDefault();
+        // notify addon that we've clicked the button
+        addon.port.emit('intent', 'playStore');
     });
 })();
