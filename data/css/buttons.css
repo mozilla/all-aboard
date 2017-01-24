@@ -85,3 +85,17 @@
 .sidebar4 .selfpaced-content button:after {
     background-image: url('../media/progress/arrow-black.svg');
 }
+
+/* pick a theme button on reward sidebar */
+a.pick-theme:link,
+a.pick-theme:visited {
+    color: #fff;
+    font-size: .9rem;
+    text-decoration: none;
+}
+
+a.pick-theme:hover,
+a.pick-theme:focus {
+    color: #333;
+    text-decoration: none;
+}
