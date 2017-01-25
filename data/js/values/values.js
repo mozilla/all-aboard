@@ -4,7 +4,6 @@
     var button = mainContainer.querySelector('#show_answer');
     var options = mainContainer.querySelectorAll('input[type="radio"]');
     var secondaryContent = mainContainer.querySelector('#secondary_content');
-    var selfPacedContent = document.getElementById('selfpaced');
 
     /**
      * Emits a cta_complete message to the add-on which will then assign
@@ -28,11 +27,6 @@
                 currentOption.disabled = true;
             }
         }
-
-        // unhide our next button,
-        selfPacedContent.classList.remove('hidden');
-        // update aria state
-        selfPacedContent.setAttribute('aria-hidden', false);
     }
 
     button.addEventListener('click', function() {
