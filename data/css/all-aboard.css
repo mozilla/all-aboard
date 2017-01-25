@@ -249,13 +249,9 @@ a:focus {
 
 .tokens li {
     display: inline-block;
-    margin-left: 3px;
+    margin-left: 20px;
     width: 30px;
     height: 30px;
-}
-
-.tokens li:first-child {
-    margin: 0;
 }
 
 .tokens li input[type="image"] {
