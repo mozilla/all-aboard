@@ -5,7 +5,6 @@
     var exploreThemes = document.querySelector('#exploreThemes');
     // set template names
     var templateNames = ['template1'];
-    var selfPacedContent = document.getElementById('selfpaced');
 
     // add listeners to all of our buttons for clicking
     for(var x=0, l=templateNames.length; x<l; x++) {
@@ -21,10 +20,6 @@
                 // the add-on handles duplicates so, calling this multiple
                 // times is fine.
                 addon.port.emit('cta_complete');
-                // unhide our next button
-                selfPacedContent.classList.remove('hidden');
-                // update aria state
-                selfPacedContent.setAttribute('aria-hidden', false);
             });
         })(templateNames[x]);
     }
