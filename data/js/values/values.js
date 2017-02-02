@@ -1,9 +1,9 @@
 (function() {
-    var mainContainer = document.querySelector('main');
-    var answer = mainContainer.querySelector('#answer');
-    var button = mainContainer.querySelector('#show_answer');
-    var options = mainContainer.querySelectorAll('input[type="radio"]');
-    var secondaryContent = mainContainer.querySelector('#secondary_content');
+    let mainContainer = document.querySelector('main');
+    let answer = mainContainer.querySelector('#answer');
+    let button = mainContainer.querySelector('#show_answer');
+    let options = mainContainer.querySelectorAll('input[type="radio"]');
+    let secondaryContent = mainContainer.querySelector('#secondary_content');
 
     /**
      * Emits a cta_complete message to the add-on which will then assign
@@ -16,8 +16,8 @@
 
         // loop through the radio buttons, highlighting the answer and disabling
         // the incorrect options.
-        for (var i = 0, l = options.length; i < l; i++) {
-            var currentOption = options[i];
+        for (let i = 0, l = options.length; i < l; i++) {
+            let currentOption = options[i];
 
             if (currentOption.getAttribute('value') === 'answer') {
                 // highlight the answer
@@ -35,8 +35,10 @@
 
         // show secondary content if it exists
         if (secondaryContent) {
-            var secondaryCTA = secondaryContent.querySelector('#secondary_cta');
+            let secondaryCTA = secondaryContent.querySelector('#secondary_cta');
+
             secondaryContent.classList.remove('hide');
+            secondaryContent.setAttribute('aria-hidden', false);
 
             secondaryCTA.addEventListener('click', function(event) {
                 event.preventDefault();

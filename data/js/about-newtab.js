@@ -6,12 +6,7 @@ var footDiv = document.querySelector('#newtab-margin-bottom');
 function showUserData(templates, showFooter) {
     headDiv.insertAdjacentHTML('beforebegin', templates.header);
 
-    var history = document.querySelector('#history');
     var bookmarks = document.querySelector('#bookmarks');
-
-    history.addEventListener('click', function() {
-        self.port.emit('intent', 'showAwesomebar');
-    });
 
     bookmarks.addEventListener('click', function() {
         self.port.emit('intent', 'showBookmarks');
