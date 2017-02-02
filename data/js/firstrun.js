@@ -1,18 +1,26 @@
 'use strict';
 
-var fxAccountsContainer = document.querySelector('.fxaccounts');
-var choices = {};
-var dismiss;
-var heading;
-var mainContainer;
-var noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">No, thanks</a>';
+let fxAccountsContainer = document.querySelector('.fxaccounts');
+let choices = {};
+let dismiss;
+let firstRunContents = {};
+let mainContainer;
+let pageHeading;
+let subHeading;
+let noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">No, thanks</a>';
 
 // shows the default heading and the Fx accounts widget
 function showFxAccountWidget() {
     var innerContainer = document.querySelector('#intro .inner-container');
     innerContainer.removeChild(document.querySelector('#all-aboard'));
-    // show the default heading and the Fx accounts widget
-    heading.style.display = 'block';
+
+    // update the main page heading.
+    pageHeading.textContent = firstRunContents.pageHeadingSecondary;
+    // update the sub heading
+    subHeading.textContent = firstRunContents.subHeading;
+
+    // show the subheading and the Fx accounts widget
+    subHeading.style.display = 'block';
     mainContainer.style.display = 'block';
 
     fxAccountsContainer.insertAdjacentHTML('afterend', noThanks);
@@ -26,16 +34,17 @@ function showFxAccountWidget() {
 
 // hide the default heading and the Fx accounts widget
 function hideFxAccountWidget() {
-    heading.style.display = 'none';
+    subHeading.style.display = 'none';
     mainContainer.style.display = 'none';
 }
 
 /**
  * Shows the questions dialog on the /firstrun page
- * @param {string} tmpl - The firstrun template HTML as a string
  */
-function showDialog(tmpl) {
-    mainContainer.insertAdjacentHTML('afterend', tmpl);
+function showDialog() {
+    // update the main page heading.
+    pageHeading.textContent = firstRunContents.pageHeadingInit;
+    mainContainer.insertAdjacentHTML('afterend', firstRunContents.tmpl);
     document.querySelector('#all-aboard').focus();
     interactionHandler();
 }
@@ -99,22 +108,27 @@ function interactionHandler() {
 /**
  * listen for the modify event emitted from the add-on, and only then,
  * start executiion of the code.
- * @param {string} tmpl - The firstrun template HTML as a string
+ * @param {object} data - An object containing the template and page titles.
  */
-self.port.on('modify', function(tmpl) {
+self.port.on('modify', function(data) {
 
     // see whether a Firefox Accounts section exists
     if (fxAccountsContainer) {
-        switchToSignin();
         // try to grab the stuff we're going to insert into the page
-        var allAboardDialog = document.querySelector('#all-aboard');
+        let allAboardDialog = document.querySelector('#all-aboard');
+
+        pageHeading = document.querySelector('#masthead h1');
+        firstRunContents = data;
+
+        switchToSignin();
+
         // if it isn't inserted already, call the function to insert it
         if (allAboardDialog === null) {
-            heading = document.querySelector('#intro header h2');
+            subHeading = document.querySelector('#intro header h2');
             mainContainer = document.querySelector('.fxaccounts-container');
 
             hideFxAccountWidget();
-            showDialog(tmpl);
+            showDialog();
         }
     }
 });
