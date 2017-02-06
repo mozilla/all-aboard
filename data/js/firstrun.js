@@ -17,10 +17,9 @@ function showFxAccountWidget() {
     // update the main page heading.
     pageHeading.textContent = firstRunContents.pageHeadingSecondary;
     // update the sub heading
-    subHeading.textContent = firstRunContents.subHeading;
+    subHeading.textContent = firstRunContents.pageSubHeadingSecondary;
 
-    // show the subheading and the Fx accounts widget
-    subHeading.style.display = 'block';
+    // show the Fx accounts widget
     mainContainer.style.display = 'block';
 
     fxAccountsContainer.insertAdjacentHTML('afterend', noThanks);
@@ -32,20 +31,18 @@ function showFxAccountWidget() {
     });
 }
 
-// hide the default heading and the Fx accounts widget
-function hideFxAccountWidget() {
-    subHeading.style.display = 'none';
-    mainContainer.style.display = 'none';
-}
-
 /**
  * Shows the questions dialog on the /firstrun page
  */
 function showDialog() {
     // update the main page heading.
     pageHeading.textContent = firstRunContents.pageHeadingInit;
+    // update the main page sub-heading.
+    subHeading.textContent = firstRunContents.pageSubHeadingInit;
+
     mainContainer.insertAdjacentHTML('afterend', firstRunContents.tmpl);
     document.querySelector('#all-aboard').focus();
+
     interactionHandler();
 }
 
@@ -126,8 +123,8 @@ self.port.on('modify', function(data) {
         if (allAboardDialog === null) {
             subHeading = document.querySelector('#intro header h2');
             mainContainer = document.querySelector('.fxaccounts-container');
+            mainContainer.style.display = 'none';
 
-            hideFxAccountWidget();
             showDialog();
         }
     }
