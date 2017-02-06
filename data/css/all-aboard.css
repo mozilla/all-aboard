@@ -41,47 +41,42 @@ a:focus {
 
 /* sidebar background colors per track */
 .utility.content1 {
-    background-color: #0E4B70;
+    background-color: #243569;
     color: #fff;
 }
 
 .utility.content2 {
-    background-color: #592470;
+    background-color: #51174E;
     color: #fff;
 }
 
 .utility.content3 {
-    background-color: #368382;
+    background-color: #159565;
     color: #fff;
 }
 
 .utility.content4 {
-    background-color: #CE4A5D;
-    color: #fff;
-}
-
-.utility.content5 {
-    background-color: #008BD0;
+    background-color: #127AB6;
     color: #fff;
 }
 
 .values.content1 {
-    background-color: #40C2FF;
+    background-color: #243569;
     color: #fff;
 }
 
 .values.content2 {
-    background-color: #7059A1;
+    background-color: #51174E;
     color: #fff;
 }
 
 .values.content3 {
-    background-color: #1067C3;
+    background-color: #127AB6;
     color: #fff;
 }
 
 .values.content4 {
-    background-color: #4AC0A7;
+    background-color: #159565;
     color: #fff;
 }
 
@@ -102,7 +97,7 @@ a:focus {
 
 .sidebar-content header img {
     display: block;
-    margin: 0 auto 80px;
+    margin: 0 auto 40px;
 }
 
 .sidebar-content footer {
@@ -112,7 +107,8 @@ a:focus {
 
 .secondary-content {
     height: auto;
-    text-align: center;
+    text-align: left;
+    font-style: italic;
     opacity: 1;
     transition: height 1s,
                 opacity 1s;
