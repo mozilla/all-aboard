@@ -47,17 +47,6 @@ function showDialog() {
 }
 
 /**
- * Switches the FxA form from signup to sign-in
- */
-function switchToSignin() {
-    const fxa = document.getElementById('fxa');
-    const signInURL = 'https://accounts.firefox.com/signin?utm_campaign=fxa-embedded-form-onboarding-signin&utm_medium=referral&utm_source=firstrun&utm_content=fx-52.0&entrypoint=firstrun&service=sync&context=fx_firstrun_v2&style=chromeless&haltAfterSignIn=true&origin=https%3A%2F%2Fwww.mozilla.org';
-
-    fxa.src = signInURL;
-    fxa.dataset['src'] = signInURL;
-}
-
-/**
  * Handles submission of form elements in dialog
  */
 function interactionHandler() {
@@ -116,8 +105,6 @@ self.port.on('modify', function(data) {
 
         pageHeading = document.querySelector('#masthead h1');
         firstRunContents = data;
-
-        switchToSignin();
 
         // if it isn't inserted already, call the function to insert it
         if (allAboardDialog === null) {
