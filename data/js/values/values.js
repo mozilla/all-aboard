@@ -11,8 +11,16 @@
      * to inform the user of their new token.
      */
     function mainCTAComplete() {
+        let infoCopy = document.getElementById('info-copy');
         // main cta action complete, notify add-on
         addon.port.emit('cta_complete');
+
+        // the last sidebar does not have the info copy so,
+        // we should not attempt to show it.
+        if (typeof infoCopy !== 'undefined') {
+            infoCopy.classList.remove('hide');
+            infoCopy.setAttribute('aria-hidden', false);
+        }
 
         // loop through the radio buttons, highlighting the answer and disabling
         // the incorrect options.
