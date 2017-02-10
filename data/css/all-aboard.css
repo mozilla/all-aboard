@@ -106,6 +106,8 @@ a:focus {
 }
 
 .secondary-content {
+    margin: 0 auto;
+    width: 245px;
     height: auto;
     text-align: left;
     font-style: italic;
