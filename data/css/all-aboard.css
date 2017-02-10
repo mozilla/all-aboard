@@ -106,8 +106,8 @@ a:focus {
 }
 
 .secondary-content {
-    margin: 0 auto;
-    width: 245px;
+    margin: 40px auto 0;
+    width: 240px;
     height: auto;
     text-align: left;
     font-style: italic;
@@ -122,25 +122,6 @@ a:focus {
 .secondary-content.hide p {
     display: none;
     padding: 0;
-}
-
-.selfpaced-content {
-    padding: 0 10px;
-}
-
-.selfpaced-content p {
-    margin: 0;
-    font-size: .8rem;
-}
-
-.selfpaced-content button {
-    background: none;
-    color: #0073aa;
-    padding: 0;
-    border: 0;
-    font-size: .8rem;
-    font-weight: bold;
-    cursor: pointer;
 }
 
 .user-data {
@@ -200,7 +181,7 @@ a:focus {
 
 /* tokens */
 .tokens {
-    margin: 20px 0 10px;
+    margin: 0 0 10px;
     padding: 0;
     width: 240px;
     list-style: none;

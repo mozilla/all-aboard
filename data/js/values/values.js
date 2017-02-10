@@ -37,21 +37,30 @@
         }
     }
 
-    button.addEventListener('click', function() {
+    /**
+     * Shows the secondary content block, and adds a listener
+     * to the content's main CTA
+     */
+    function showSecondaryContent() {
+        let secondaryCTA = secondaryContent.querySelector('#secondary_cta');
 
+        secondaryContent.classList.remove('hide');
+        secondaryContent.setAttribute('aria-hidden', false);
+
+        secondaryCTA.addEventListener('click', function(event) {
+            event.preventDefault();
+            addon.port.emit('intent', secondaryCTA.dataset.intent);
+        });
+    }
+
+    button.addEventListener('click', function() {
         mainCTAComplete();
 
-        // show secondary content if it exists
-        if (secondaryContent) {
-            let secondaryCTA = secondaryContent.querySelector('#secondary_cta');
+        // hide the show answer button
+        button.classList.add('hidden');
+        // update the aria-hidden state
+        button.setAttribute('aria-hidden', true);
 
-            secondaryContent.classList.remove('hide');
-            secondaryContent.setAttribute('aria-hidden', false);
-
-            secondaryCTA.addEventListener('click', function(event) {
-                event.preventDefault();
-                addon.port.emit('intent', secondaryCTA.dataset.intent);
-            });
-        }
+        showSecondaryContent();
     });
 })();
