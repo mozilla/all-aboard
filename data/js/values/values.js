@@ -17,7 +17,7 @@
 
         // the last sidebar does not have the info copy so,
         // we should not attempt to show it.
-        if (typeof infoCopy !== 'undefined') {
+        if (infoCopy) {
             infoCopy.classList.remove('hide');
             infoCopy.setAttribute('aria-hidden', false);
         }
