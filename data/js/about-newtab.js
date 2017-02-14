@@ -6,16 +6,6 @@ var footDiv = document.querySelector('#newtab-margin-bottom');
 function showUserData(templates, showFooter) {
     headDiv.insertAdjacentHTML('beforebegin', templates.header);
 
-    var bookmarks = document.querySelector('#bookmarks');
-
-    bookmarks.addEventListener('click', function() {
-        self.port.emit('intent', 'showBookmarks');
-    });
-
-    // As soon as the script loads and modifys the page, emit a message back to our
-    // sidebar that we've loaded the page
-    self.port.emit('pageModified');
-
     // if we have footer content, display it
     if (showFooter) {
         footDiv.insertAdjacentHTML('beforebegin', templates.footer);
@@ -26,6 +16,10 @@ function showUserData(templates, showFooter) {
             self.port.emit('intent', 'undoMigrate');
         });
     }
+
+    // As soon as the script loads and modifys the page, emit a message back to our
+    // sidebar that we've loaded the page
+    self.port.emit('pageModified');
 }
 
 // listen for the modify event emitted from the add-on, and only then,
