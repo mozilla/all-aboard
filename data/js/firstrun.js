@@ -7,11 +7,11 @@ let firstRunContents = {};
 let mainContainer;
 let pageHeading;
 let subHeading;
-let noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">No, thanks</a>';
 
 // shows the default heading and the Fx accounts widget
 function showFxAccountWidget() {
-    var innerContainer = document.querySelector('#intro .inner-container');
+    let innerContainer = document.querySelector('#intro .inner-container');
+    let noThanks = '<a href="about:home" id="dismiss_fxa" class="no-thanks">' + firstRunContents.dismissMsg + '</a>';
     innerContainer.removeChild(document.querySelector('#all-aboard'));
 
     // update the main page heading.
