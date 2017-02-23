@@ -27,12 +27,6 @@ function showFxAccountWidget() {
     mainContainer.style.display = 'block';
 
     fxAccountsContainer.insertAdjacentHTML('afterend', noThanks);
-
-    dismiss = document.querySelector('#dismiss_fxa');
-    // listen for a click event on the 'No Thanks' link and send preference
-    dismiss.addEventListener('click', function() {
-        self.port.emit('noFxAccounts', 'true');
-    });
 }
 
 /**
