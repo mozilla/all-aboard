@@ -13,7 +13,6 @@ var { utils } = require('lib/utils.js');
 
 var { aboutHome } = require('lib/content-scripts/about-home.js');
 var { firstrun } = require('lib/content-scripts/firstrun.js');
-var { newtab } = require('lib/content-scripts/newtab.js');
 
 var timer;
 
@@ -46,11 +45,6 @@ exports.main = function() {
     let lastCTACompleteTime = storageManager.get('lastSidebarCTACompleteTime');
     let timeSinceCTAComplete = utils.getTimeElapsed(lastCTACompleteTime);
     let lastStep = storageManager.get('step');
-
-    // do not call modifynewtab if we've already modified it once
-    if (typeof storageManager.get('seenUserData') === 'undefined') {
-        newtab.modifyNewtab();
-    }
 
     // Call modifyFirstrun if the user has not opted out and, have not already
     // answered the questions(as both questions need to be answered, checking
