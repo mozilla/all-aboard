@@ -1,13 +1,13 @@
 {
   "title": "Firefox All Aboard 1.6",
   "name": "all-aboard-v1-6",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "description": "The Mozilla Firefox Educational Tool",
   "homepage": "https://github.com/mozilla/all-aboard",
   "repository": "https://github.com/mozilla/all-aboard",
   "locales": {
       "de": {
-          "description": "TBD"
+          "description": "Tool für die Einführung in Mozilla Firefox"
       }
   },
   "main": "index.js",
