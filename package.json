@@ -1,7 +1,7 @@
 {
   "title": "Firefox All Aboard 1.6",
   "name": "all-aboard-v1-6",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "The Mozilla Firefox Educational Tool",
   "homepage": "https://github.com/mozilla/all-aboard",
   "repository": "https://github.com/mozilla/all-aboard",
@@ -11,6 +11,9 @@
       }
   },
   "main": "index.js",
+  "permissions": {
+    "multiprocess": true
+  },
   "scripts": {
     "test": "jpm test",
     "test-travis": "jpm --binary `which firefox` test -v",
