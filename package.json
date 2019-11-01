@@ -33,7 +33,7 @@
     "l10n"
   ],
   "devDependencies": {
-    "eslint": "^3.5.0",
+    "eslint": "^6.6.0",
     "jpm": "^1.0.7"
   }
 }
